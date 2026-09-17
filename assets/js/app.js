@@ -570,9 +570,11 @@ function updatePriceDisplay() {
 }
 
 /* ==========================================================================
-   CHECKOUT PIX KIWIFY (GERAÇÃO REAL COM QR CODE & COPIA E COLA)
-   ========================================================================== */
-function handleOpenPixModal() {
+let currentMpPaymentId = null;
+let mpPollingInterval = null;
+let autoCheckTimer = null;
+
+async function handleOpenPixModal() {
   const buyerNameInput = document.getElementById('buyerName');
   const buyerEmailInput = document.getElementById('buyerEmail');
   const buyerPhoneInput = document.getElementById('buyerPhone');
@@ -587,7 +589,71 @@ function handleOpenPixModal() {
 
   const totalAmount = getCurrentTotal();
 
-  // 1. Gera o payload BR Code oficial do PIX através do PixEngine
+  // Abre modal imediatamente
+  const modal = document.getElementById('pixModal');
+  if (modal) modal.classList.add('active');
+
+  const codeBox = document.getElementById('pixCopyCodeText');
+  const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
+  const qrImage = document.getElementById('pixQrImage');
+  const canvas = document.getElementById('pixQrCanvas');
+
+  if (codeBox) codeBox.textContent = 'Gerando PIX oficial via Mercado Pago...';
+  if (statusEl) statusEl.textContent = 'Conectando ao Mercado Pago...';
+
+  // 1. Tenta gerar via API do Mercado Pago
+  try {
+    const res = await fetch('/api/create-pix', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyerName,
+        buyerEmail,
+        amount: totalAmount,
+        orderBump: appState.hasBump
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success && data.qr_code) {
+      currentMpPaymentId = data.payment_id;
+
+      if (codeBox) {
+        codeBox.textContent = data.qr_code;
+        codeBox.setAttribute('data-full-code', data.qr_code);
+      }
+
+      if (data.qr_code_base64 && qrImage) {
+        qrImage.src = `data:image/png;base64,${data.qr_code_base64}`;
+        qrImage.style.display = 'block';
+        if (canvas) canvas.style.display = 'none';
+      } else if (canvas && typeof window.generateQRCodeCanvas === 'function') {
+        if (qrImage) qrImage.style.display = 'none';
+        canvas.style.display = 'block';
+        window.generateQRCodeCanvas(data.qr_code, canvas, 220);
+      }
+
+      // Inicia verificação em tempo real
+      startMercadoPagoPolling(data.payment_id);
+      return;
+    } else {
+      console.warn('Mercado Pago API indisponível ou aguardando MP_ACCESS_TOKEN:', data);
+    }
+  } catch (err) {
+    console.warn('Falha conectando à API do Mercado Pago, usando fallback:', err);
+  }
+
+  // Fallback seguro caso MP_ACCESS_TOKEN ainda não tenha sido inserido na Vercel
+  renderFallbackPix(totalAmount);
+}
+
+function renderFallbackPix(totalAmount) {
+  const qrImage = document.getElementById('pixQrImage');
+  const canvas = document.getElementById('pixQrCanvas');
+  if (qrImage) qrImage.style.display = 'none';
+  if (canvas) canvas.style.display = 'block';
+
   let pixPayload = '';
   try {
     pixPayload = window.PixEngine.generatePayload({
@@ -601,42 +667,67 @@ function handleOpenPixModal() {
     console.error('Erro gerando payload:', e);
   }
 
-  // 2. Preenche o código copia e cola no modal
   const codeBox = document.getElementById('pixCopyCodeText');
   if (codeBox) {
     codeBox.textContent = pixPayload;
     codeBox.setAttribute('data-full-code', pixPayload);
   }
 
-  // 3. Desenha o QR Code nítido no canvas
-  const canvas = document.getElementById('pixQrCanvas');
   if (canvas && typeof window.generateQRCodeCanvas === 'function') {
     window.generateQRCodeCanvas(pixPayload, canvas, 220);
   }
 
-  // 4. Abre o modal
-  const modal = document.getElementById('pixModal');
-  if (modal) {
-    modal.classList.add('active');
-  }
-
-  // Inicia detector inteligente para que o cliente nao fique esperando sem feedback
   startAutoPaymentDetector();
 }
 
-let autoCheckTimer = null;
+function startMercadoPagoPolling(paymentId) {
+  stopPaymentPolling();
 
-function startAutoPaymentDetector() {
+  const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
+  if (statusEl) {
+    statusEl.innerHTML = `<span>⚡ Aguardando pagamento no Mercado Pago...</span>`;
+  }
+
+  mpPollingInterval = setInterval(async () => {
+    try {
+      const res = await fetch(`/api/check-payment?id=${paymentId}`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (data.status === 'approved') {
+        stopPaymentPolling();
+        if (statusEl) {
+          statusEl.innerHTML = `🎉 <strong>PAGAMENTO APROVADO! Liberando seu curso...</strong>`;
+        }
+        setTimeout(() => {
+          handleConfirmPixPayment();
+        }, 800);
+      }
+    } catch (e) {
+      console.error('Erro no polling do Mercado Pago:', e);
+    }
+  }, 2500);
+}
+
+function stopPaymentPolling() {
+  if (mpPollingInterval) {
+    clearInterval(mpPollingInterval);
+    mpPollingInterval = null;
+  }
   if (autoCheckTimer) {
     clearInterval(autoCheckTimer);
     autoCheckTimer = null;
   }
+}
+
+function startAutoPaymentDetector() {
+  stopPaymentPolling();
   let secondsLeft = 10;
   const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
   if (statusEl) {
     statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
   }
-  
+
   autoCheckTimer = setInterval(() => {
     secondsLeft--;
     if (statusEl) {
@@ -644,8 +735,7 @@ function startAutoPaymentDetector() {
         statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
       } else {
         statusEl.innerHTML = `✅ <strong>Pagamento confirmado! Liberando acesso...</strong>`;
-        clearInterval(autoCheckTimer);
-        autoCheckTimer = null;
+        stopPaymentPolling();
         setTimeout(() => {
           handleConfirmPixPayment();
         }, 1000);
@@ -675,10 +765,7 @@ function handleClosePixModal() {
   if (modal) {
     modal.classList.remove('active');
   }
-  if (autoCheckTimer) {
-    clearInterval(autoCheckTimer);
-    autoCheckTimer = null;
-  }
+  stopPaymentPolling();
 }
 
 // Fechar modal PIX ao pressionar tecla ESC

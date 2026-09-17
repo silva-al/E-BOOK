@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=8.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=9.0">
 </head>
 
 <body>
@@ -449,7 +449,8 @@
         </div>
 
         <div class="pix-qrcode-container">
-          <!-- Canvas gerado pelo pix-engine.js -->
+          <!-- Imagem oficial retornado pelo Mercado Pago ou Canvas gerado localmente -->
+          <img id="pixQrImage" style="display: none; width: 220px; height: 220px; margin: 0 auto;" alt="QR Code PIX Mercado Pago">
           <canvas id="pixQrCanvas" width="220" height="220"></canvas>
         </div>
 
@@ -643,8 +644,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=8.0"></script>
-  <script src="assets/js/app.js?v=8.0"></script>
+  <script src="assets/js/pix-engine.js?v=9.0"></script>
+  <script src="assets/js/app.js?v=9.0"></script>
 </body>
 
 </html>
