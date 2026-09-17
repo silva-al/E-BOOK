@@ -8,8 +8,8 @@ const appState = {
   directPixKey: '5519994744297',
   pixRecipient: localStorage.getItem('alan_pix_name') || 'ALAN RONALDO',
   pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
-  basePrice: 1.00,
-  bumpPrice: 0.50,
+  basePrice: 29.90,
+  bumpPrice: 9.90,
   hasBump: localStorage.getItem('desmame_has_bump') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
   ebookData: null
@@ -335,7 +335,7 @@ function renderEbookModules(modules) {
                 ${isDayHook && !hasBump ? `
                   <div style="margin-top: 14px;">
                     <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 10px 18px;" onclick="handleOpenBumpUpgradeModal()">
-                      🔓 Liberar Acesso ao Guia Completo Dia & Noite (R$ 0,50)
+                      🔓 Liberar Acesso ao Guia Completo Dia & Noite (R$ 9,90)
                     </button>
                   </div>
                 ` : ''}
@@ -386,10 +386,10 @@ function renderBonusSection(dayModules, hasBump) {
         <div class="bump-locked-cta-box">
           <div class="bump-cta-price-info">
             <span class="bump-cta-sub">Acesso vitalício imediato:</span>
-            <span class="bump-cta-val">Apenas R$ 0,50 no PIX</span>
+            <span class="bump-cta-val">Apenas R$ 9,90 no PIX</span>
           </div>
           <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
-            🔓 Liberar Este Bônus Agora por R$ 0,50
+            🔓 Liberar Este Bônus Agora por R$ 9,90
           </button>
         </div>
       </div>
@@ -1113,7 +1113,7 @@ let currentBumpOrderId = null;
 let bumpCountdownInterval = null;
 
 async function handleOpenBumpUpgradeModal() {
-  const amount = appState.bumpPrice; // R$ 0,50
+  const amount = appState.bumpPrice; // R$ 9,90
   const canvas = document.getElementById('bumpUpgradeQrCanvas');
   const img = document.getElementById('bumpUpgradeQrImg');
   const loading = document.getElementById('bumpUpgradeLoading');

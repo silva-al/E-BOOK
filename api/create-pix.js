@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   try {
     const { buyerName, buyerEmail, amount, orderBump } = req.body || {};
 
-    const transactionAmount = Number(amount || 1.00).toFixed(2);
+    const transactionAmount = Number(amount || 29.90).toFixed(2);
     const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.aluna@desmamenoturno.com';
     
     let firstName = 'Aluna';
