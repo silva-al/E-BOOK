@@ -3862,3 +3862,19 @@ body {
     height: 20px !important;
   }
 }
+
+/* ── Flash de Relâmpago ───────────────────────────────────────────────────── */
+.lightning-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: rgba(220, 240, 255, 0);
+  transition: background 0.04s ease-out;
+  border-radius: 0;
+}
+
+.lightning-flash.active {
+  background: rgba(220, 240, 255, 0.28);
+  box-shadow: inset 0 0 120px rgba(180, 220, 255, 0.18);
+}

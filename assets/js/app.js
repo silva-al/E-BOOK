@@ -849,62 +849,120 @@ function startAmbientNoise() {
       ambientAudioCtx.resume();
     }
 
-    // Gerador de Som de Chuva Suave Acolhedora (Stereo Pink Noise com gotas suaves)
-    const bufferSize = ambientAudioCtx.sampleRate * 3;
-    const noiseBuffer = ambientAudioCtx.createBuffer(2, bufferSize, ambientAudioCtx.sampleRate);
-    const left = noiseBuffer.getChannelData(0);
-    const right = noiseBuffer.getChannelData(1);
+    const sr = ambientAudioCtx.sampleRate;
 
-    let b0L = 0, b1L = 0, b2L = 0;
-    let b0R = 0, b1R = 0, b2R = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const whiteL = Math.random() * 2 - 1;
-      const whiteR = Math.random() * 2 - 1;
-
-      // Filtro Pink Noise equilibrado (sem abafamento)
-      b0L = 0.99 * b0L + whiteL * 0.055;
-      b1L = 0.96 * b1L + whiteL * 0.115;
-      b2L = 0.86 * b2L + whiteL * 0.250;
-      left[i] = (b0L + b1L + b2L + whiteL * 0.18) * 0.22;
-
-      b0R = 0.99 * b0R + whiteR * 0.055;
-      b1R = 0.96 * b1R + whiteR * 0.115;
-      b2R = 0.86 * b2R + whiteR * 0.250;
-      right[i] = (b0R + b1R + b2R + whiteR * 0.18) * 0.22;
+    // ── Buffer de ruído branco estéreo (4 segundos, vai em loop) ─────────────
+    const bufferSize = sr * 4;
+    const noiseBuffer = ambientAudioCtx.createBuffer(2, bufferSize, sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = noiseBuffer.getChannelData(ch);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
     }
 
-    const rainSource = ambientAudioCtx.createBufferSource();
-    rainSource.buffer = noiseBuffer;
-    rainSource.loop = true;
+    const noiseSource = ambientAudioCtx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
 
-    // Remove o som abafado/fechado cortando o subgrave pesado
-    const highpass = ambientAudioCtx.createBiquadFilter();
-    highpass.type = 'highpass';
-    highpass.frequency.setValueAtTime(160, ambientAudioCtx.currentTime);
+    // ── Mixer principal ───────────────────────────────────────────────────────
+    const masterGain = ambientAudioCtx.createGain();
+    masterGain.gain.setValueAtTime(0.001, ambientAudioCtx.currentTime);
+    masterGain.gain.exponentialRampToValueAtTime(0.85, ambientAudioCtx.currentTime + 1.2);
+    masterGain.connect(ambientAudioCtx.destination);
 
-    // Abre o som da chuva suave nas frequências das gotas (2.200 Hz ao invés de 650 Hz)
-    const lowpass = ambientAudioCtx.createBiquadFilter();
-    lowpass.type = 'lowpass';
-    lowpass.frequency.setValueAtTime(2200, ambientAudioCtx.currentTime);
-    lowpass.Q.setValueAtTime(0.65, ambientAudioCtx.currentTime);
+    // ── CAMADA 1 — "Corpo" da chuva (300 Hz – 1.8 kHz) ──────────────────────
+    // Corta o subgrave pesado e o ultra-agudo; deixa o corpo principal audível
+    const bodyHp = ambientAudioCtx.createBiquadFilter();
+    bodyHp.type = 'highpass';
+    bodyHp.frequency.value = 300;
+    bodyHp.Q.value = 0.5;
 
-    ambientGainNode = ambientAudioCtx.createGain();
-    ambientGainNode.gain.setValueAtTime(0.01, ambientAudioCtx.currentTime);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.60, ambientAudioCtx.currentTime + 1.0);
+    const bodyLp = ambientAudioCtx.createBiquadFilter();
+    bodyLp.type = 'lowpass';
+    bodyLp.frequency.value = 1800;
+    bodyLp.Q.value = 0.5;
 
-    rainSource.connect(highpass);
-    highpass.connect(lowpass);
-    lowpass.connect(ambientGainNode);
-    ambientGainNode.connect(ambientAudioCtx.destination);
+    const bodyGain = ambientAudioCtx.createGain();
+    bodyGain.gain.value = 0.70;
 
-    rainSource.start();
-    ambientNoiseNode = rainSource;
+    noiseSource.connect(bodyHp);
+    bodyHp.connect(bodyLp);
+    bodyLp.connect(bodyGain);
+    bodyGain.connect(masterGain);
+
+    // ── CAMADA 2 — "Gotas" (presença 2.5 kHz – 6 kHz) ───────────────────────
+    // Traz o "tic-tic" brilhante das gotas — o que faz a chuva soar viva
+    const dropsHp = ambientAudioCtx.createBiquadFilter();
+    dropsHp.type = 'highpass';
+    dropsHp.frequency.value = 2500;
+    dropsHp.Q.value = 0.7;
+
+    const dropsLp = ambientAudioCtx.createBiquadFilter();
+    dropsLp.type = 'lowpass';
+    dropsLp.frequency.value = 6000;
+    dropsLp.Q.value = 0.5;
+
+    const dropsGain = ambientAudioCtx.createGain();
+    dropsGain.gain.value = 0.38;
+
+    noiseSource.connect(dropsHp);
+    dropsHp.connect(dropsLp);
+    dropsLp.connect(dropsGain);
+    dropsGain.connect(masterGain);
+
+    // ── CAMADA 3 — "Ar" suave (8 kHz – 14 kHz) ───────────────────────────────
+    // Camada de "sshhh" aéreo que abre o som e tira o efeito fechado/abafado
+    const airHp = ambientAudioCtx.createBiquadFilter();
+    airHp.type = 'highpass';
+    airHp.frequency.value = 8000;
+    airHp.Q.value = 0.4;
+
+    const airLp = ambientAudioCtx.createBiquadFilter();
+    airLp.type = 'lowpass';
+    airLp.frequency.value = 14000;
+    airLp.Q.value = 0.4;
+
+    const airGain = ambientAudioCtx.createGain();
+    airGain.gain.value = 0.22;
+
+    noiseSource.connect(airHp);
+    airHp.connect(airLp);
+    airLp.connect(airGain);
+    airGain.connect(masterGain);
+
+    // ── LFO de tremolo suave (ritmo natural ~7 Hz) ────────────────────────────
+    const lfo = ambientAudioCtx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 7;
+
+    const lfoGain = ambientAudioCtx.createGain();
+    lfoGain.gain.value = 0.08; // Modulação discreta — não choroso
+
+    lfo.connect(lfoGain);
+    lfoGain.connect(masterGain.gain);
+    lfo.start();
+
+    noiseSource.start();
+    ambientNoiseNode = noiseSource;
+    ambientGainNode = masterGain;
+
+    // Guarda o lfo para parar depois
+    ambientAudioCtx._lfoNode = lfo;
+
+    // Inicia o ciclo de trovões (primeiro depois de 25–70s)
+    scheduleNextThunder();
   } catch (err) {
     console.warn('Web Audio indisponível:', err);
   }
 }
 
 function stopAmbientNoise() {
+  // Para o timer de trovão se estiver ativo
+  if (ambientAudioCtx && ambientAudioCtx._thunderTimer) {
+    clearTimeout(ambientAudioCtx._thunderTimer);
+    ambientAudioCtx._thunderTimer = null;
+  }
   if (ambientGainNode && ambientAudioCtx) {
     ambientGainNode.gain.exponentialRampToValueAtTime(0.001, ambientAudioCtx.currentTime + 0.5);
     setTimeout(() => {
@@ -912,11 +970,111 @@ function stopAmbientNoise() {
         try { ambientNoiseNode.stop(); } catch (e) {}
         ambientNoiseNode = null;
       }
+      if (ambientAudioCtx && ambientAudioCtx._lfoNode) {
+        try { ambientAudioCtx._lfoNode.stop(); } catch (e) {}
+        ambientAudioCtx._lfoNode = null;
+      }
     }, 500);
   } else if (ambientNoiseNode) {
     try { ambientNoiseNode.stop(); } catch (e) {}
     ambientNoiseNode = null;
   }
+}
+
+// ── TROVÃO: síntese de relâmpago + trovão via Web Audio ─────────────────────
+function playThunder() {
+  if (!ambientAudioCtx || ambientAudioCtx.state === 'closed') return;
+  if (ambientAudioCtx.state === 'suspended') ambientAudioCtx.resume();
+
+  try {
+    const ctx = ambientAudioCtx;
+    const now = ctx.currentTime;
+
+    // ── Flash visual de relâmpago ──────────────────────────────────────────
+    const portal = document.getElementById('unlockedPortal') || document.body;
+    const flash = document.createElement('div');
+    flash.className = 'lightning-flash';
+    portal.appendChild(flash);
+    // Duplo flash (como relâmpago real)
+    setTimeout(() => { flash.classList.add('active'); }, 10);
+    setTimeout(() => { flash.classList.remove('active'); }, 80);
+    setTimeout(() => { flash.classList.add('active'); }, 130);
+    setTimeout(() => {
+      flash.classList.remove('active');
+      setTimeout(() => flash.remove(), 300);
+    }, 200);
+
+    // ── Som do trovão ─────────────────────────────────────────────────────
+    // Atraso simulando distância (0.4s a 2.0s após o flash)
+    const delay = 0.4 + Math.random() * 1.6;
+
+    // Rumble grave — "BOOOM" profundo
+    const rumbleSize = ctx.sampleRate * 3;
+    const rumbleBuffer = ctx.createBuffer(1, rumbleSize, ctx.sampleRate);
+    const rData = rumbleBuffer.getChannelData(0);
+    let rb0 = 0, rb1 = 0;
+    for (let i = 0; i < rumbleSize; i++) {
+      const w = Math.random() * 2 - 1;
+      rb0 = 0.99 * rb0 + w * 0.02;
+      rb1 = 0.999 * rb1 + rb0;
+      rData[i] = rb1 * 0.5;
+    }
+    const rumble = ctx.createBufferSource();
+    rumble.buffer = rumbleBuffer;
+
+    const rumbleLp = ctx.createBiquadFilter();
+    rumbleLp.type = 'lowpass';
+    rumbleLp.frequency.value = 180;
+
+    const rumbleGain = ctx.createGain();
+    rumbleGain.gain.setValueAtTime(0.0, now + delay);
+    rumbleGain.gain.linearRampToValueAtTime(0.9, now + delay + 0.06);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.001, now + delay + 2.8);
+
+    rumble.connect(rumbleLp);
+    rumbleLp.connect(rumbleGain);
+    rumbleGain.connect(ctx.destination);
+    rumble.start(now + delay);
+    rumble.stop(now + delay + 3.5);
+
+    // Estalido agudo do raio — "CRACK"
+    const crackSize = Math.floor(ctx.sampleRate * 0.12);
+    const crackBuffer = ctx.createBuffer(1, crackSize, ctx.sampleRate);
+    const cData = crackBuffer.getChannelData(0);
+    for (let i = 0; i < crackSize; i++) {
+      cData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.018));
+    }
+    const crack = ctx.createBufferSource();
+    crack.buffer = crackBuffer;
+
+    const crackHp = ctx.createBiquadFilter();
+    crackHp.type = 'highpass';
+    crackHp.frequency.value = 1000;
+
+    const crackGain = ctx.createGain();
+    crackGain.gain.setValueAtTime(0.65, now + delay);
+    crackGain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.12);
+
+    crack.connect(crackHp);
+    crackHp.connect(crackGain);
+    crackGain.connect(ctx.destination);
+    crack.start(now + delay);
+
+  } catch (e) {
+    console.warn('Erro no trovão:', e);
+  }
+}
+
+// Agenda próximo trovão em intervalo aleatório (25s a 70s)
+function scheduleNextThunder() {
+  if (!isAmbientPlaying || !ambientAudioCtx) return;
+  const delay = 25000 + Math.random() * 45000;
+  ambientAudioCtx._thunderTimer = setTimeout(() => {
+    if (isAmbientPlaying) {
+      playThunder();
+      scheduleNextThunder();
+    }
+  }, delay);
 }
 
 function initNightModeState() {
