@@ -1975,14 +1975,18 @@ body {
   text-decoration: underline;
 }
 
-/* Ferramentas de Testes no Rodapé (Sem nenhum botão flutuante atrapalhando a tela) */
+/* Ferramentas de Testes no Rodapé (Ocultas por padrão para clientes, visíveis apenas com ?admin=1) */
 .footer-admin-tools {
+  display: none;
   margin-top: 14px;
-  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.footer-admin-tools.show-admin {
+  display: flex;
 }
 
 .alan-admin-btn {

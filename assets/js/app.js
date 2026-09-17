@@ -28,6 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (bumpCheck) {
     bumpCheck.checked = appState.hasBump;
   }
+
+  // Ferramentas de administração: visíveis apenas se a URL contiver ?admin=1
+  if (new URLSearchParams(window.location.search).get('admin') === '1') {
+    const adminTools = document.querySelector('.footer-admin-tools');
+    if (adminTools) adminTools.classList.add('show-admin');
+  }
 });
 
 function clearFormFields() {
