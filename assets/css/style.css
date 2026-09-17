@@ -370,6 +370,125 @@ body {
   letter-spacing: 0.4px;
 }
 
+/* Seletor de Abas PIX (QR Code vs Chave Telefone) */
+.pix-tabs-bar {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 12px 0;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.pix-tab-toggle {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.pix-tab-toggle.active {
+  background: #ffffff;
+  color: #0f766e;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.pix-tab-pane {
+  display: none;
+}
+
+.pix-tab-pane.active {
+  display: block;
+}
+
+/* Box do QR Code na Tela */
+.inline-pix-qr-box {
+  background: #f0fdfa;
+  border: 1.5px solid #2dd4bf;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.inline-qr-canvas-wrapper {
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(50, 188, 173, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.inline-qr-canvas-wrapper canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.inline-qr-amount-tag {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.inline-qr-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inline-qr-hint {
+  font-size: 12px;
+  color: #0f766e;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.btn-copy-inline-pix {
+  width: 100%;
+  background: #32bcad;
+  color: #ffffff;
+  border: none;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+  box-shadow: 0 3px 10px rgba(50, 188, 173, 0.25);
+}
+
+.btn-copy-inline-pix:hover {
+  background: #27968a;
+  transform: translateY(-1px);
+}
+
 .direct-pix-number {
   font-size: 18px;
   font-weight: 800;
@@ -492,6 +611,105 @@ body {
 .bump-price {
   font-weight: 700;
   color: #d97706;
+}
+
+/* Box de Resumo do Valor do PIX */
+.pix-price-summary-box {
+  background: #ffffff;
+  border: 1.5px solid #a7f3d0;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  transition: var(--transition);
+}
+
+.pix-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0fdf4;
+}
+
+.pix-summary-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.pix-summary-type {
+  font-size: 11px;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.pix-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.pix-summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.pix-summary-item.bump-item {
+  background: #fffbeb;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px dashed #fcd34d;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.pix-summary-item-val {
+  font-weight: 700;
+  color: #111827;
+}
+
+.pix-summary-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 8px 0;
+}
+
+.pix-summary-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2px;
+}
+
+.pix-total-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.pix-total-subtext {
+  font-size: 11px;
+  color: #059669;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.pix-total-price {
+  font-size: 22px;
+  font-weight: 900;
+  color: #059669;
+  letter-spacing: -0.3px;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 /* Botão de Compra Principal */

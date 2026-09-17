@@ -373,15 +373,112 @@ function getCurrentTotal() {
   return appState.hasBump ? (appState.basePrice + appState.bumpPrice) : appState.basePrice;
 }
 
+let currentInlinePixPayload = '';
+
+function renderInlinePix() {
+  const totalAmount = getCurrentTotal();
+  try {
+    currentInlinePixPayload = window.PixEngine.generatePayload({
+      key: appState.pixKey,
+      name: appState.pixRecipient,
+      city: appState.pixCity,
+      amount: totalAmount,
+      txId: 'DESMAME' + Math.floor(Math.random() * 89999 + 10000),
+      description: appState.hasBump ? 'Desmame Noturno e Diurno' : 'Ebook Desmame Noturno'
+    });
+  } catch (e) {
+    console.error('Erro gerando payload inline:', e);
+    currentInlinePixPayload = '00020126360014br.gov.bcb.pix0114+55199947442975204000053039865405' + totalAmount.toFixed(2) + '5802BR5912ALAN RONALDO6009SAO PAULO62070503***6304ABCD';
+  }
+
+  const canvas = document.getElementById('inlinePixQrCanvas');
+  if (canvas && typeof window.generateQRCodeCanvas === 'function') {
+    window.generateQRCodeCanvas(currentInlinePixPayload, canvas, 180);
+  }
+
+  const tag = document.getElementById('inlineQrAmountTag');
+  if (tag) {
+    const formatted = totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    tag.textContent = `Valor: ${formatted}`;
+  }
+}
+
+function handleCopyInlinePixCode() {
+  if (!currentInlinePixPayload) {
+    renderInlinePix();
+  }
+  const label = document.getElementById('labelCopyInlinePix');
+  if (navigator.clipboard && currentInlinePixPayload) {
+    navigator.clipboard.writeText(currentInlinePixPayload).then(() => {
+      if (label) {
+        const orig = label.textContent;
+        label.textContent = "✅ Código PIX Copiado com Sucesso!";
+        setTimeout(() => { label.textContent = orig; }, 3000);
+      }
+    });
+  } else {
+    prompt("Copie o código PIX Copia e Cola abaixo:", currentInlinePixPayload);
+  }
+}
+
+function switchPixTab(tab) {
+  const tabBtnQr = document.getElementById('tabBtnQr');
+  const tabBtnKey = document.getElementById('tabBtnKey');
+  const paneQr = document.getElementById('paneQr');
+  const paneKey = document.getElementById('paneKey');
+
+  if (tab === 'qr') {
+    if (tabBtnQr) tabBtnQr.classList.add('active');
+    if (tabBtnKey) tabBtnKey.classList.remove('active');
+    if (paneQr) paneQr.classList.add('active');
+    if (paneKey) paneKey.classList.remove('active');
+    renderInlinePix();
+  } else {
+    if (tabBtnQr) tabBtnQr.classList.remove('active');
+    if (tabBtnKey) tabBtnKey.classList.add('active');
+    if (paneQr) paneQr.classList.remove('active');
+    if (paneKey) paneKey.classList.add('active');
+  }
+}
+
 function updatePriceDisplay() {
   const total = getCurrentTotal();
   const formatted = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   
+  // 1. Cabeçalho do produto no topo
   const displayPrice = document.getElementById('displayPrice');
   if (displayPrice) displayPrice.textContent = formatted;
 
+  // 2. Badge de valor no título da seção PIX
+  const pixHeaderBadgeAmount = document.getElementById('pixHeaderBadgeAmount');
+  if (pixHeaderBadgeAmount) pixHeaderBadgeAmount.textContent = `Valor: ${formatted}`;
+
+  // 3. Resumo dinâmico de valor abaixo do PIX
+  const checkoutTotalPix = document.getElementById('checkoutTotalPix');
+  if (checkoutTotalPix) {
+    checkoutTotalPix.textContent = formatted;
+    checkoutTotalPix.style.transform = 'scale(1.08)';
+    setTimeout(() => { checkoutTotalPix.style.transform = 'scale(1)'; }, 200);
+  }
+
+  // 4. Linha adicional do order bump no resumo
+  const bumpSummaryRow = document.getElementById('bumpSummaryRow');
+  if (bumpSummaryRow) {
+    bumpSummaryRow.style.display = appState.hasBump ? 'flex' : 'none';
+  }
+
+  // 5. Botão de checkout com valor dinâmico
+  const btnSubmitCheckoutText = document.getElementById('btnSubmitCheckoutText');
+  if (btnSubmitCheckoutText) {
+    btnSubmitCheckoutText.textContent = `PAGAR COM PIX (${formatted}) E LIBERAR O CURSO AGORA`;
+  }
+
+  // 6. Valor no modal
   const pixModalAmount = document.getElementById('pixModalAmount');
   if (pixModalAmount) pixModalAmount.textContent = formatted;
+
+  // 7. Atualiza o QR Code e Copia e Cola na tela
+  renderInlinePix();
 }
 
 /* ==========================================================================

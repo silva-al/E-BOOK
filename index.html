@@ -94,7 +94,7 @@
             </svg>
             <span>PIX (Pagamento Direto & Instantâneo)</span>
           </div>
-          <span class="payment-exclusive-badge">Liberação Imediata</span>
+          <span class="payment-exclusive-badge" id="pixHeaderBadgeAmount">Valor: R$ 30,00</span>
         </div>
 
         <div class="pix-instant-notice">
@@ -106,36 +106,68 @@
           </div>
         </div>
 
-        <!-- Chave PIX Direta Clicável com Símbolos do PIX e do WhatsApp -->
-        <div class="direct-pix-box" onclick="handleCopyDirectPixKey()" title="Clique para copiar a Chave PIX ou falar no WhatsApp">
-          <div class="direct-pix-info">
-            <div class="direct-pix-icon">
-              <!-- Símbolo Oficial PIX -->
-              <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z" fill="#ffffff"/>
-              </svg>
+        <!-- Opções de Pagamento no PIX: QR Code na Tela ou Chave Direta -->
+        <div class="pix-tabs-bar">
+          <button type="button" class="pix-tab-toggle active" id="tabBtnQr" onclick="switchPixTab('qr')">
+            📱 QR Code & Copia e Cola
+          </button>
+          <button type="button" class="pix-tab-toggle" id="tabBtnKey" onclick="switchPixTab('key')">
+            🔑 Chave Direta (Telefone)
+          </button>
+        </div>
+
+        <!-- Aba 1: QR Code Oficial na Tela com Copia e Cola -->
+        <div class="pix-tab-pane active" id="paneQr">
+          <div class="inline-pix-qr-box">
+            <div class="inline-qr-canvas-wrapper">
+              <canvas id="inlinePixQrCanvas" width="180" height="180"></canvas>
+              <div class="inline-qr-amount-tag" id="inlineQrAmountTag">Valor: R$ 30,00</div>
             </div>
-            <div>
-              <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
-                <span>Chave PIX Oficial</span>
-                <!-- Símbolo Oficial WhatsApp -->
-                <span class="whatsapp-inline-badge">
-                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/></svg>
-                  WhatsApp
-                </span>
-              </div>
-              <div class="direct-pix-number" id="directPixNumberDisplay">
-                5519994744297
-              </div>
+            <div class="inline-qr-actions">
+              <p class="inline-qr-hint">Escaneie o QR Code acima com o app do seu banco ou use o Copia e Cola:</p>
+              <button type="button" class="btn-copy-inline-pix" onclick="handleCopyInlinePixCode()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="labelCopyInlinePix">Copiar Código PIX (Copia e Cola)</span>
+              </button>
             </div>
           </div>
-          <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixForm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span id="labelDirectCopyForm">Copiar Chave</span>
-          </button>
+        </div>
+
+        <!-- Aba 2: Chave PIX Direta (Telefone WhatsApp) -->
+        <div class="pix-tab-pane" id="paneKey">
+          <div class="direct-pix-box" onclick="handleCopyDirectPixKey()" title="Clique para copiar a Chave PIX ou falar no WhatsApp">
+            <div class="direct-pix-info">
+              <div class="direct-pix-icon">
+                <!-- Símbolo Oficial PIX -->
+                <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z" fill="#ffffff"/>
+                </svg>
+              </div>
+              <div>
+                <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
+                  <span>Chave PIX Oficial</span>
+                  <!-- Símbolo Oficial WhatsApp -->
+                  <span class="whatsapp-inline-badge">
+                    <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/></svg>
+                    WhatsApp
+                  </span>
+                </div>
+                <div class="direct-pix-number" id="directPixNumberDisplay">
+                  5519994744297
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixForm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="labelDirectCopyForm">Copiar Chave</span>
+            </button>
+          </div>
         </div>
 
         <!-- Order Bump / Bônus Especial Opcional -->
@@ -147,12 +179,38 @@
           </div>
         </label>
 
+        <!-- Resumo Dinâmico do Valor do Pedido com PIX -->
+        <div class="pix-price-summary-box">
+          <div class="pix-summary-header">
+            <span class="pix-summary-title">Resumo do Pedido</span>
+            <span class="pix-summary-type">⚡ PIX Oficial</span>
+          </div>
+          <div class="pix-summary-list">
+            <div class="pix-summary-item">
+              <span>E-book Desmame Noturno</span>
+              <span class="pix-summary-item-val" id="summaryBasePrice">R$ 30,00</span>
+            </div>
+            <div class="pix-summary-item bump-item" id="bumpSummaryRow" style="display: none;">
+              <span style="color: #b45309; font-weight: 600;">+ Dicas Especiais: Desmame Durante o Dia</span>
+              <span class="pix-summary-item-val" style="color: #b45309; font-weight: 700;">+ R$ 9,90</span>
+            </div>
+          </div>
+          <div class="pix-summary-divider"></div>
+          <div class="pix-summary-total-row">
+            <div>
+              <div class="pix-total-label">Total a Pagar via PIX:</div>
+              <div class="pix-total-subtext">Sem taxas • Liberação instantânea</div>
+            </div>
+            <div class="pix-total-price" id="checkoutTotalPix">R$ 30,00</div>
+          </div>
+        </div>
+
         <!-- Botão Principal de Conversão Kiwify -->
         <button type="submit" class="btn-pay-now" id="btnSubmitCheckout">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
-          PAGAR COM PIX E LIBERAR O CURSO AGORA
+          <span id="btnSubmitCheckoutText">PAGAR COM PIX (R$ 30,00) E LIBERAR O CURSO AGORA</span>
         </button>
 
         <div class="checkout-security-notice">
