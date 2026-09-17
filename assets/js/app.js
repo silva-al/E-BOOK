@@ -96,7 +96,10 @@ async function loadEbookContent() {
         title: "1️⃣ Módulo 01: Escolha por onde começar",
         duration: "5 min de leitura",
         chapters: [
-          { content: "Você pode começar retirando uma mamada de dia ou noturna por vez, em vez de tentar mudar toda a rotina de uma vez." }
+          {
+            title: "Uma Mudança de Cada Vez",
+            content: "Não tente retirar todas as mamadas de uma vez. Comece escolhendo uma mamada que você considera mais fácil de retirar, seja durante o dia ou à noite.\n\nObserve a rotina do seu bebê e escolha um momento em que ele costuma mamar mais por hábito do que por fome. Depois, mantenha essa mudança por alguns dias para que ele tenha tempo de se adaptar antes de retirar outra mamada.\n\nO segredo para mim foi fazer uma mudança de cada vez, sem pressa. 🤍"
+          }
         ]
       },
       {
@@ -104,39 +107,47 @@ async function loadEbookContent() {
         title: "2️⃣ Módulo 02: Quando o bebê acordar, tente outras formas de acalmar",
         duration: "5 min de leitura",
         chapters: [
-          { content: "Colo, carinho, embalo, cafuné, água ou simplesmente ficar pertinho. 🥹🤍" }
+          {
+            title: "Outras Formas de Aconchego",
+            content: "Quando meu filho acordava, eu não queria que o peito fosse a única forma de fazê-lo voltar a dormir.\n\nEntão eu tentava outras maneiras de acalmá-lo, como colo, carinho, balançando no meu peito, Cafuné ou simplesmente ficar pertinho dele. 🥹🤍\n\nNem sempre ele se acalmava imediatamente. Eu precisava ter paciência e repetir o processo até ele entender que também conseguia voltar a dormir de outras formas.\n\nE quando ele acordava eu já levantava e colocava ele pra dormir."
+          }
         ]
       },
       {
         id: 3,
-        title: "3️⃣ Módulo 03: Faça uma rotina antes de dormir",
-        duration: "5 min de leitura",
+        title: "3️⃣ Módulo 03: Crie uma rotina antes de dormir 🛁🌙",
+        duration: "6 min de leitura",
         chapters: [
-          { content: "Banho + pijama + ambiente mais tranquilo + carinho. Repetir a rotina ajuda o bebê a entender que chegou a hora de dormir." }
+          {
+            title: "Crie uma rotina antes de dormir 🛁🌙",
+            content: "Uma rotina previsível pode ajudar o bebê a entender que está chegando a hora de dormir.\n\nNo meu caso, eu fazia algo simples: banho + pijama + ambiente mais tranquilo + carinho.\nO mais importante é tentar repetir a sequência todos os dias. Com o tempo, esses pequenos sinais passam a fazer parte da preparação para o sono.\n\n(Eu peguei o costume de desligar todas as luzes, colocar uma música de chuva para nenhum barulho acordar ele.)"
+          }
         ]
       },
       {
         id: 4,
         title: "4️⃣ Módulo 04: Não ofereça o peito automaticamente ao primeiro despertar",
-        duration: "5 min de leitura",
+        duration: "6 min de leitura",
         chapters: [
-          { content: "Se ele acordar, espere um pouquinho e tente acalmar de outra forma primeiro." }
+          {
+            title: "Não ofereça o peito automaticamente ao primeiro despertar",
+            content: "Quando o bebê acordar, antes de oferecer o peito imediatamente, espere um pouquinho e observe.\nTente primeiro acalmá-lo de outra maneira: pegue no colo, dê carinho e aconchego.\n\nA intenção é começar a quebrar a associação de que todo despertar precisa terminar em uma mamada.\nSe o bebê demonstrar fome ou houver alguma necessidade específica, respeite isso. O desmame precisa considerar a idade, alimentação e necessidades individuais da criança.\n\nSe ele chorar ofereça água ou uma mamadeira com leite ( o meu filho aceitou a mamadeira com 5 dias depois do desmame)"
+          }
         ]
       },
       {
         id: 5,
-        title: "5️⃣ Módulo 05: Seja consistente",
-        duration: "5 min de leitura",
+        title: "5️⃣ Módulo 05: Seja consistente 🤍",
+        duration: "7 min de leitura",
         chapters: [
-          { content: "Se decidiu retirar aquela mamada, tente manter a mudança. O bebê pode reclamar nos primeiros dias enquanto se adapta." }
-        ]
-      },
-      {
-        id: 6,
-        title: "6️⃣ Módulo 06: Vá no ritmo de vocês",
-        duration: "5 min de leitura",
-        chapters: [
-          { content: "Se estiver muito difícil, dê mais tempo antes de retirar outra mamada. Desmame não precisa acontecer de um dia para o outro. 🤍" }
+          {
+            title: "Seja consistente 🤍",
+            content: "Depois de escolher retirar uma determinada mamada, procure manter a decisão e a nova rotina.\nNos primeiros dias, o bebê pode reclamar ou estranhar porque está acostumado com aquela forma de dormir. Isso faz parte da adaptação à mudança.\n\nQuando ele se acostumar, ele vai dormir a noite inteira e vai mudar muito a sua vida, seu humor, sua rotina.\n\nTenha paciência, ofereça muito carinho e tente manter a mesma abordagem. Consistência não significa deixar o bebê sozinho ou ignorar o choro; significa continuar oferecendo acolhimento enquanto ele aprende uma nova forma de adormecer. 🌙🤍\n\n✨ Esses foram os métodos que funcionaram comigo durante o desmame do meu filho. Cada bebê é único, então adapte o processo à realidade e às necessidades do seu pequeno."
+          },
+          {
+            title: "☀️ Desmame Durante o Dia (Guia Completo)",
+            content: "Se quiser saber mais sobre como eu fiz pra ele desmamar na parte do dia, é só liberar o acesso que vai ter o guia completo de dia e noite."
+          }
         ]
       },
       {
@@ -271,12 +282,21 @@ function renderEbookModules(modules) {
           
           <!-- Capítulos Escritos do E-book -->
           <div class="module-chapters-area">
-            ${mod.chapters.map(chap => `
-              <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
+            ${mod.chapters.map(chap => {
+              const isDayHook = chap.title && (chap.title.includes('Desmame Durante o Dia') || (chap.content && chap.content.includes('desmamar na parte do dia')));
+              return `
+              <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''} ${isDayHook ? 'chapter-day-hook' : ''}">
                 ${chap.title ? `<h6 class="chapter-title">${chap.title}</h6>` : ''}
                 <p class="chapter-text">${chap.content}</p>
+                ${isDayHook && !hasBump ? `
+                  <div style="margin-top: 14px;">
+                    <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 10px 18px;" onclick="handleOpenBumpUpgradeModal()">
+                      🔓 Liberar Acesso ao Guia Completo Dia & Noite (R$ 9,90)
+                    </button>
+                  </div>
+                ` : ''}
               </div>
-            `).join('')}
+            `;}).join('')}
           </div>
 
         </div>

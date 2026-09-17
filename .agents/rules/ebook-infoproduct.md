@@ -2,14 +2,13 @@
 
 1. **Identidade do Produto & Metodologia**:
    - O nome oficial do produto é **Desmame Noturno** (não utilizar "Desmame Gentil").
-   - O vídeo principal de desmame noturno é o **"Método Noite de Paz"**, composto estritamente pelos **6 Passos de Ouro (1️⃣ a 6️⃣)**:
+   - O método principal de desmame noturno é composto estritamente pelos **5 Módulos de Ouro (1️⃣ a 5️⃣)**:
      - 1️⃣ Escolha por onde começar
      - 2️⃣ Quando o bebê acordar, tente outras formas de acalmar
-     - 3️⃣ Faça uma rotina antes de dormir
+     - 3️⃣ Crie uma rotina antes de dormir 🛁🌙
      - 4️⃣ Não ofereça o peito automaticamente ao primeiro despertar
-     - 5️⃣ Seja consistente
-     - 6️⃣ Vá no ritmo de vocês
-   - O **Desmame Durante o Dia ☀️👶** é tratado como um módulo/passo complementar independente (**7º Passo Especial** e opção de Order Bump adicional por + R$ 9,90), nunca misturado com as regras noturnas.
+     - 5️⃣ Seja consistente 🤍 (com gancho para o bônus diurno)
+   - O **Desmame Durante o Dia ☀️👶** é tratado como um módulo complementar independente (opção de Order Bump adicional por + R$ 9,90), nunca misturado com as regras noturnas.
    - **Controle de Acesso ao Conteúdo Adicional (Módulo 7)**:
      - O Módulo 7 é estritamente restrito a alunas que adquiriram o adicional (`desmame_has_bump === 'true'`).
      - **Aluna sem adicional**: O módulo é renderizado bloqueado (`module-bump-locked`) com selo "🔒 Adicional Bloqueado", sem expor o texto no DOM. Ao expandir, exibe o card de oferta de upgrade com botão para abrir o modal PIX de R$ 9,90.
@@ -20,8 +19,8 @@
 2. **Estrutura da Área de Membros (Alunas)**:
    - A área da aluna é 100% focada em leitura e texto (sem players ou dependência de vídeos).
    - O método e cada módulo combinam:
-     - (a) O Método Noite de Paz com os 6 Passos de Ouro práticos com ícones e listas;
-     - (b) O 7º Passo Especial para o Desmame Durante o Dia;
+     - (a) O Método Noite de Paz com os 5 Módulos de Ouro práticos com ícones e listas;
+     - (b) O Bônus Especial para o Desmame Durante o Dia (Adicional R$ 9,90);
      - (c) Resumos de objetivos claros por módulo;
      - (d) Texto aprofundado dos capítulos do e-book oficial com navegação por acordeão e estimativas de tempo de leitura.
 

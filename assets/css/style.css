@@ -1497,6 +1497,21 @@ body {
   color: #b45309;
 }
 
+.chapter-day-hook {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1.5px solid #fde68a;
+  border-left: 4px solid #d97706;
+  padding: 16px 18px;
+  border-radius: 8px;
+  margin-top: 14px;
+}
+
+.chapter-day-hook .chapter-title {
+  color: #b45309;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
 /* ==========================================================================
    VÍDEO E DICAS POR MÓDULO (ÁREA DA ALUNA)
    ========================================================================== */
