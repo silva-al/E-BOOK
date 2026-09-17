@@ -15,15 +15,15 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=33.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=34.0">
 </head>
 
 <body>
 
-  <!-- Barra de Aviso e Urgência Superior (Estilo Kiwify) -->
+  <!-- Barra de Aviso e Urgência Superior (Estilo Materno Acolhedor) -->
   <div class="top-notice-bar" id="topNoticeBar">
     <div class="top-notice-content">
-      <span>🔥 OFERTA EXCLUSIVA COM DESCONTO DE LANÇAMENTO</span>
+      <span>🌸 OFERTA EXCLUSIVA COM DESCONTO DE LANÇAMENTO</span>
       <div class="countdown-box">
         <span id="countdownTimer">14:59</span>
       </div>
@@ -31,20 +31,16 @@
     </div>
   </div>
 
-  <!-- Barra de Navegação Superior / Acesso da Aluna -->
+  <!-- Barra de Navegação Superior Oficial -->
   <header class="site-header-nav" id="siteHeaderNav">
     <div class="site-header-container">
       <div class="site-logo">
-        <span class="logo-badge">📖</span>
-        <span class="logo-text">Desmame Noturno</span>
+        <span class="logo-badge">🌸</span>
+        <div class="site-logo-info">
+          <span class="site-logo-kicker">MÉTODO EXCLUSIVO</span>
+          <span class="logo-text">Método Desmame Noturno</span>
+        </div>
       </div>
-      <button type="button" class="btn-student-access" onclick="handleOpenAccessRecoveryModal()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        <span>Já é aluna? Entrar / Login</span>
-      </button>
     </div>
   </header>
 
@@ -53,22 +49,22 @@
        ========================================================================= -->
   <main class="main-checkout-wrapper" id="checkoutSection">
 
-    <!-- Coluna Esquerda: Formulário de Checkout Kiwify -->
+    <!-- Coluna Esquerda: Formulário de Checkout Estilo Materno -->
     <div class="checkout-card">
 
       <!-- Cabeçalho do Produto -->
       <div class="product-compact-header">
         <img src="assets/images/ebook_cover.jpg?v=4.0" alt="Capa Desmame Noturno" class="product-thumbnail-img">
         <div>
-          <h1 class="product-info-title" id="productTitle">DESMAME NOTURNO: Como Desmamar com Amor, Respeito e Sem
-            Traumas</h1>
-          <p class="product-info-subtitle" id="productSubtitle">Guia prático passo a passo + Dicas de ouro + E-book
-            completo oficial</p>
+          <div class="checkout-product-kicker-wrap">
+            <span class="checkout-product-kicker">✨ GUIA COMPLETO OFICIAL</span>
+          </div>
+          <h1 class="product-info-title" id="productTitle">DESMAME NOTURNO: Como Desmamar com Amor, Respeito e Sem Traumas</h1>
+          <p class="product-info-subtitle" id="productSubtitle">Guia prático passo a passo + Dicas de ouro + E-book completo oficial</p>
           <div class="product-price-tag">
             <span class="price-old">R$ 97,00</span>
             <span class="price-current" id="displayPrice">R$ 29,90</span>
-            <span
-              style="font-size: 11px; color: #10b981; font-weight: 700; background: #e6f9f0; padding: 2px 6px; border-radius: 4px;">OFERTA ESPECIAL</span>
+            <span class="product-price-badge">OFERTA ESPECIAL</span>
           </div>
         </div>
       </div>
@@ -111,7 +107,7 @@
         <div class="kiwi-input-group">
           <label for="buyerPassword" style="display: flex; align-items: center; justify-content: space-between;">
             <span>Definir Senha de Acesso (para entrar na Área de Membros)</span>
-            <span style="font-size: 11px; color: #10b981; font-weight: 600;">Opcional (padrão: desmame2026)</span>
+            <span style="font-size: 11px; color: #be185d; font-weight: 600;">Opcional (padrão: desmame2026)</span>
           </label>
           <div class="password-input-wrapper">
             <input type="password" id="buyerPassword" class="kiwi-input-field" placeholder="Crie uma senha ou use a padrão (desmame2026)" autocomplete="new-password">
@@ -134,7 +130,7 @@
         <div class="payment-methods-nav">
           <div class="payment-method-tab active pix-tab" id="tabPayPix" onclick="switchPaymentMethod('pix')">
             <div class="tab-icon-row">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
               <span>PIX</span>
@@ -144,7 +140,7 @@
 
           <div class="payment-method-tab card-tab" id="tabPayCard" onclick="switchPaymentMethod('card')">
             <div class="tab-icon-row">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                 <line x1="1" y1="10" x2="23" y2="10"></line>
               </svg>
@@ -165,31 +161,31 @@
         </label>
 
         <!-- SEÇÃO OBJETIVA: PIX MERCADO PAGO DIRETO NA TELA -->
-        <div class="direct-checkout-box" id="pixCheckoutContainer" style="background: #ffffff; border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin: 18px 0; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15); text-align: center;">
+        <div class="direct-checkout-box" id="pixCheckoutContainer">
           
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 16px;">
-            <div style="font-weight: 800; font-size: 16px; color: #111827; display: flex; align-items: center; gap: 8px;">
+          <div class="direct-checkout-box-header">
+            <div class="direct-box-title">
               <span>⚡ Pagar com PIX</span>
             </div>
-            <span style="background: #ecfdf5; color: #059669; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-size: 16px;" id="directBoxAmountTag">R$ 29,90</span>
+            <span class="direct-box-amount-tag" id="directBoxAmountTag">R$ 29,90</span>
           </div>
 
           <!-- Estado enquanto aguarda o pagamento -->
           <div id="inlinePaymentArea">
-            <div style="margin: 0 auto 14px; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;">
+            <div class="pix-qr-wrapper">
               <img id="mainPixQrImage" src="" style="display: none; width: 190px; height: 190px; margin: 0 auto;" alt="QR Code PIX">
               <canvas id="mainPixQrCanvas" style="display: none; width: 190px; height: 190px; margin: 0 auto;"></canvas>
-              <div id="mainPixLoading" style="font-size: 13px; color: #6b7280; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+              <div id="mainPixLoading" style="font-size: 13px; color: #9d174d; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                 <div class="pulse-spinner" style="width: 24px; height: 24px; border-width: 3px;"></div>
                 <span>Gerando QR Code oficial...</span>
               </div>
             </div>
 
-            <p style="font-size: 13px; color: #4b5563; margin-bottom: 12px;">
+            <p style="font-size: 13px; color: #475569; margin-bottom: 12px; font-weight: 500;">
               Escaneie o QR Code acima ou use o Copia e Cola:
             </p>
 
-            <button type="button" class="btn-copy-main-pix" id="btnCopyMainPix" onclick="handleCopyMainPixCode()" style="width: 100%; padding: 14px; background: #059669; color: #ffffff; border: none; border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);">
+            <button type="button" class="btn-copy-main-pix" id="btnCopyMainPix" onclick="handleCopyMainPixCode()">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -197,18 +193,18 @@
               <span id="labelCopyMainPix">COPIAR CÓDIGO PIX (COPIA E COLA)</span>
             </button>
 
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; font-size: 13px; font-weight: 700; color: #0284c7;" id="mainPaymentStatusText">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; font-size: 13px; font-weight: 700; color: #be185d;" id="mainPaymentStatusText">
               <div class="pulse-spinner"></div>
               <span>Aguardando pagamento no Mercado Pago...</span>
             </div>
 
-            <button type="button" id="btnManualVerify" onclick="handleManualVerifyPayment()" style="width: 100%; margin-top: 14px; padding: 13px; background: #059669; color: #ffffff; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button type="button" class="btn-manual-verify" id="btnManualVerify" onclick="handleManualVerifyPayment()">
               <span>⚡ Já realizei o pagamento (Verificar e Liberar)</span>
             </button>
-            <div id="manualVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 6px; text-align: left; line-height: 1.4;"></div>
-            <div style="margin-top: 12px; font-size: 12.5px; color: #6b7280; text-align: center;">
+            <div id="manualVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 8px; text-align: left; line-height: 1.4;"></div>
+            <div style="margin-top: 12px; font-size: 12.5px; color: #64748b; text-align: center;">
               Já realizou o pagamento pelo app do banco? 
-              <a href="javascript:void(0)" onclick="handleOpenAccessRecoveryModal()" style="color: #059669; font-weight: 700; text-decoration: underline;">
+              <a href="javascript:void(0)" onclick="handleOpenAccessRecoveryModal()" style="color: #be185d; font-weight: 700; text-decoration: underline;">
                 Liberar acesso pelo comprovante
               </a>
             </div>
@@ -216,18 +212,18 @@
 
           <!-- Notificação de Sucesso Imediato PIX -->
           <div id="inlineSuccessArea" style="display: none; padding: 20px 10px;">
-            <div style="width: 70px; height: 70px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <div style="width: 70px; height: 70px; background: #fdf2f8; border: 3px solid #be185d; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </div>
-            <h3 style="color: #065f46; font-size: 22px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO CONFIRMADO!</h3>
-            <p style="color: #047857; font-size: 15px; font-weight: 600; margin-bottom: 12px;">Seu PIX foi aprovado com sucesso!</p>
-            <div style="background: #10b981; color: #ffffff; padding: 8px 18px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block;" id="inlineSuccessTag">
+            <h3 style="color: #4c0519; font-size: 22px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO CONFIRMADO!</h3>
+            <p style="color: #9d174d; font-size: 15px; font-weight: 600; margin-bottom: 12px;">Seu PIX foi aprovado com sucesso!</p>
+            <div style="background: #be185d; color: #ffffff; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block;" id="inlineSuccessTag">
               ✅ STATUS: PAGO (R$ 29,90)
             </div>
-            <p style="color: #4b5563; font-size: 13px; margin-top: 14px;">
-              Liberando o curso completo em <span id="inlineRedirectCountdown" style="font-weight: 800; color: #10b981; font-size: 16px;">3</span> segundos...
+            <p style="color: #475569; font-size: 13px; margin-top: 14px;">
+              Liberando o curso completo em <span id="inlineRedirectCountdown" style="font-weight: 800; color: #be185d; font-size: 16px;">3</span> segundos...
             </p>
           </div>
 
@@ -235,11 +231,11 @@
 
         <!-- SEÇÃO CARTÃO DE CRÉDITO DIRETO NA TELA -->
         <div class="credit-card-checkout-box" id="cardCheckoutContainer" style="display: none;">
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 16px;">
-            <div style="font-weight: 800; font-size: 16px; color: #111827; display: flex; align-items: center; gap: 8px;">
+          <div class="direct-checkout-box-header">
+            <div class="direct-box-title">
               <span>💳 Pagar com Cartão de Crédito</span>
             </div>
-            <span style="background: #eff6ff; color: #1d4ed8; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-size: 16px;" id="cardBoxAmountTag">R$ 29,90</span>
+            <span class="direct-box-amount-tag" id="cardBoxAmountTag">R$ 29,90</span>
           </div>
 
           <!-- Campos do Cartão -->
@@ -301,18 +297,18 @@
 
           <!-- Estado de Sucesso Imediato Cartão -->
           <div id="cardSuccessArea" style="display: none; padding: 20px 10px; text-align: center;">
-            <div style="width: 70px; height: 70px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <div style="width: 70px; height: 70px; background: #fdf2f8; border: 3px solid #be185d; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </div>
-            <h3 style="color: #065f46; font-size: 22px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO APROVADO!</h3>
-            <p style="color: #047857; font-size: 15px; font-weight: 600; margin-bottom: 12px;">Seu cartão foi processado com sucesso!</p>
-            <div style="background: #10b981; color: #ffffff; padding: 8px 18px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block;" id="cardSuccessAmountTag">
+            <h3 style="color: #4c0519; font-size: 22px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO APROVADO!</h3>
+            <p style="color: #9d174d; font-size: 15px; font-weight: 600; margin-bottom: 12px;">Seu cartão foi processado com sucesso!</p>
+            <div style="background: #be185d; color: #ffffff; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block;" id="cardSuccessAmountTag">
               ✅ STATUS: PAGO NO CARTÃO (R$ 29,90)
             </div>
-            <p style="color: #4b5563; font-size: 13px; margin-top: 14px;">
-              Liberando o curso completo em <span id="cardRedirectCountdown" style="font-weight: 800; color: #10b981; font-size: 16px;">3</span> segundos...
+            <p style="color: #475569; font-size: 13px; margin-top: 14px;">
+              Liberando o curso completo em <span id="cardRedirectCountdown" style="font-weight: 800; color: #be185d; font-size: 16px;">3</span> segundos...
             </p>
           </div>
         </div>
@@ -329,7 +325,7 @@
         <!-- Selos de Confiança e Garantia (Abaixo do Pagamento) -->
         <div class="checkout-trust-badges" id="checkoutTrustBadges">
           <div class="trust-badge-card highlight">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#247ef3" stroke-width="2" stroke-linecap="round"
+            <svg viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <path d="M9 12l2 2 4-4" />
@@ -341,14 +337,14 @@
           </div>
 
           <div class="trust-badge-card">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round"
+            <svg viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
               <rect x="2" y="4" width="20" height="16" rx="2" />
               <path d="M7 15h0M2 9.5h20" />
             </svg>
             <div class="trust-badge-texts">
               <div class="badge-text-title">Acesso Imediato no PIX</div>
-              <div class="badge-text-sub" style="color: #10b981;">Liberação automática na hora</div>
+              <div class="badge-text-sub" style="color: #be185d;">Liberação automática na hora</div>
             </div>
           </div>
 
@@ -477,24 +473,24 @@
       <!-- Estado de Pagamento Pendente do Bônus -->
       <div id="bumpPendingArea">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-          <span style="font-size: 13px; font-weight: 700; color: #374151;">Total a pagar:</span>
-          <span style="background: #ecfdf5; color: #059669; font-weight: 800; padding: 4px 10px; border-radius: 6px; font-size: 15px;" id="bumpModalAmountTag">R$ 9,90</span>
+          <span style="font-size: 13px; font-weight: 700; color: #4c0519;">Total a pagar:</span>
+          <span style="background: #fdf2f8; color: #be185d; border: 1.5px solid #fbcfe8; font-weight: 800; padding: 4px 12px; border-radius: 20px; font-size: 15px;" id="bumpModalAmountTag">R$ 9,90</span>
         </div>
 
-        <div style="margin: 0 auto 12px; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;">
+        <div style="margin: 0 auto 12px; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #fff9fa; border: 1.5px solid #fce7f3; border-radius: 14px;">
           <canvas id="bumpUpgradeQrCanvas" width="190" height="190" style="display: none; width: 190px; height: 190px; margin: 0 auto;"></canvas>
           <img id="bumpUpgradeQrImg" src="" style="display: none; width: 190px; height: 190px; margin: 0 auto;" alt="QR Code PIX Bônus">
-          <div id="bumpUpgradeLoading" style="font-size: 13px; color: #6b7280; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div id="bumpUpgradeLoading" style="font-size: 13px; color: #9d174d; display: flex; flex-direction: column; align-items: center; gap: 8px;">
             <div class="pulse-spinner" style="width: 24px; height: 24px; border-width: 3px;"></div>
             <span>Gerando PIX oficial de R$ 9,90...</span>
           </div>
         </div>
 
-        <p style="font-size: 12.5px; color: #4b5563; margin-bottom: 10px;">
+        <p style="font-size: 12.5px; color: #475569; margin-bottom: 10px; font-weight: 500;">
           Escaneie o QR Code ou use o Copia e Cola:
         </p>
 
-        <button type="button" class="btn-copy-main-pix" id="btnCopyBumpPix" onclick="handleCopyBumpUpgradePixCode()" style="width: 100%; padding: 13px; background: #059669; color: #ffffff; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
+        <button type="button" class="btn-copy-main-pix" id="btnCopyBumpPix" onclick="handleCopyBumpUpgradePixCode()" style="width: 100%; padding: 13px; font-size: 13.5px;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -502,31 +498,31 @@
           <span id="copyBumpPixBtnLabel">COPIAR CÓDIGO PIX (COPIA E COLA)</span>
         </button>
 
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 13px; font-weight: 700; color: #0284c7;" id="bumpPaymentStatusText">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 13px; font-weight: 700; color: #be185d;" id="bumpPaymentStatusText">
           <div class="pulse-spinner"></div>
           <span>Aguardando pagamento no Mercado Pago...</span>
         </div>
 
-        <button type="button" id="btnManualVerifyBump" onclick="handleManualVerifyBumpPayment()" style="width: 100%; margin-top: 12px; padding: 12px; background: #10b981; color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 800; cursor: pointer;">
+        <button type="button" class="btn-manual-verify" id="btnManualVerifyBump" onclick="handleManualVerifyBumpPayment()">
           ⚡ Já realizei o pagamento (Verificar e Liberar)
         </button>
-        <div id="bumpVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 6px; text-align: left; line-height: 1.4;"></div>
+        <div id="bumpVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 8px; text-align: left; line-height: 1.4;"></div>
       </div>
 
       <!-- Estado de Sucesso Imediato do Bônus -->
       <div id="bumpSuccessArea" style="display: none; padding: 20px 10px;">
-        <div style="width: 70px; height: 70px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <div style="width: 70px; height: 70px; background: #fdf2f8; border: 3px solid #be185d; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
-        <h3 style="color: #065f46; font-size: 21px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO CONFIRMADO!</h3>
-        <p style="color: #047857; font-size: 14px; font-weight: 600; margin-bottom: 12px;">Seu bônus foi liberado com sucesso!</p>
-        <div style="background: #10b981; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block;">
+        <h3 style="color: #4c0519; font-size: 21px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO CONFIRMADO!</h3>
+        <p style="color: #9d174d; font-size: 14px; font-weight: 600; margin-bottom: 12px;">Seu bônus foi liberado com sucesso!</p>
+        <div style="background: #be185d; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block;">
           ✅ STATUS: PAGO (R$ 9,90)
         </div>
-        <p style="color: #4b5563; font-size: 13px; margin-top: 14px;">
-          Abrindo o conteúdo exclusivo em <span id="bumpRedirectCountdown" style="font-weight: 800; color: #10b981; font-size: 16px;">3</span> segundos...
+        <p style="color: #475569; font-size: 13px; margin-top: 14px;">
+          Abrindo o conteúdo exclusivo em <span id="bumpRedirectCountdown" style="font-weight: 800; color: #be185d; font-size: 16px;">3</span> segundos...
         </p>
       </div>
 
@@ -688,7 +684,7 @@
 
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; font-size: 12.5px; color: #64748b;">
             <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
-              <input type="checkbox" id="rememberLoginCheck" checked style="accent-color: #10b981; width: 15px; height: 15px;">
+              <input type="checkbox" id="rememberLoginCheck" checked style="accent-color: #be185d; width: 15px; height: 15px;">
               <span>Lembrar meu acesso</span>
             </label>
           </div>
@@ -712,27 +708,27 @@
       <!-- PAINEL 2: RECUPERAÇÃO POR COMPROVANTE OU PIX -->
       <div id="loginRecoveryPanel" style="display: none;">
         <!-- Opção 1: Reconhecer último Pix deste celular -->
-        <div style="background: #f0fdf4; border: 1.5px solid #10b981; border-radius: 10px; padding: 14px; margin-bottom: 16px; text-align: center;">
-          <p style="font-size: 13px; font-weight: 700; color: #166534; margin-bottom: 8px;">
+        <div style="background: #fff5f7; border: 1.5px solid #fbcfe8; border-radius: 10px; padding: 14px; margin-bottom: 16px; text-align: center;">
+          <p style="font-size: 13px; font-weight: 700; color: #9d174d; margin-bottom: 8px;">
             ⚡ Já pagou o Pix neste celular ou computador?
           </p>
-          <button type="button" id="btnAutoRecover" onclick="handleAutoRecoverRecentPayment()" style="width: 100%; padding: 11px; background: #059669; color: #ffffff; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);">
+          <button type="button" id="btnAutoRecover" onclick="handleAutoRecoverRecentPayment()" style="width: 100%; padding: 11px; background: linear-gradient(135deg, #e11d48 0%, #be185d 100%); color: #ffffff; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);">
             Liberar Meu Curso Agora
           </button>
         </div>
 
         <div style="text-align: center; margin-bottom: 14px; position: relative;">
-          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 0;">
+          <hr style="border: none; border-top: 1px solid #fce7f3; margin: 0;">
           <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ffffff; padding: 0 10px; font-size: 11.5px; color: #94a3b8; font-weight: 600;">OU BUSCAR COMPROVANTE</span>
         </div>
 
         <!-- Opção 2: Informar comprovante ou e-mail -->
         <div style="margin-bottom: 14px;">
-          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px;">
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #4c0519; margin-bottom: 5px;">
             ID do comprovante (ex: 178505683281) ou seu e-mail:
           </label>
-          <input type="text" id="recoveryQueryInput" class="kiwi-input-field" placeholder="Ex: 178505683281 ou seu@email.com" style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 13.5px;">
-          <button type="button" id="btnSubmitRecovery" onclick="handleManualSearchAccess()" style="width: 100%; margin-top: 9px; padding: 11px; background: #0f172a; color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
+          <input type="text" id="recoveryQueryInput" class="kiwi-input-field" placeholder="Ex: 178505683281 ou seu@email.com" style="width: 100%; padding: 10px 12px; border: 1.5px solid #fce7f3; border-radius: 8px; font-size: 13.5px;">
+          <button type="button" id="btnSubmitRecovery" onclick="handleManualSearchAccess()" style="width: 100%; margin-top: 9px; padding: 11px; background: #4c0519; color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
             Localizar e Liberar Acesso
           </button>
         </div>
@@ -741,8 +737,8 @@
       </div>
 
       <!-- Suporte WhatsApp -->
-      <div style="text-align: center; border-top: 1px solid #f1f5f9; padding-top: 14px; margin-top: 16px;">
-        <a href="https://wa.me/5519994744297?text=Olá!%20Preciso%20de%20ajuda%20com%20meu%20login%20e%20senha%20do%20Desmame%20Noturno" target="_blank" style="color: #10b981; font-weight: 700; font-size: 12.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+      <div style="text-align: center; border-top: 1px solid #fce7f3; padding-top: 14px; margin-top: 16px;">
+        <a href="https://wa.me/5519994744297?text=Olá!%20Preciso%20de%20ajuda%20com%20meu%20login%20e%20senha%20do%20Desmame%20Noturno" target="_blank" style="color: #be185d; font-weight: 700; font-size: 12.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
           💬 Dúvida com seu login? Fale no WhatsApp Oficial
         </a>
       </div>
@@ -775,8 +771,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=33.0"></script>
-  <script src="assets/js/app.js?v=33.0"></script>
+  <script src="assets/js/pix-engine.js?v=34.0"></script>
+  <script src="assets/js/app.js?v=34.0"></script>
 </body>
 
 </html>
