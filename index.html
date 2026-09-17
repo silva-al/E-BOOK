@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=7.3">
+  <link rel="stylesheet" href="assets/css/style.css?v=7.4">
 </head>
 
 <body>
@@ -477,6 +477,80 @@
   </div>
 
   <!-- =========================================================================
+       MODAL DE UPGRADE / LIBERAÇÃO DO ADICIONAL DIURNO (R$ 9,90)
+       ========================================================================= -->
+  <div class="pix-modal-overlay" id="bumpUpgradeModal">
+    <div class="pix-modal-box">
+
+      <div class="pix-modal-header">
+        <button class="pix-modal-close" onclick="handleCloseBumpUpgradeModal()">&times;</button>
+        <h3>Desbloquear Bônus Especial</h3>
+        <p>Como fiz o desmame durante o dia! (Passo a Passo Prático)</p>
+      </div>
+
+      <div class="pix-modal-body">
+
+        <div class="pix-amount-badge">
+          Valor do Adicional: <strong style="color: #047857; font-size: 16px;">R$ 9,90 no PIX</strong>
+        </div>
+
+        <!-- Chave PIX Direta no Modal -->
+        <div class="direct-pix-box" style="margin: 10px 0 16px 0; background: #f0fdfa;"
+          onclick="handleCopyDirectPixKey()" title="Clique para copiar a chave direta">
+          <div class="direct-pix-info">
+            <div class="direct-pix-icon">
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z"
+                  fill="#ffffff" />
+              </svg>
+            </div>
+            <div style="text-align: left;">
+              <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
+                <span>Chave PIX (Telefone)</span>
+                <span class="whatsapp-inline-badge">WhatsApp</span>
+              </div>
+              <div class="direct-pix-number" style="font-size: 16px;">5519994744297</div>
+            </div>
+          </div>
+          <button type="button" class="btn-copy-direct-pix">
+            <span>Copiar Chave</span>
+          </button>
+        </div>
+
+        <div class="pix-qrcode-container">
+          <canvas id="bumpUpgradeQrCanvas" width="200" height="200"></canvas>
+        </div>
+
+        <div class="pix-copy-box">
+          <div class="pix-copy-code" id="bumpUpgradeCopyCodeText">Carregando código PIX...</div>
+          <button type="button" class="btn-pix-copy" onclick="handleCopyBumpUpgradePixCode()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copyBumpPixBtnLabel">Copiar Código PIX (R$ 9,90)</span>
+          </button>
+        </div>
+
+        <div class="pix-instructions">
+          <strong>Como pagar o adicional:</strong>
+          <ol>
+            <li>Abra o app do seu banco e escaneie o QR Code ou use o Copia e Cola acima;</li>
+            <li>Confirme o valor de <strong>R$ 9,90</strong>;</li>
+            <li>Clique no botão abaixo para desbloquear o bônus imediatamente.</li>
+          </ol>
+        </div>
+
+        <button type="button" class="btn-simulate-pix" onclick="handleConfirmBumpUpgrade()">
+          ⚡ Já realizei o pagamento de R$ 9,90 (Liberar Bônus Agora)
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
        ÁREA LIBERADA DO CURSO / E-BOOK (EXIBIDA APÓS O PAGAMENTO)
        ========================================================================= -->
   <section class="unlocked-portal-wrapper" id="unlockedPortal">
@@ -522,8 +596,8 @@
     </p>
     <p style="margin-top: 6px;">&copy; 2026 Desmame Noturno. Todos os direitos reservados.</p>
     <div class="footer-admin-tools">
-      <button type="button" class="alan-admin-btn" onclick="toggleViewMode()">⚙️ Painel: Alternar (Visitante /
-        Aluna)</button>
+      <button type="button" class="alan-admin-btn" onclick="toggleViewMode()">⚙️ Painel: Alternar (Visitante / Aluna)</button>
+      <button type="button" class="alan-admin-btn" onclick="toggleBumpMode()">🎁 Alternar Adicional (Pago / Bloqueado)</button>
       <button type="button" class="alan-admin-btn" onclick="editPixKeyPrompt()">Chave PIX</button>
     </div>
   </footer>
@@ -538,8 +612,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=7.3"></script>
-  <script src="assets/js/app.js?v=7.3"></script>
+  <script src="assets/js/pix-engine.js?v=7.4"></script>
+  <script src="assets/js/app.js?v=7.4"></script>
 </body>
 
 </html>

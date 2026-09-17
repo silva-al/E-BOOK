@@ -10,7 +10,7 @@ const appState = {
   pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
   basePrice: 30.00,
   bumpPrice: 9.90,
-  hasBump: false,
+  hasBump: localStorage.getItem('desmame_has_bump') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
   ebookData: null
 };
@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   initInputHandlers();
   await loadEbookContent();
   checkUnlockStatus();
+
+  const bumpCheck = document.getElementById('orderBumpCheck');
+  if (bumpCheck) {
+    bumpCheck.checked = appState.hasBump;
+  }
 });
 
 function clearFormFields() {
@@ -59,6 +64,12 @@ function initInputHandlers() {
         e.target.value = '';
       }
     });
+  }
+}
+
+function renderCurrentModules() {
+  if (appState.ebookData && appState.ebookData.modules) {
+    renderEbookModules(appState.ebookData.modules);
   }
 }
 
@@ -127,75 +138,141 @@ async function loadEbookContent() {
         chapters: [
           { content: "Se estiver muito difícil, dê mais tempo antes de retirar outra mamada. Desmame não precisa acontecer de um dia para o outro. 🤍" }
         ]
+      },
+      {
+        id: 7,
+        title: "☀️ Bônus Especial: Como fiz o desmame durante o dia!",
+        duration: "7 min de leitura",
+        isBumpBonus: true,
+        chapters: [
+          {
+            title: "Observação e Desvio de Atenção",
+            content: "O primeiro passo foi observar os momentos em que meu filho procurava o peito e tentar entender se era fome ou apenas costume.\n\nQuando ele lembrava do peito, eu desviava a atenção com brincadeiras, colo e carinho."
+          },
+          {
+            title: "⚠️ Alerta Importante",
+            content: "Lembrando: é muito importante que o bebê esteja se alimentando bem! 🤍"
+          },
+          {
+            title: "1️⃣ No meu caso vs No seu caso",
+            content: "No meu caso:\nQuando ele lembrava do peito, eu usava o sulfato ferroso, que ele não gostava do sabor. Ele sentia o gosto e acabava não querendo mais o peito.\n\nNo seu caso:\nUse algo que seu bebê não goste! ✅"
+          },
+          {
+            title: "2️⃣ Mantenha o bebê sempre alimentado 🍎💧",
+            content: "Ofereça comidinhas, frutas e água ao longo do dia, de acordo com a rotina e idade do bebê. Assim, ele passa a ter outras opções além do peito."
+          },
+          {
+            title: "3️⃣ Vá diminuindo as mamadas aos poucos",
+            content: "Comece retirando as mamadas diurnas que forem mais fáceis de substituir. Com o tempo, ele vai se acostumando com a nova rotina."
+          },
+          {
+            title: "4️⃣ Ofereça carinho e acolhimento 🤍",
+            content: "Quando ele procurar o peito, ofereça colo, carinho e atenção. O objetivo é mostrar que ele continua recebendo conforto e segurança mesmo sem mamar."
+          },
+          {
+            title: "✨ Mensagem Final",
+            content: "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
+          }
+        ]
       }
     ];
+    appState.ebookData = { modules: fallbackModules };
     renderEbookModules(fallbackModules);
   }
-}
-
-function getModuleVideoUrl(moduleId, defaultUrl) {
-  const custom = localStorage.getItem(`alan_video_mod_${moduleId}`);
-  return custom ? custom : defaultUrl;
-}
-
-function parseVideoEmbedUrl(url) {
-  if (!url) return '';
-  const trimmed = url.trim();
-
-  // YouTube watch ou short link
-  // Ex: https://www.youtube.com/watch?v=xyz ou https://youtu.be/xyz
-  const ytMatch = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-  if (ytMatch && ytMatch[1]) {
-    return { type: 'iframe', src: `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1` };
-  }
-
-  // Vimeo
-  // Ex: https://vimeo.com/123456789
-  const vimeoMatch = trimmed.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/);
-  if (vimeoMatch && vimeoMatch[3]) {
-    return { type: 'iframe', src: `https://player.vimeo.com/video/${vimeoMatch[3]}` };
-  }
-
-  // Google Drive
-  // Ex: https://drive.google.com/file/d/XXXX/view
-  const driveMatch = trimmed.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveMatch && driveMatch[1]) {
-    return { type: 'iframe', src: `https://drive.google.com/file/d/${driveMatch[1]}/preview` };
-  }
-
-  // Se já for um iframe embed ou se terminar em mp4
-  if (trimmed.endsWith('.mp4') || trimmed.includes('.mp4?')) {
-    return { type: 'video', src: trimmed };
-  }
-
-  // Default se for URL genérica
-  return { type: 'iframe', src: trimmed };
 }
 
 function renderEbookModules(modules) {
   const container = document.getElementById('modulesContainer');
   if (!container) return;
 
+  const hasBump = appState.hasBump;
+
   container.innerHTML = modules.map((mod, index) => {
+    // Caso 1: É o módulo adicional/order bump e a aluna NÃO comprou o adicional
+    if (mod.isBumpBonus && !hasBump) {
+      return `
+        <div class="module-accordion-item module-bump-locked" id="moduleItem${mod.id}">
+          <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
+            <div class="module-trigger-info">
+              <div class="module-title-row">
+                <span class="module-title-text">${mod.title}</span>
+                <span class="locked-badge-pill">🔒 Adicional Bloqueado</span>
+              </div>
+              <div class="module-badges-row">
+                <span class="module-time-badge">⏱️ ${mod.duration || '7 min de leitura'}</span>
+                <span class="module-locked-tag">Disponível por R$ 9,90</span>
+              </div>
+            </div>
+            <span class="module-arrow-icon" id="moduleArrow${mod.id}">▼</span>
+          </button>
+
+          <div class="module-accordion-content" id="moduleContent${mod.id}">
+            <div class="bump-locked-box">
+              <div class="bump-locked-icon-wrap">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <h5 class="bump-locked-heading">Conteúdo Exclusivo do Pacote Adicional</h5>
+              <p class="bump-locked-text">
+                Você adquiriu o e-book principal de <strong>Desmame Noturno</strong>. Este módulo especial contém o passo a passo prático com todas as <strong>Dicas Especiais para o Desmame Durante o Dia</strong>.
+              </p>
+              <div class="bump-locked-perks">
+                <div class="bump-perk-item">✓ O que fazer quando ele lembrar do peito de dia (desvio de atenção)</div>
+                <div class="bump-perk-item">✓ A estratégia prática do sabor seguro e eficaz</div>
+                <div class="bump-perk-item">✓ Rotina de alimentação alternativa 🍎💧 e redução gradual</div>
+                <div class="bump-perk-item">✓ Acolhimento e carinho para manter a segurança emocional</div>
+              </div>
+              <div class="bump-locked-cta-box">
+                <div class="bump-cta-price-info">
+                  <span class="bump-cta-sub">Acesso vitalício imediato:</span>
+                  <span class="bump-cta-val">Apenas R$ 9,90 no PIX</span>
+                </div>
+                <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
+                  🔓 Liberar Este Bônus Agora por R$ 9,90
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Caso 2: Módulo normal ou módulo bônus com adicional PAGO
+    const isBumpUnlocked = mod.isBumpBonus && hasBump;
+
     return `
-      <div class="module-accordion-item ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+      <div class="module-accordion-item ${isBumpUnlocked ? 'module-bump-unlocked' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
         <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
           <div class="module-trigger-info">
-            <span class="module-title-text">${mod.title}</span>
+            <div class="module-title-row">
+              <span class="module-title-text">${mod.title}</span>
+              ${isBumpUnlocked ? `<span class="unlocked-badge-pill">✨ Bônus VIP Liberado</span>` : ''}
+            </div>
             <div class="module-badges-row">
               ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration.replace('de aula', 'de leitura')}</span>` : ''}
-              <span class="module-text-badge">📝 Conteúdo Completo</span>
+              <span class="module-text-badge">${isBumpUnlocked ? '⭐ Conteúdo Adicional Incluso' : '📝 Conteúdo Completo'}</span>
             </div>
           </div>
           <span class="module-arrow-icon" id="moduleArrow${mod.id}">${index === 0 ? '▲' : '▼'}</span>
         </button>
 
         <div class="module-accordion-content" id="moduleContent${mod.id}">
+          ${isBumpUnlocked ? `
+            <div class="bump-unlocked-banner">
+              <div class="bump-banner-icon">☀️</div>
+              <div>
+                <strong>Bônus Especial Adicional Desbloqueado!</strong>
+                <p>Aqui está o seu método prático com todas as dicas especiais para o desmame com carinho durante o dia.</p>
+              </div>
+            </div>
+          ` : ''}
           
           <!-- Capítulos Escritos do E-book -->
           <div class="module-chapters-area">
             ${mod.chapters.map(chap => `
-              <div class="chapter-block">
+              <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
                 ${chap.title ? `<h6 class="chapter-title">${chap.title}</h6>` : ''}
                 <p class="chapter-text">${chap.content}</p>
               </div>
@@ -271,6 +348,7 @@ function initCountdownTimer() {
    ========================================================================== */
 function handleToggleBump(checkbox) {
   appState.hasBump = checkbox.checked;
+  localStorage.setItem('desmame_has_bump', String(checkbox.checked));
   updatePriceDisplay();
 }
 
@@ -447,6 +525,7 @@ function handleClosePixModal() {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
     handleClosePixModal();
+    handleCloseBumpUpgradeModal();
   }
 });
 
@@ -455,6 +534,10 @@ window.addEventListener('click', (e) => {
   const modal = document.getElementById('pixModal');
   if (modal && e.target === modal) {
     handleClosePixModal();
+  }
+  const bumpModal = document.getElementById('bumpUpgradeModal');
+  if (bumpModal && e.target === bumpModal) {
+    handleCloseBumpUpgradeModal();
   }
 });
 
@@ -510,18 +593,20 @@ function handleConfirmPixPayment() {
   // Salva no estado
   appState.isPaid = true;
   localStorage.setItem('desmame_is_paid', 'true');
+  localStorage.setItem('desmame_has_bump', String(appState.hasBump));
 
   // Fecha o modal PIX
   handleClosePixModal();
 
   // Esconde a área de compra e exibe o curso desbloqueado
   checkUnlockStatus();
+  renderCurrentModules();
 
-  // Rola a tela com suavidade até o vídeo do curso
+  // Rola a tela com suavidade até o portal desbloqueado
   setTimeout(() => {
-    const videoSection = document.getElementById('unlockedPortal');
-    if (videoSection) {
-      videoSection.scrollIntoView({ behavior: 'smooth' });
+    const portal = document.getElementById('unlockedPortal');
+    if (portal) {
+      portal.scrollIntoView({ behavior: 'smooth' });
     }
   }, 300);
 }
@@ -553,18 +638,79 @@ function checkUnlockStatus() {
 }
 
 /* ==========================================================================
-   PLAYER DE VÍDEO INTERATIVO
+   UPGRADE DO ADICIONAL / ORDER BUMP (DESMAME DIURNO)
    ========================================================================== */
-function handlePlayVideo() {
-  const overlay = document.getElementById('videoOverlay');
-  const video = document.getElementById('courseMainVideo');
-  if (overlay) overlay.style.display = 'none';
-  if (video) {
-    video.play().catch(() => {
-      // Caso não haja um source de mp4 local atribuído ainda, dá feedback claro
-      console.log('Vídeo pronto para receber o arquivo do Alan.');
+let currentBumpUpgradePixPayload = '';
+
+function handleOpenBumpUpgradeModal() {
+  const amount = appState.bumpPrice; // R$ 9,90
+  try {
+    currentBumpUpgradePixPayload = window.PixEngine.generatePayload({
+      key: appState.pixKey,
+      name: appState.pixRecipient,
+      city: appState.pixCity,
+      amount: amount,
+      txId: '***'
     });
+  } catch (e) {
+    console.error('Erro gerando payload para upgrade:', e);
   }
+
+  const canvas = document.getElementById('bumpUpgradeQrCanvas');
+  if (canvas && typeof window.generateQRCodeCanvas === 'function') {
+    window.generateQRCodeCanvas(currentBumpUpgradePixPayload, canvas, 200);
+  }
+
+  const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
+  if (codeBox) {
+    codeBox.textContent = currentBumpUpgradePixPayload;
+    codeBox.setAttribute('data-full-code', currentBumpUpgradePixPayload);
+  }
+
+  const modal = document.getElementById('bumpUpgradeModal');
+  if (modal) modal.classList.add('active');
+}
+
+function handleCloseBumpUpgradeModal() {
+  const modal = document.getElementById('bumpUpgradeModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function handleCopyBumpUpgradePixCode() {
+  const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
+  const btnLabel = document.getElementById('copyBumpPixBtnLabel');
+  const code = codeBox ? (codeBox.getAttribute('data-full-code') || codeBox.textContent) : '';
+
+  if (navigator.clipboard && code) {
+    navigator.clipboard.writeText(code).then(() => {
+      if (btnLabel) {
+        const orig = btnLabel.textContent;
+        btnLabel.textContent = "✅ Código PIX Copiado!";
+        setTimeout(() => { btnLabel.textContent = orig; }, 3000);
+      }
+    });
+  } else {
+    prompt("Copie o código PIX abaixo:", code);
+  }
+}
+
+function handleConfirmBumpUpgrade() {
+  appState.hasBump = true;
+  localStorage.setItem('desmame_has_bump', 'true');
+  handleCloseBumpUpgradeModal();
+  renderCurrentModules();
+
+  setTimeout(() => {
+    const item7 = document.getElementById('moduleItem7');
+    if (item7) {
+      item7.classList.add('active');
+      const arrow = document.getElementById('moduleArrow7');
+      if (arrow) arrow.textContent = '▲';
+      item7.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 250);
+
+  alert("🎉 Parabéns! O bônus especial 'Como fiz o desmame durante o dia!' foi liberado com sucesso!");
 }
 
 /* ==========================================================================
@@ -574,7 +720,15 @@ function toggleViewMode() {
   appState.isPaid = !appState.isPaid;
   localStorage.setItem('desmame_is_paid', String(appState.isPaid));
   checkUnlockStatus();
+  renderCurrentModules();
   alert(`Modo alterado para: ${appState.isPaid ? 'Área da Aluna (Curso Liberado)' : 'Página de Checkout Kiwify'}`);
+}
+
+function toggleBumpMode() {
+  appState.hasBump = !appState.hasBump;
+  localStorage.setItem('desmame_has_bump', String(appState.hasBump));
+  renderCurrentModules();
+  alert(`Status do Adicional Diurno alterado para:\n${appState.hasBump ? 'PAGO / LIBERADO ✅' : 'NÃO PAGO / BLOQUEADO 🔒'}`);
 }
 
 function editPixKeyPrompt() {
