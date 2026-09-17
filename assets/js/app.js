@@ -9,7 +9,7 @@ const appState = {
   pixRecipient: localStorage.getItem('alan_pix_name') || 'ALAN RONALDO',
   pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
   basePrice: 1.00,
-  bumpPrice: 9.90,
+  bumpPrice: 0.50,
   hasBump: localStorage.getItem('desmame_has_bump') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
   ebookData: null
@@ -288,7 +288,7 @@ function renderEbookModules(modules) {
                 ${isDayHook && !hasBump ? `
                   <div style="margin-top: 14px;">
                     <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 10px 18px;" onclick="handleOpenBumpUpgradeModal()">
-                      🔓 Liberar Acesso ao Guia Completo Dia & Noite (R$ 9,90)
+                      🔓 Liberar Acesso ao Guia Completo Dia & Noite (R$ 0,50)
                     </button>
                   </div>
                 ` : ''}
@@ -339,10 +339,10 @@ function renderBonusSection(dayModules, hasBump) {
         <div class="bump-locked-cta-box">
           <div class="bump-cta-price-info">
             <span class="bump-cta-sub">Acesso vitalício imediato:</span>
-            <span class="bump-cta-val">Apenas R$ 9,90 no PIX</span>
+            <span class="bump-cta-val">Apenas R$ 0,50 no PIX</span>
           </div>
           <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
-            🔓 Liberar Este Bônus Agora por R$ 9,90
+            🔓 Liberar Este Bônus Agora por R$ 0,50
           </button>
         </div>
       </div>
@@ -1000,13 +1000,13 @@ let currentBumpOrderId = null;
 let bumpPollingInterval = null;
 
 async function handleOpenBumpUpgradeModal() {
-  const amount = appState.bumpPrice; // R$ 9,90
+  const amount = appState.bumpPrice; // R$ 0,50
   const canvas = document.getElementById('bumpUpgradeQrCanvas');
   const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
   const modal = document.getElementById('bumpUpgradeModal');
   if (modal) modal.classList.add('active');
 
-  if (codeBox) codeBox.textContent = 'Gerando PIX oficial de R$ 9,90 via Mercado Pago...';
+  if (codeBox) codeBox.textContent = 'Gerando PIX oficial de R$ 0,50 via Mercado Pago...';
 
   try {
     const res = await fetch('/api/create-pix', {
@@ -1102,7 +1102,7 @@ async function handleConfirmBumpUpgrade(bypassCheck = false) {
       const res = await fetch(`/api/check-payment?id=${currentBumpOrderId}`);
       const data = await res.json();
       if (data.status !== 'approved' && !data.is_approved) {
-        alert("⚠️ Pagamento de R$ 9,90 ainda não identificado no Mercado Pago.\nSe você acabou de pagar no seu banco, aguarde alguns instantes pela compensação e tente novamente.");
+        alert("⚠️ Pagamento de R$ 0,50 ainda não identificado no Mercado Pago.\nSe você acabou de pagar no seu banco, aguarde alguns instantes pela compensação e tente novamente.");
         return;
       }
     } catch (err) {
