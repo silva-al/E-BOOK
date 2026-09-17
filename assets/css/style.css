@@ -1479,9 +1479,10 @@ body {
 }
 
 .chapter-text {
-  font-size: 13px;
-  color: #475569;
-  line-height: 1.6;
+  font-size: 14.5px;
+  color: #334155;
+  line-height: 1.65;
+  font-weight: 500;
 }
 
 /* ==========================================================================

@@ -82,77 +82,50 @@ async function loadEbookContent() {
     const fallbackModules = [
       {
         id: 1,
-        title: "Módulo 1: O Momento Certo e os Sinais de Prontidão",
-        summary: "Como saber se você e seu bebê estão realmente prontos para iniciar o processo, sem culpa e sem pressões externas.",
-        duration: "14 min de leitura",
+        title: "1️⃣ Módulo 01: Escolha por onde começar",
+        duration: "5 min de leitura",
         chapters: [
-          { title: "1.1 A decisão é sua: Libertando-se da culpa e de palpites", content: "A amamentação é uma dança a dois: mãe e bebê. Para que ela continue sendo saudável, precisa ser boa para os dois. Quando a mãe se sente esgotada, sobrecarregada ou simplesmente sente que é a hora de fechar esse ciclo, essa decisão é legítima e merece ser respeitada." },
-          { title: "1.2 Sinais de prontidão da mãe e do bebê", content: "Observe se o bebê já come alimentos sólidos com consistência, se já aceita água em copinho e se demonstra curiosidade pelo mundo ao redor. Para a mãe, o sinal principal é a exaustão física e emocional ou o desejo sincero de recuperar a autonomia do próprio corpo." },
-          { title: "1.3 Os três tipos de desmame: Total, Noturno ou Diurno", content: "Você não precisa fazer tudo de uma vez. Muitas mães optam pelo desmame noturno primeiro (para voltar a dormir) mantendo o peito de dia. Outras preferem retirar o peito do dia a dia e manter a mamada antes de dormir." }
+          { content: "Você pode começar retirando uma mamada de dia ou noturna por vez, em vez de tentar mudar toda a rotina de uma vez." }
         ]
       },
       {
         id: 2,
-        title: "Módulo 2: O Método dos 4 Pilares do Desmame Noturno e Respeitoso",
-        summary: "O passo a passo com base na psicologia do apego seguro para retirar as mamadas sem traumas e sem lágrimas de abandono.",
-        duration: "18 min de leitura",
+        title: "2️⃣ Módulo 02: Quando o bebê acordar, tente outras formas de acalmar",
+        duration: "5 min de leitura",
         chapters: [
-          { title: "2.1 Pilar 1: Não Oferecer, Não Recusar", content: "A regra de ouro do pediatra e dos especialistas: nunca ofereça o peito por iniciativa própria ou para acalmar um tédio passageiro. Se o bebê pedir com insistência, acolha, mas comece a adiar sutilmente." },
-          { title: "2.2 Pilar 2: Substituição de Afeto e Contato Físico", content: "O peito nunca é apenas leite: é colo, cheiro, aconchego e segurança. Ao retirar o peito, dobre a dose de carinho, massagens, beijos e olhares olho no olho." },
-          { title: "2.3 Pilar 3: Diálogo Claro e Previsibilidade", content: "Mesmo bebês menores de 2 anos entendem a entonação e a intenção. Conte historinhas sobre o peito que vai descansar. Crie um ritual de despedida alegre." },
-          { title: "2.4 Pilar 4: Envolvimento da Rede de Apoio", content: "Se houver parceiro(a) ou outra pessoa de confiança na casa, ela deve assumir o momento de acalmar e colocar para dormir nas primeiras noites." }
+          { content: "Colo, carinho, embalo, cafuné, água ou simplesmente ficar pertinho. 🥹🤍" }
         ]
       },
       {
         id: 3,
-        title: "Módulo 3: Método Noite de Paz - Os 6 Passos de Ouro do Desmame Noturno 🌙🤱🏻",
-        summary: "O protocolo definitivo e acolhedor para a noite inteira de sono, retirando as mamadas noturnas sem choro de desespero.",
-        duration: "20 min de leitura",
-        goldenTips: [
-          { step: "1️⃣", title: "Escolha por onde começar", desc: "Você pode começar retirando uma mamada de dia ou noturna por vez, em vez de tentar mudar toda a rotina de uma vez." },
-          { step: "2️⃣", title: "Quando o bebê acordar, tente outras formas de acalmar", desc: "Colo, carinho, embalo, cafuné, água ou simplesmente ficar pertinho. 🥹🤍" },
-          { step: "3️⃣", title: "Faça uma rotina antes de dormir", desc: "Banho + pijama + ambiente mais tranquilo + carinho. Repetir a rotina ajuda o bebê a entender que chegou a hora de dormir." },
-          { step: "4️⃣", title: "Não ofereça o peito automaticamente ao primeiro despertar", desc: "Se ele acordar, espere um pouquinho e tente acalmar de outra forma primeiro." },
-          { step: "5️⃣", title: "Seja consistente", desc: "Se decidiu retirar aquela mamada, tente manter a mudança. O bebê pode reclamar nos primeiros dias enquanto se adapta." },
-          { step: "6️⃣", title: "Vá no ritmo de vocês", desc: "Se estiver muito difícil, dê mais tempo antes de retirar outra mamada. Desmame não precisa acontecer de um dia para o outro. 🤍" }
-        ],
+        title: "3️⃣ Módulo 03: Faça uma rotina antes de dormir",
+        duration: "5 min de leitura",
         chapters: [
-          { title: "3.1 Desassociar o mamar do adormecer", content: "O maior desafio da noite é que a criança só sabe pegar no sono sugando. O segredo é mamar 20 minutos antes de dormir, com luz suave e ainda acordada. Coloque na cama/berço sonolento, com canções de ninar e cafuné." },
-          { title: "3.2 Os despertares da madrugada: O que fazer no pico do choro", content: "Quando a criança acordar de madrugada procurando o peito, não acenda luzes nem converse alto. Mantenha o ambiente no escuro, pegue no colo, ofereça um gole de água num copinho e faça o shhh-shhh rítmico." },
-          { title: "3.3 A técnica dos 7 dias para a noite inteira", content: "Em média, são necessárias de 5 a 7 noites consistentes para o cérebro da criança entender o novo padrão. A consistência é fundamental." }
+          { content: "Banho + pijama + ambiente mais tranquilo + carinho. Repetir a rotina ajuda o bebê a entender que chegou a hora de dormir." }
         ]
       },
       {
         id: 4,
-        title: "Módulo 4: O 7º Passo Especial - DESMAME DURANTE O DIA ☀️👶",
-        summary: "O sétimo pilar independente: estratégias exclusivas para a rotina diurna, sem misturar com as orientações da noite.",
-        duration: "15 min de leitura",
-        goldenTips: [
-          { step: "7️⃣", title: "Desmame Durante o Dia (Passo 7 Exclusivo)", desc: "Retire uma mamada diurna por vez a cada 3 a 5 dias. Mantenha garrafinha com água e lanchinhos visíveis, mude o sofá ou ambiente de costume e faça combinados claros e cheios de carinho." }
-        ],
+        title: "4️⃣ Módulo 04: Não ofereça o peito automaticamente ao primeiro despertar",
+        duration: "5 min de leitura",
         chapters: [
-          { title: "4.1 Passo a passo do desmame diurno gradual", content: "Comece retirando uma mamada do dia a cada 3 a 5 dias. Inicie pelas mamadas intermediárias e deixe a mamada antes da soneca diurna por último." },
-          { title: "4.2 Lidando com a frustração e o apego durante o dia", content: "Substitua o seio por contato olho no olho, abraços apertados, cócegas e massagens. A criança aprende que o colo da mãe continua sendo o lugar mais seguro do mundo." }
+          { content: "Se ele acordar, espere um pouquinho e tente acalmar de outra forma primeiro." }
         ]
       },
       {
         id: 5,
-        title: "Módulo 5: Cuidados Físicos com o Corpo da Mãe 🤱",
-        summary: "Como evitar o empedramento, mastite e lidar com a queda hormonal pós-desmame com tranquilidade.",
-        duration: "12 min de leitura",
+        title: "5️⃣ Módulo 05: Seja consistente",
+        duration: "5 min de leitura",
         chapters: [
-          { title: "5.1 Alívio do empedramento e prevenção de mastite", content: "Ao diminuir as mamadas, a mama continuará produzindo leite por alguns dias. Nunca esvazie a mama completamente com bomba. Faça apenas 'ordenha de alívio' manual no chuveiro morno para tirar a pressão." },
-          { title: "5.2 O luto da amamentação e o choque hormonal", content: "Com a redução da prolactina e oxitocina, é comum a mulher sentir melancolia e sensação de perda. Dê espaço para os seus sentimentos e celebre a linda jornada que você concluiu." }
+          { content: "Se decidiu retirar aquela mamada, tente manter a mudança. O bebê pode reclamar nos primeiros dias enquanto se adapta." }
         ]
       },
       {
         id: 6,
-        title: "Módulo 6: Materiais Práticos, Tabela de 21 Dias e Bônus 🎁",
-        summary: "Seus instrumentos diários para imprimir e acompanhar o progresso em família.",
-        duration: "10 min de leitura",
+        title: "6️⃣ Módulo 06: Vá no ritmo de vocês",
+        duration: "5 min de leitura",
         chapters: [
-          { title: "6.1 O Calendário dos 21 Dias do Desmame Suave", content: "Semana 1: Eliminação das mamadas de distração e tédio. Semana 2: Substituição da mamada antes do sono diurno (sonecas). Semana 3: Desmame noturno e celebração da conquista." },
-          { title: "6.2 Cardápio Noturno de Saciedade", content: "Sugestões de jantares nutritivos ricos em triptofano (aveia, banana, abacate) que mantêm o bebê saciado por mais horas durante a noite sem desconforto digestivo." }
+          { content: "Se estiver muito difícil, dê mais tempo antes de retirar outra mamada. Desmame não precisa acontecer de um dia para o outro. 🤍" }
         ]
       }
     ];
@@ -208,7 +181,7 @@ function renderEbookModules(modules) {
       <div class="module-accordion-item ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
         <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
           <div class="module-trigger-info">
-            <span class="module-title-text">📖 ${mod.title}</span>
+            <span class="module-title-text">${mod.title}</span>
             <div class="module-badges-row">
               ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration.replace('de aula', 'de leitura')}</span>` : ''}
               <span class="module-text-badge">📝 Conteúdo Completo</span>
@@ -223,7 +196,7 @@ function renderEbookModules(modules) {
           <div class="module-chapters-area">
             ${mod.chapters.map(chap => `
               <div class="chapter-block">
-                <h6 class="chapter-title">${chap.title}</h6>
+                ${chap.title ? `<h6 class="chapter-title">${chap.title}</h6>` : ''}
                 <p class="chapter-text">${chap.content}</p>
               </div>
             `).join('')}
