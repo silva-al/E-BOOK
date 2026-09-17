@@ -996,39 +996,83 @@ function checkUnlockStatus() {
    UPGRADE DO ADICIONAL / ORDER BUMP (DESMAME DIURNO)
    ========================================================================== */
 let currentBumpUpgradePixPayload = '';
+let currentBumpOrderId = null;
+let bumpPollingInterval = null;
 
-function handleOpenBumpUpgradeModal() {
+async function handleOpenBumpUpgradeModal() {
   const amount = appState.bumpPrice; // R$ 9,90
+  const canvas = document.getElementById('bumpUpgradeQrCanvas');
+  const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
+  const modal = document.getElementById('bumpUpgradeModal');
+  if (modal) modal.classList.add('active');
+
+  if (codeBox) codeBox.textContent = 'Gerando PIX oficial de R$ 9,90 via Mercado Pago...';
+
   try {
-    currentBumpUpgradePixPayload = window.PixEngine.generatePayload({
-      key: appState.pixKey,
-      name: appState.pixRecipient,
-      city: appState.pixCity,
-      amount: amount,
-      txId: '***'
+    const res = await fetch('/api/create-pix', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: amount,
+        orderBump: true,
+        buyerName: localStorage.getItem('desmame_buyer_name') || 'Aluna Desmame Noturno',
+        buyerEmail: localStorage.getItem('desmame_buyer_email') || 'contato@desmamenoturno.com'
+      })
     });
-  } catch (e) {
-    console.error('Erro gerando payload para upgrade:', e);
+    const data = await res.json();
+    if (res.ok && data.success && data.qr_code) {
+      currentBumpOrderId = data.order_id || data.payment_id;
+      currentBumpUpgradePixPayload = data.qr_code;
+      if (codeBox) {
+        codeBox.textContent = data.qr_code;
+        codeBox.setAttribute('data-full-code', data.qr_code);
+      }
+      if (canvas && typeof window.generateQRCodeCanvas === 'function') {
+        window.generateQRCodeCanvas(data.qr_code, canvas, 200);
+      }
+
+      if (bumpPollingInterval) clearInterval(bumpPollingInterval);
+      bumpPollingInterval = setInterval(async () => {
+        try {
+          const checkRes = await fetch(`/api/check-payment?id=${currentBumpOrderId}`);
+          const checkData = await checkRes.json();
+          if (checkData.status === 'approved' || checkData.is_approved) {
+            clearInterval(bumpPollingInterval);
+            bumpPollingInterval = null;
+            handleConfirmBumpUpgrade(true);
+          }
+        } catch (e) {}
+      }, 2500);
+      return;
+    }
+  } catch (err) {
+    console.warn('Erro ao gerar PIX do bump via MP:', err);
   }
 
-  const canvas = document.getElementById('bumpUpgradeQrCanvas');
+  // Fallback
+  currentBumpUpgradePixPayload = window.PixEngine.generatePayload({
+    key: appState.pixKey,
+    name: appState.pixRecipient,
+    city: appState.pixCity,
+    amount: amount,
+    txId: '***'
+  });
   if (canvas && typeof window.generateQRCodeCanvas === 'function') {
     window.generateQRCodeCanvas(currentBumpUpgradePixPayload, canvas, 200);
   }
-
-  const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
   if (codeBox) {
     codeBox.textContent = currentBumpUpgradePixPayload;
     codeBox.setAttribute('data-full-code', currentBumpUpgradePixPayload);
   }
-
-  const modal = document.getElementById('bumpUpgradeModal');
-  if (modal) modal.classList.add('active');
 }
 
 function handleCloseBumpUpgradeModal() {
   const modal = document.getElementById('bumpUpgradeModal');
   if (modal) modal.classList.remove('active');
+  if (bumpPollingInterval) {
+    clearInterval(bumpPollingInterval);
+    bumpPollingInterval = null;
+  }
 }
 
 function handleCopyBumpUpgradePixCode() {
@@ -1049,7 +1093,28 @@ function handleCopyBumpUpgradePixCode() {
   }
 }
 
-function handleConfirmBumpUpgrade() {
+async function handleConfirmBumpUpgrade(bypassCheck = false) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isAdmin = urlParams.get('admin') === '1';
+
+  if (!bypassCheck && !isAdmin && currentBumpOrderId) {
+    try {
+      const res = await fetch(`/api/check-payment?id=${currentBumpOrderId}`);
+      const data = await res.json();
+      if (data.status !== 'approved' && !data.is_approved) {
+        alert("⚠️ Pagamento de R$ 9,90 ainda não identificado no Mercado Pago.\nSe você acabou de pagar no seu banco, aguarde alguns instantes pela compensação e tente novamente.");
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  if (bumpPollingInterval) {
+    clearInterval(bumpPollingInterval);
+    bumpPollingInterval = null;
+  }
+
   appState.hasBump = true;
   localStorage.setItem('desmame_has_bump', 'true');
   handleCloseBumpUpgradeModal();
