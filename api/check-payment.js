@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Parâmetro id é obrigatório.' });
   }
 
-  const accessToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-6818937706719064-091702-bff5e6cdf3a5b0670e12fdb2e7e7cda9-3696663622').trim();
+  const accessToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-7126802170179896-091702-1da1c976ed6f743042127cd7cf856164-1084454515').trim();
 
   try {
     // Se o ID começar com ORD, consulta na API de Orders

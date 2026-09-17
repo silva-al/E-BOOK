@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=11.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=12.0">
 </head>
 
 <body>
@@ -126,85 +126,15 @@
           </div>
         </div>
 
-        <!-- Opções de Pagamento no PIX: QR Code na Tela ou Chave Direta -->
-        <div class="pix-tabs-bar">
-          <button type="button" class="pix-tab-toggle active" id="tabBtnQr" onclick="switchPixTab('qr')">
-            📱 QR Code & Copia e Cola
-          </button>
-          <button type="button" class="pix-tab-toggle" id="tabBtnKey" onclick="switchPixTab('key')">
-            🔑 Chave Direta (Telefone)
-          </button>
-        </div>
-
-        <!-- Aba 1: QR Code Oficial na Tela com Copia e Cola -->
-        <div class="pix-tab-pane active" id="paneQr">
-          <div class="inline-pix-qr-box">
-            <div class="inline-qr-canvas-wrapper">
-              <canvas id="inlinePixQrCanvas" width="180" height="180"></canvas>
-              <div class="inline-qr-amount-tag" id="inlineQrAmountTag">Valor: R$ 1,00</div>
-            </div>
-            <div class="inline-qr-actions">
-              <p class="inline-qr-hint">Escaneie o QR Code acima com o app do seu banco ou use o Copia e Cola:</p>
-              <button type="button" class="btn-copy-inline-pix" onclick="handleCopyInlinePixCode()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span id="labelCopyInlinePix">Copiar Código PIX (Copia e Cola)</span>
-              </button>
-              <button type="button" class="btn-direct-unlock" onclick="handleDirectUnlockCheck()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                <span>Já fiz o PIX! Liberar Conteúdo Agora</span>
-              </button>
-            </div>
+        <div class="pix-mp-secure-badge" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
           </div>
-        </div>
-
-        <!-- Aba 2: Chave PIX Direta (Telefone WhatsApp) -->
-        <div class="pix-tab-pane" id="paneKey">
-          <div class="direct-pix-box" onclick="handleCopyDirectPixKey()"
-            title="Clique para copiar a Chave PIX ou falar no WhatsApp">
-            <div class="direct-pix-info">
-              <div class="direct-pix-icon">
-                <!-- Símbolo Oficial PIX -->
-                <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z"
-                    fill="#ffffff" />
-                </svg>
-              </div>
-              <div>
-                <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
-                  <span>Chave PIX Oficial</span>
-                  <!-- Símbolo Oficial WhatsApp -->
-                  <span class="whatsapp-inline-badge">
-                    <svg viewBox="0 0 24 24">
-                      <path
-                        d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z" />
-                    </svg>
-                    WhatsApp
-                  </span>
-                </div>
-                <div class="direct-pix-number" id="directPixNumberDisplay">
-                  5519994744297
-                </div>
-              </div>
-            </div>
-            <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixForm">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              <span id="labelDirectCopyForm">Copiar Chave</span>
-            </button>
-            <button type="button" class="btn-direct-unlock" onclick="handleDirectUnlockCheck()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span>Já fiz o PIX! Liberar Conteúdo Agora</span>
-            </button>
+          <div>
+            <div style="font-size: 14px; font-weight: 700; color: #15803d;">PIX Oficial com Baixa Instantânea</div>
+            <div style="font-size: 12px; color: #4b5563; margin-top: 2px;">Geração dinâmica via Mercado Pago. Ao pagar, o acesso ao e-book é liberado automaticamente.</div>
           </div>
         </div>
 
@@ -412,39 +342,7 @@
             Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 1,00</strong>
           </div>
 
-          <!-- Chave PIX Direta no Modal -->
-          <div class="direct-pix-box" style="margin: 10px 0 16px 0; background: #f0fdfa;"
-            onclick="handleCopyDirectPixKey()" title="Clique para copiar a chave direta">
-            <div class="direct-pix-info">
-              <div class="direct-pix-icon">
-                <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z"
-                    fill="#ffffff" />
-                </svg>
-              </div>
-              <div style="text-align: left;">
-                <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
-                  <span>Chave PIX (Telefone)</span>
-                  <span class="whatsapp-inline-badge">
-                    <svg viewBox="0 0 24 24">
-                      <path
-                        d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z" />
-                    </svg>
-                    WhatsApp
-                  </span>
-                </div>
-                <div class="direct-pix-number" style="font-size: 16px;">5519994744297</div>
-              </div>
-            </div>
-            <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixModal">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              <span id="labelDirectCopyModal">Copiar Chave</span>
-            </button>
-          </div>
+
 
           <div class="pix-qrcode-container">
             <!-- Imagem oficial retornado pelo Mercado Pago ou Canvas gerado localmente -->
@@ -662,8 +560,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=11.0"></script>
-  <script src="assets/js/app.js?v=11.0"></script>
+  <script src="assets/js/pix-engine.js?v=12.0"></script>
+  <script src="assets/js/app.js?v=12.0"></script>
 </body>
 
 </html>
