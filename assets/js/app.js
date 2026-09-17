@@ -849,232 +849,162 @@ function startAmbientNoise() {
       ambientAudioCtx.resume();
     }
 
-    const sr = ambientAudioCtx.sampleRate;
+    const ctx = ambientAudioCtx;
+    const sr = ctx.sampleRate;
+    const now = ctx.currentTime;
 
-    // ── Buffer de ruído branco estéreo (4 segundos, vai em loop) ─────────────
-    const bufferSize = sr * 4;
-    const noiseBuffer = ambientAudioCtx.createBuffer(2, bufferSize, sr);
-    for (let ch = 0; ch < 2; ch++) {
-      const data = noiseBuffer.getChannelData(ch);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
+    // ── Mixer principal ───────────────────────────────────────────────────────
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.001, now);
+    masterGain.gain.linearRampToValueAtTime(0.55, now + 2.0); // fade-in suave de 2s
+    masterGain.connect(ctx.destination);
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CAMADA A — "Shhh" de fundo: ruído rosa leve, som de chuva caindo longe
+    // Banda estreita: 400 Hz – 3 kHz — suave, sem grave pesado, sem agudo duro
+    // ────────────────────────────────────────────────────────────────────────
+    const baseSize = sr * 5;
+    const baseBuffer = ctx.createBuffer(1, baseSize, sr);
+    const baseData = baseBuffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0;
+    for (let i = 0; i < baseSize; i++) {
+      const w = Math.random() * 2 - 1;
+      // Pink noise (Paul Kellet algorithm — tom mais natural que white noise)
+      b0 = 0.99886 * b0 + w * 0.0555179;
+      b1 = 0.99332 * b1 + w * 0.0750759;
+      b2 = 0.96900 * b2 + w * 0.1538520;
+      b3 = 0.86650 * b3 + w * 0.3104856;
+      baseData[i] = (b0 + b1 + b2 + b3 + w * 0.115926) * 0.11;
+    }
+    const baseSource = ctx.createBufferSource();
+    baseSource.buffer = baseBuffer;
+    baseSource.loop = true;
+
+    const baseHp = ctx.createBiquadFilter();
+    baseHp.type = 'highpass';
+    baseHp.frequency.value = 400;
+    baseHp.Q.value = 0.4;
+
+    const baseLp = ctx.createBiquadFilter();
+    baseLp.type = 'lowpass';
+    baseLp.frequency.value = 3000;
+    baseLp.Q.value = 0.4;
+
+    const baseGain = ctx.createGain();
+    baseGain.gain.value = 0.60;
+
+    baseSource.connect(baseHp);
+    baseHp.connect(baseLp);
+    baseLp.connect(baseGain);
+    baseGain.connect(masterGain);
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CAMADA B — Gotinhas individuais: impulsos curtos e aleatórios
+    // Simula o "tique-tique" de gotas tocando numa superfície
+    // ────────────────────────────────────────────────────────────────────────
+    const dropRate = 18;           // gotas por segundo (média)
+    const dropDuration = 0.018;    // duração de cada gota em segundos
+    const dropSamples = Math.floor(sr * dropDuration);
+    const totalDrops = dropRate * 8; // gera 8 segundos de gotas no buffer
+
+    const dropBuffer = ctx.createBuffer(1, sr * 8, sr);
+    const dropData = dropBuffer.getChannelData(0);
+
+    for (let d = 0; d < totalDrops; d++) {
+      // Posição aleatória dentro do buffer
+      const offset = Math.floor(Math.random() * (sr * 8 - dropSamples));
+      // Amplitude aleatória — gotas grandes e pequenas
+      const amp = 0.08 + Math.random() * 0.22;
+      for (let s = 0; s < dropSamples; s++) {
+        // Impulso com decaimento exponencial — "tic" limpo
+        const env = Math.exp(-s / (sr * 0.006));
+        dropData[offset + s] += (Math.random() * 2 - 1) * amp * env;
       }
     }
 
-    const noiseSource = ambientAudioCtx.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
-    noiseSource.loop = true;
+    const dropSource = ctx.createBufferSource();
+    dropSource.buffer = dropBuffer;
+    dropSource.loop = true;
 
-    // ── Mixer principal ───────────────────────────────────────────────────────
-    const masterGain = ambientAudioCtx.createGain();
-    masterGain.gain.setValueAtTime(0.001, ambientAudioCtx.currentTime);
-    masterGain.gain.exponentialRampToValueAtTime(0.85, ambientAudioCtx.currentTime + 1.2);
-    masterGain.connect(ambientAudioCtx.destination);
+    // Bandpass centrado nas frequências de gota (~1.5 kHz – 5 kHz)
+    const dropBp = ctx.createBiquadFilter();
+    dropBp.type = 'bandpass';
+    dropBp.frequency.value = 2800;
+    dropBp.Q.value = 1.2;
 
-    // ── CAMADA 1 — "Corpo" da chuva (300 Hz – 1.8 kHz) ──────────────────────
-    // Corta o subgrave pesado e o ultra-agudo; deixa o corpo principal audível
-    const bodyHp = ambientAudioCtx.createBiquadFilter();
-    bodyHp.type = 'highpass';
-    bodyHp.frequency.value = 300;
-    bodyHp.Q.value = 0.5;
+    const dropGain = ctx.createGain();
+    dropGain.gain.value = 0.45;
 
-    const bodyLp = ambientAudioCtx.createBiquadFilter();
-    bodyLp.type = 'lowpass';
-    bodyLp.frequency.value = 1800;
-    bodyLp.Q.value = 0.5;
+    dropSource.connect(dropBp);
+    dropBp.connect(dropGain);
+    dropGain.connect(masterGain);
 
-    const bodyGain = ambientAudioCtx.createGain();
-    bodyGain.gain.value = 0.70;
+    // ────────────────────────────────────────────────────────────────────────
+    // CAMADA C — Ar de chuva: "sshhh" muito suave nos agudos
+    // ────────────────────────────────────────────────────────────────────────
+    const airSize = sr * 3;
+    const airBuffer = ctx.createBuffer(1, airSize, sr);
+    const airData = airBuffer.getChannelData(0);
+    for (let i = 0; i < airSize; i++) {
+      airData[i] = (Math.random() * 2 - 1) * 0.12;
+    }
+    const airSource = ctx.createBufferSource();
+    airSource.buffer = airBuffer;
+    airSource.loop = true;
 
-    noiseSource.connect(bodyHp);
-    bodyHp.connect(bodyLp);
-    bodyLp.connect(bodyGain);
-    bodyGain.connect(masterGain);
-
-    // ── CAMADA 2 — "Gotas" (presença 2.5 kHz – 6 kHz) ───────────────────────
-    // Traz o "tic-tic" brilhante das gotas — o que faz a chuva soar viva
-    const dropsHp = ambientAudioCtx.createBiquadFilter();
-    dropsHp.type = 'highpass';
-    dropsHp.frequency.value = 2500;
-    dropsHp.Q.value = 0.7;
-
-    const dropsLp = ambientAudioCtx.createBiquadFilter();
-    dropsLp.type = 'lowpass';
-    dropsLp.frequency.value = 6000;
-    dropsLp.Q.value = 0.5;
-
-    const dropsGain = ambientAudioCtx.createGain();
-    dropsGain.gain.value = 0.38;
-
-    noiseSource.connect(dropsHp);
-    dropsHp.connect(dropsLp);
-    dropsLp.connect(dropsGain);
-    dropsGain.connect(masterGain);
-
-    // ── CAMADA 3 — "Ar" suave (8 kHz – 14 kHz) ───────────────────────────────
-    // Camada de "sshhh" aéreo que abre o som e tira o efeito fechado/abafado
-    const airHp = ambientAudioCtx.createBiquadFilter();
+    const airHp = ctx.createBiquadFilter();
     airHp.type = 'highpass';
-    airHp.frequency.value = 8000;
-    airHp.Q.value = 0.4;
+    airHp.frequency.value = 6000;
+    airHp.Q.value = 0.5;
 
-    const airLp = ambientAudioCtx.createBiquadFilter();
+    const airLp = ctx.createBiquadFilter();
     airLp.type = 'lowpass';
-    airLp.frequency.value = 14000;
-    airLp.Q.value = 0.4;
+    airLp.frequency.value = 12000;
+    airLp.Q.value = 0.5;
 
-    const airGain = ambientAudioCtx.createGain();
-    airGain.gain.value = 0.22;
+    const airGain = ctx.createGain();
+    airGain.gain.value = 0.18;
 
-    noiseSource.connect(airHp);
+    airSource.connect(airHp);
     airHp.connect(airLp);
     airLp.connect(airGain);
     airGain.connect(masterGain);
 
-    // ── LFO de tremolo suave (ritmo natural ~7 Hz) ────────────────────────────
-    const lfo = ambientAudioCtx.createOscillator();
-    lfo.type = 'sine';
-    lfo.frequency.value = 7;
+    // Inicia todas as camadas
+    baseSource.start();
+    dropSource.start();
+    airSource.start();
 
-    const lfoGain = ambientAudioCtx.createGain();
-    lfoGain.gain.value = 0.08; // Modulação discreta — não choroso
-
-    lfo.connect(lfoGain);
-    lfoGain.connect(masterGain.gain);
-    lfo.start();
-
-    noiseSource.start();
-    ambientNoiseNode = noiseSource;
+    // Salva referências para parar depois
+    ambientNoiseNode = baseSource;
     ambientGainNode = masterGain;
+    ctx._dropNode = dropSource;
+    ctx._airNode = airSource;
 
-    // Guarda o lfo para parar depois
-    ambientAudioCtx._lfoNode = lfo;
-
-    // Inicia o ciclo de trovões (primeiro depois de 25–70s)
-    scheduleNextThunder();
   } catch (err) {
     console.warn('Web Audio indisponível:', err);
   }
 }
 
 function stopAmbientNoise() {
-  // Para o timer de trovão se estiver ativo
-  if (ambientAudioCtx && ambientAudioCtx._thunderTimer) {
-    clearTimeout(ambientAudioCtx._thunderTimer);
-    ambientAudioCtx._thunderTimer = null;
-  }
   if (ambientGainNode && ambientAudioCtx) {
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.001, ambientAudioCtx.currentTime + 0.5);
+    ambientGainNode.gain.linearRampToValueAtTime(0.001, ambientAudioCtx.currentTime + 0.8);
     setTimeout(() => {
+      ['_dropNode', '_airNode'].forEach(key => {
+        if (ambientAudioCtx && ambientAudioCtx[key]) {
+          try { ambientAudioCtx[key].stop(); } catch (e) {}
+          ambientAudioCtx[key] = null;
+        }
+      });
       if (ambientNoiseNode) {
         try { ambientNoiseNode.stop(); } catch (e) {}
         ambientNoiseNode = null;
       }
-      if (ambientAudioCtx && ambientAudioCtx._lfoNode) {
-        try { ambientAudioCtx._lfoNode.stop(); } catch (e) {}
-        ambientAudioCtx._lfoNode = null;
-      }
-    }, 500);
+    }, 800);
   } else if (ambientNoiseNode) {
     try { ambientNoiseNode.stop(); } catch (e) {}
     ambientNoiseNode = null;
   }
-}
-
-// ── TROVÃO: síntese de relâmpago + trovão via Web Audio ─────────────────────
-function playThunder() {
-  if (!ambientAudioCtx || ambientAudioCtx.state === 'closed') return;
-  if (ambientAudioCtx.state === 'suspended') ambientAudioCtx.resume();
-
-  try {
-    const ctx = ambientAudioCtx;
-    const now = ctx.currentTime;
-
-    // ── Flash visual de relâmpago ──────────────────────────────────────────
-    const portal = document.getElementById('unlockedPortal') || document.body;
-    const flash = document.createElement('div');
-    flash.className = 'lightning-flash';
-    portal.appendChild(flash);
-    // Duplo flash (como relâmpago real)
-    setTimeout(() => { flash.classList.add('active'); }, 10);
-    setTimeout(() => { flash.classList.remove('active'); }, 80);
-    setTimeout(() => { flash.classList.add('active'); }, 130);
-    setTimeout(() => {
-      flash.classList.remove('active');
-      setTimeout(() => flash.remove(), 300);
-    }, 200);
-
-    // ── Som do trovão ─────────────────────────────────────────────────────
-    // Atraso simulando distância (0.4s a 2.0s após o flash)
-    const delay = 0.4 + Math.random() * 1.6;
-
-    // Rumble grave — "BOOOM" profundo
-    const rumbleSize = ctx.sampleRate * 3;
-    const rumbleBuffer = ctx.createBuffer(1, rumbleSize, ctx.sampleRate);
-    const rData = rumbleBuffer.getChannelData(0);
-    let rb0 = 0, rb1 = 0;
-    for (let i = 0; i < rumbleSize; i++) {
-      const w = Math.random() * 2 - 1;
-      rb0 = 0.99 * rb0 + w * 0.02;
-      rb1 = 0.999 * rb1 + rb0;
-      rData[i] = rb1 * 0.5;
-    }
-    const rumble = ctx.createBufferSource();
-    rumble.buffer = rumbleBuffer;
-
-    const rumbleLp = ctx.createBiquadFilter();
-    rumbleLp.type = 'lowpass';
-    rumbleLp.frequency.value = 180;
-
-    const rumbleGain = ctx.createGain();
-    rumbleGain.gain.setValueAtTime(0.0, now + delay);
-    rumbleGain.gain.linearRampToValueAtTime(0.9, now + delay + 0.06);
-    rumbleGain.gain.exponentialRampToValueAtTime(0.001, now + delay + 2.8);
-
-    rumble.connect(rumbleLp);
-    rumbleLp.connect(rumbleGain);
-    rumbleGain.connect(ctx.destination);
-    rumble.start(now + delay);
-    rumble.stop(now + delay + 3.5);
-
-    // Estalido agudo do raio — "CRACK"
-    const crackSize = Math.floor(ctx.sampleRate * 0.12);
-    const crackBuffer = ctx.createBuffer(1, crackSize, ctx.sampleRate);
-    const cData = crackBuffer.getChannelData(0);
-    for (let i = 0; i < crackSize; i++) {
-      cData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.018));
-    }
-    const crack = ctx.createBufferSource();
-    crack.buffer = crackBuffer;
-
-    const crackHp = ctx.createBiquadFilter();
-    crackHp.type = 'highpass';
-    crackHp.frequency.value = 1000;
-
-    const crackGain = ctx.createGain();
-    crackGain.gain.setValueAtTime(0.65, now + delay);
-    crackGain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.12);
-
-    crack.connect(crackHp);
-    crackHp.connect(crackGain);
-    crackGain.connect(ctx.destination);
-    crack.start(now + delay);
-
-  } catch (e) {
-    console.warn('Erro no trovão:', e);
-  }
-}
-
-// Agenda próximo trovão em intervalo aleatório (25s a 70s)
-function scheduleNextThunder() {
-  if (!isAmbientPlaying || !ambientAudioCtx) return;
-  const delay = 25000 + Math.random() * 45000;
-  ambientAudioCtx._thunderTimer = setTimeout(() => {
-    if (isAmbientPlaying) {
-      playThunder();
-      scheduleNextThunder();
-    }
-  }, delay);
 }
 
 function initNightModeState() {
