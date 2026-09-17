@@ -21,10 +21,11 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { buyerName, buyerEmail, hasBump, accessLink } = req.body || {};
+    const { buyerName, buyerEmail, hasBump, accessLink, loginPassword } = req.body || {};
 
     const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : null;
     const cleanName = (buyerName && buyerName.trim()) ? buyerName.trim() : 'Aluna';
+    const cleanPassword = (loginPassword && String(loginPassword).trim()) ? String(loginPassword).trim() : 'desmame2026';
     const siteUrl = 'https://desmame-noturno.vercel.app';
     
     // Constrói o Magic Link de Acesso Vitalício Direto se não vier fornecido
@@ -64,7 +65,7 @@ module.exports = async (req, res) => {
               </p>
               
               <p style="font-size: 15px; line-height: 1.6; margin: 0 0 16px 0; color: #475569;">
-                Temos uma ótima notícia: o seu pagamento via PIX foi <strong>identificado e aprovado com sucesso</strong>!
+                Temos uma ótima notícia: o seu pagamento foi <strong>identificado e aprovado com sucesso</strong>!
               </p>
 
               <div style="background-color: #f0fdf4; border-left: 4px solid #10b981; padding: 14px 16px; border-radius: 6px; margin-bottom: 22px;">
@@ -75,6 +76,40 @@ module.exports = async (req, res) => {
                   Você pode acessar pelo celular, tablet ou computador quando quiser.
                 </p>
               </div>
+
+              <!-- Dados de Login e Senha para Área da Aluna -->
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f0fdf4; border: 2px dashed #10b981; border-radius: 10px; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 18px 20px;">
+                    <h3 style="margin: 0 0 12px 0; font-size: 15px; color: #166534; font-weight: 800; letter-spacing: 0.3px;">
+                      🔐 SEUS DADOS DE ACESSO À ÁREA DA ALUNA:
+                    </h3>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 14.5px; color: #1e293b;">
+                      <tr>
+                        <td style="padding: 6px 0; color: #475569; width: 100px;"><strong>Site / Login:</strong></td>
+                        <td style="padding: 6px 0;">
+                          <a href="${siteUrl}" style="color: #0284c7; font-weight: 700; text-decoration: underline;">${siteUrl}</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #475569;"><strong>Seu Login:</strong></td>
+                        <td style="padding: 6px 0; font-family: monospace; font-size: 15px; font-weight: 800; color: #0f172a;">
+                          ${cleanEmail}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #475569;"><strong>Sua Senha:</strong></td>
+                        <td style="padding: 6px 0;">
+                          <span style="font-family: monospace; font-size: 16px; font-weight: 800; color: #047857; background: #dcfce7; padding: 4px 12px; border-radius: 6px; display: inline-block; letter-spacing: 0.5px;">${cleanPassword}</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="margin: 12px 0 0 0; font-size: 12.5px; color: #15803d; line-height: 1.4;">
+                      💡 <em>Guarde estes dados. Você pode entrar no site clicando em "Já é aluna? Entrar" usando seu e-mail e senha acima, ou clicar no botão verde abaixo para entrar direto sem precisar digitar senha!</em>
+                    </p>
+                  </td>
+                </tr>
+              </table>
 
               <!-- Itens Adquiridos -->
               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 24px;">
@@ -101,12 +136,12 @@ module.exports = async (req, res) => {
               <!-- Botão Principal de Acesso Direto -->
               <div style="text-align: center; margin: 28px 0;">
                 <a href="${magicLink}" target="_blank" style="display: inline-block; background-color: #059669; color: #ffffff; font-size: 16px; font-weight: 800; text-decoration: none; padding: 15px 32px; border-radius: 8px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35); text-align: center;">
-                  👉 CLIQUE AQUI PARA ACESSAR AGORA
+                  👉 CLIQUE AQUI PARA ACESSAR DIRETO
                 </a>
               </div>
 
               <p style="font-size: 13.5px; line-height: 1.5; color: #64748b; margin: 0 0 16px 0; text-align: center;">
-                💡 <strong>Dica importante:</strong> Guarde este e-mail! Clicando no botão acima, seu material abrirá desbloqueado automaticamente em qualquer aparelho.
+                💡 <strong>Dica:</strong> Clicando no botão acima, seu material abre desbloqueado automaticamente em qualquer aparelho.
               </p>
 
               <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: 24px; font-size: 13.5px; color: #64748b;">
@@ -157,7 +192,7 @@ module.exports = async (req, res) => {
         body: JSON.stringify({
           from: fromEmail,
           to: [cleanEmail],
-          subject: '🎉 Pagamento Confirmado! Seu acesso ao Desmame Noturno foi liberado',
+          subject: '🎉 Pagamento Confirmado! Seus dados de acesso e senha - Desmame Noturno',
           html: emailHtml
         })
       });
@@ -188,7 +223,7 @@ module.exports = async (req, res) => {
         body: JSON.stringify({
           sender: { name: 'Desmame Noturno', email: process.env.EMAIL_FROM_ADDRESS || 'contato@desmamenoturno.com' },
           to: [{ email: cleanEmail, name: cleanName }],
-          subject: '🎉 Pagamento Confirmado! Seu acesso ao Desmame Noturno foi liberado',
+          subject: '🎉 Pagamento Confirmado! Seus dados de acesso e senha - Desmame Noturno',
           htmlContent: emailHtml
         })
       });

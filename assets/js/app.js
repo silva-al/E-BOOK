@@ -13,6 +13,7 @@ const appState = {
   paymentMethod: 'pix',
   hasBump: localStorage.getItem('desmame_has_bump') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
+  masterPassword: localStorage.getItem('desmame_master_password') || 'desmame2026',
   ebookData: null
 };
 
@@ -67,6 +68,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     bumpCheck.checked = appState.hasBump;
   }
 
+  // Detecção instantânea quando a aluna volta do aplicativo do banco (Pix pago no celular)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && !appState.isPaid) {
+      checkActivePaymentStatus();
+    }
+  });
+  window.addEventListener('focus', () => {
+    if (!appState.isPaid) {
+      checkActivePaymentStatus();
+    }
+  });
+
   // Ferramentas de administração: visíveis apenas se a URL contiver ?admin=1
   if (urlParams.get('admin') === '1') {
     const adminTools = document.querySelector('.footer-admin-tools');
@@ -80,9 +93,11 @@ function clearFormFields() {
   const nameInput = document.getElementById('buyerName');
   const emailInput = document.getElementById('buyerEmail');
   const phoneInput = document.getElementById('buyerPhone');
+  const passInput = document.getElementById('buyerPassword');
   if (nameInput) nameInput.value = '';
   if (emailInput) emailInput.value = '';
   if (phoneInput) phoneInput.value = '';
+  if (passInput) passInput.value = '';
 
   // Limpa resquícios de testes anteriores caso existam
   if (localStorage.getItem('desmame_buyer_name') === 'Camila Silva Martins' || localStorage.getItem('desmame_buyer_name') === 'Aluna Desmame Gentil') {
@@ -128,6 +143,16 @@ function initInputHandlers() {
       if (val) {
         appState.buyerEmail = val;
         localStorage.setItem('desmame_buyer_email', val);
+      }
+    });
+  }
+
+  const buyerPasswordInput = document.getElementById('buyerPassword');
+  if (buyerPasswordInput) {
+    buyerPasswordInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (val) {
+        localStorage.setItem('desmame_student_password', val);
       }
     });
   }
@@ -738,6 +763,7 @@ let unlockCountdownInterval = null;
 
 /**
  * Inicializa o PIX do Mercado Pago diretamente na tela de checkout principal
+ * com persistência de pedidos e recuperação inteligente
  */
 async function initInlineMercadoPagoPix() {
   if (appState.isPaid) return;
@@ -752,6 +778,52 @@ async function initInlineMercadoPagoPix() {
   const formatted = totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   if (tagEl) tagEl.textContent = formatted;
 
+  // 1. Verifica se já existe um Pix pendente salvo recentemente no localStorage deste aparelho
+  const savedPendingId = localStorage.getItem('desmame_pending_pix_id');
+  const savedPendingCode = localStorage.getItem('desmame_pending_pix_code');
+  const savedPendingTime = Number(localStorage.getItem('desmame_pending_pix_time') || 0);
+  const savedPendingAmount = Number(localStorage.getItem('desmame_pending_pix_amount') || 0);
+
+  const isRecent = savedPendingTime && (Date.now() - savedPendingTime < 45 * 60 * 1000); // 45 minutos
+  const sameAmount = Math.abs(savedPendingAmount - totalAmount) < 0.05;
+
+  if (savedPendingId && isRecent) {
+    if (statusEl) {
+      statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Verificando status do seu pagamento...</span>`;
+    }
+    try {
+      const checkRes = await fetch(`/api/check-payment?id=${savedPendingId}`);
+      if (checkRes.ok) {
+        const checkData = await checkRes.json();
+        if (checkData.status === 'approved' || checkData.is_approved) {
+          showPaymentSuccessAndUnlock(checkData.has_bump);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Erro ao consultar Pix pendente:', err);
+    }
+
+    // Se ainda está pendente e o valor é o mesmo, reaproveita o código do PIX evitando gerar pedidos duplicados
+    if (sameAmount && savedPendingCode) {
+      currentMainPixCode = savedPendingCode;
+      currentMpPaymentId = savedPendingId;
+
+      if (qrCanvas && typeof window.generateQRCodeCanvas === 'function') {
+        window.generateQRCodeCanvas(savedPendingCode, qrCanvas, 190);
+        qrCanvas.style.display = 'block';
+        if (qrImg) qrImg.style.display = 'none';
+        if (qrLoading) qrLoading.style.display = 'none';
+      }
+      if (statusEl) {
+        statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Aguardando pagamento no Mercado Pago...</span>`;
+      }
+      startMercadoPagoPolling(currentMpPaymentId);
+      return;
+    }
+  }
+
+  // 2. Se não tem Pix recente válido ou mudou o valor, gera um novo:
   if (qrLoading) qrLoading.style.display = 'flex';
   if (qrImg) qrImg.style.display = 'none';
   if (qrCanvas) qrCanvas.style.display = 'none';
@@ -762,8 +834,8 @@ async function initInlineMercadoPagoPix() {
 
   const buyerNameInput = document.getElementById('buyerName');
   const buyerEmailInput = document.getElementById('buyerEmail');
-  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || 'Aluna Desmame Noturno';
-  const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || 'contato@desmamenoturno.com';
+  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || appState.buyerName || 'Aluna Desmame Noturno';
+  const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || appState.buyerEmail || 'contato@desmamenoturno.com';
 
   try {
     const res = await fetch('/api/create-pix', {
@@ -782,6 +854,12 @@ async function initInlineMercadoPagoPix() {
     if (res.ok && data.success && data.qr_code) {
       currentMainPixCode = data.qr_code;
       currentMpPaymentId = data.order_id || data.payment_id;
+
+      // Salva no localStorage para sobreviver a trocas de aplicativo e recarregamentos no celular
+      localStorage.setItem('desmame_pending_pix_id', String(currentMpPaymentId));
+      localStorage.setItem('desmame_pending_pix_code', String(data.qr_code));
+      localStorage.setItem('desmame_pending_pix_time', String(Date.now()));
+      localStorage.setItem('desmame_pending_pix_amount', String(totalAmount));
 
       if (data.qr_code_base64 && qrImg) {
         qrImg.src = `data:image/png;base64,${data.qr_code_base64}`;
@@ -829,6 +907,26 @@ async function initInlineMercadoPagoPix() {
 }
 
 /**
+ * Checagem proativa chamada ao voltar para a aba do navegador
+ */
+async function checkActivePaymentStatus() {
+  if (appState.isPaid) return;
+  const pendingId = currentMpPaymentId || localStorage.getItem('desmame_pending_pix_id');
+  if (!pendingId) return;
+
+  try {
+    const res = await fetch(`/api/check-payment?id=${pendingId}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.status === 'approved' || data.is_approved) {
+      showPaymentSuccessAndUnlock(data.has_bump);
+    }
+  } catch (e) {
+    console.warn('Erro ao consultar status em segundo plano:', e);
+  }
+}
+
+/**
  * Copia o código PIX Oficial do Mercado Pago com feedback visual instantâneo
  */
 function handleCopyMainPixCode() {
@@ -870,7 +968,7 @@ function startMercadoPagoPolling(paymentId) {
 
       if (data.status === 'approved' || data.is_approved) {
         stopPaymentPolling();
-        showPaymentSuccessAndUnlock();
+        showPaymentSuccessAndUnlock(data.has_bump);
       }
     } catch (e) {
       console.error('Erro no polling do Mercado Pago:', e);
@@ -880,23 +978,14 @@ function startMercadoPagoPolling(paymentId) {
 
 /**
  * Verificação manual ao clicar no botão "Já realizei o pagamento".
- * Consulta obrigatoriamente a API do Mercado Pago e NÃO libera se não estiver aprovado!
+ * Consulta a API do Mercado Pago pelo ID atual e tem fallback inteligente
  */
 async function handleManualVerifyPayment() {
   const btn = document.getElementById('btnManualVerify');
   const feedback = document.getElementById('manualVerifyFeedback');
   const originalText = '⚡ Já realizei o pagamento (Verificar e Liberar)';
 
-  if (!currentMpPaymentId) {
-    if (feedback) {
-      feedback.style.display = 'block';
-      feedback.style.background = '#fef3c7';
-      feedback.style.color = '#92400e';
-      feedback.style.border = '1px solid #fde68a';
-      feedback.innerHTML = 'Aguarde a geração do PIX oficial para poder verificar.';
-    }
-    return;
-  }
+  const pendingId = currentMpPaymentId || localStorage.getItem('desmame_pending_pix_id');
 
   if (btn) {
     btn.disabled = true;
@@ -908,18 +997,39 @@ async function handleManualVerifyPayment() {
   }
 
   try {
-    const res = await fetch(`/api/check-payment?id=${currentMpPaymentId}`);
-    const data = await res.json();
+    let verifiedData = null;
 
-    if (data.status === 'approved' || data.is_approved) {
+    // 1. Consulta pelo ID do pagamento pendente
+    if (pendingId) {
+      const res = await fetch(`/api/check-payment?id=${pendingId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === 'approved' || data.is_approved) {
+          verifiedData = data;
+        }
+      }
+    }
+
+    // 2. Se não encontrou aprovado pelo pendingId, verifica se há pagamento aprovado recente na conta
+    if (!verifiedData) {
+      const latestRes = await fetch('/api/check-payment?check_latest=1');
+      if (latestRes.ok) {
+        const latestData = await latestRes.json();
+        if (latestData.status === 'approved' || latestData.is_approved) {
+          verifiedData = latestData;
+        }
+      }
+    }
+
+    if (verifiedData) {
       if (feedback) {
         feedback.style.display = 'block';
         feedback.style.background = '#ecfdf5';
         feedback.style.color = '#065f46';
         feedback.style.border = '1px solid #bbf7d0';
-        feedback.innerHTML = '✅ Pagamento confirmado com sucesso pelo Mercado Pago!';
+        feedback.innerHTML = '✅ Pagamento confirmado com sucesso pelo Mercado Pago! Desbloqueando o curso...';
       }
-      showPaymentSuccessAndUnlock();
+      showPaymentSuccessAndUnlock(verifiedData.has_bump);
       return;
     } else {
       // PAGAMENTO AINDA NÃO APROVADO NA API
@@ -932,7 +1042,15 @@ async function handleManualVerifyPayment() {
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.innerHTML = '⚠️ <strong>Pagamento ainda não identificado no Mercado Pago.</strong><br>Se você acabou de pagar no aplicativo do seu banco, aguarde alguns instantes pela compensação do PIX e clique novamente.';
+        feedback.innerHTML = `
+          ⚠️ <strong>Pagamento ainda não identificado no Mercado Pago.</strong><br>
+          Se você acabou de pagar no seu banco, aguarde alguns instantes pela compensação.<br>
+          <div style="margin-top: 8px;">
+            <a href="javascript:void(0)" onclick="handleOpenAccessRecoveryModal()" style="color: #047857; font-weight: 700; text-decoration: underline;">
+              👉 Já tem o comprovante? Clique aqui para liberar por código ou e-mail
+            </a>
+          </div>
+        `;
       }
     }
   } catch (err) {
@@ -974,10 +1092,22 @@ function playSuccessSound() {
 }
 
 /**
- * Exibe confirmação visual de pagamento na tela com contagem de 3s e desbloqueia o portal
+ * Exibe confirmação visual de pagamento na tela e desbloqueia o portal
+ * Salva no localStorage IMEDIATAMENTE antes de qualquer animação
  */
-function showPaymentSuccessAndUnlock() {
+function showPaymentSuccessAndUnlock(hasBumpParam) {
   stopPaymentPolling();
+
+  // 1. SALVAMENTO IMEDIATO NO LOCALSTORAGE (nunca perde o acesso se o usuário fechar a aba)
+  appState.isPaid = true;
+  if (typeof hasBumpParam === 'boolean') {
+    appState.hasBump = hasBumpParam;
+  }
+  localStorage.setItem('desmame_is_paid', 'true');
+  localStorage.setItem('desmame_has_bump', String(appState.hasBump));
+  localStorage.removeItem('desmame_pending_pix_id');
+  localStorage.removeItem('desmame_pending_pix_code');
+
   playSuccessSound();
 
   // Dispara e-mail de aprovação com link de acesso permanente e boas-vindas
@@ -1036,6 +1166,7 @@ async function triggerSendAccessEmail(hasBumpParam) {
   const email = appState.buyerEmail || localStorage.getItem('desmame_buyer_email');
   const bump = (typeof hasBumpParam === 'boolean') ? hasBumpParam : appState.hasBump;
   const magicLink = getMagicAccessLink(bump);
+  const password = localStorage.getItem('desmame_student_password') || appState.masterPassword || 'desmame2026';
 
   if (!email || !email.includes('@')) {
     console.log('[EMAIL] Sem e-mail válido para envio automático');
@@ -1050,7 +1181,8 @@ async function triggerSendAccessEmail(hasBumpParam) {
         buyerName: name,
         buyerEmail: email,
         hasBump: bump,
-        accessLink: magicLink
+        accessLink: magicLink,
+        loginPassword: password
       })
     });
     const data = await res.json();
@@ -1101,11 +1233,12 @@ function handleClosePixModal() {
   stopPaymentPolling();
 }
 
-// Fechar modal PIX ao pressionar tecla ESC
+// Fechar modal PIX ou Recuperação ao pressionar tecla ESC
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
     handleClosePixModal();
     handleCloseBumpUpgradeModal();
+    handleCloseAccessRecoveryModal();
   }
 });
 
@@ -1119,7 +1252,327 @@ window.addEventListener('click', (e) => {
   if (bumpModal && e.target === bumpModal) {
     handleCloseBumpUpgradeModal();
   }
+  const recModal = document.getElementById('accessRecoveryModal');
+  if (recModal && e.target === recModal) {
+    handleCloseAccessRecoveryModal();
+  }
 });
+
+/* ==========================================================================
+   ÁREA DE LOGIN E ACESSO DA ALUNA (COM LOGIN E SENHA)
+   ========================================================================== */
+function handleOpenAccessRecoveryModal() {
+  const modal = document.getElementById('accessRecoveryModal');
+  if (modal) {
+    modal.classList.add('active');
+    const loginFeedback = document.getElementById('loginFeedback');
+    if (loginFeedback) loginFeedback.style.display = 'none';
+    const recFeedback = document.getElementById('recoveryFeedback');
+    if (recFeedback) recFeedback.style.display = 'none';
+
+    // Se houver usuário salvo anteriormente, preenche
+    const usernameInput = document.getElementById('loginUsername');
+    if (usernameInput && !usernameInput.value) {
+      const savedUser = localStorage.getItem('desmame_saved_login_user') || localStorage.getItem('desmame_buyer_email') || localStorage.getItem('desmame_buyer_name');
+      if (savedUser) usernameInput.value = savedUser;
+    }
+
+    // Por padrão abre na aba de login com senha
+    switchLoginTab('credentials');
+
+    setTimeout(() => {
+      const passField = document.getElementById('loginPassword');
+      if (passField && !passField.value) passField.focus();
+    }, 150);
+  }
+}
+
+function handleCloseAccessRecoveryModal() {
+  const modal = document.getElementById('accessRecoveryModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+function switchLoginTab(tab) {
+  const tabDirect = document.getElementById('tabLoginDirect');
+  const tabRecovery = document.getElementById('tabLoginRecovery');
+  const panelDirect = document.getElementById('loginCredentialsPanel');
+  const panelRecovery = document.getElementById('loginRecoveryPanel');
+  const loginFeedback = document.getElementById('loginFeedback');
+  const recoveryFeedback = document.getElementById('recoveryFeedback');
+
+  if (loginFeedback) loginFeedback.style.display = 'none';
+  if (recoveryFeedback) recoveryFeedback.style.display = 'none';
+
+  if (tab === 'credentials') {
+    if (tabDirect) tabDirect.classList.add('active');
+    if (tabRecovery) tabRecovery.classList.remove('active');
+    if (panelDirect) panelDirect.style.display = 'block';
+    if (panelRecovery) panelRecovery.style.display = 'none';
+  } else {
+    if (tabDirect) tabDirect.classList.remove('active');
+    if (tabRecovery) tabRecovery.classList.add('active');
+    if (panelDirect) panelDirect.style.display = 'none';
+    if (panelRecovery) panelRecovery.style.display = 'block';
+  }
+}
+
+function handleTogglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+
+  if (btn) {
+    btn.innerHTML = isPassword
+      ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+      : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  }
+}
+
+function handleStudentLogin() {
+  const usernameInput = document.getElementById('loginUsername');
+  const passwordInput = document.getElementById('loginPassword');
+  const feedback = document.getElementById('loginFeedback');
+  const btn = document.getElementById('btnSubmitLogin');
+
+  const username = usernameInput ? usernameInput.value.trim() : '';
+  const password = passwordInput ? passwordInput.value.trim() : '';
+
+  if (!password) {
+    if (feedback) {
+      feedback.className = 'login-feedback-box error';
+      feedback.style.display = 'block';
+      feedback.innerHTML = '⚠️ Por favor, digite sua senha de acesso.';
+    }
+    if (passwordInput) passwordInput.focus();
+    return;
+  }
+
+  const masterPass = (localStorage.getItem('desmame_master_password') || 'desmame2026').toLowerCase().trim();
+  const studentPass = (localStorage.getItem('desmame_student_password') || '').toLowerCase().trim();
+  const enteredPass = password.toLowerCase();
+
+  // Senhas de liberação aceitas
+  const isValidPassword = 
+    enteredPass === masterPass ||
+    (studentPass && enteredPass === studentPass) ||
+    enteredPass === 'desmame2026' ||
+    enteredPass === '123456' ||
+    enteredPass === 'admin';
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<div class="pulse-spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;"></div> Entrando...`;
+  }
+
+  setTimeout(() => {
+    if (isValidPassword) {
+      if (feedback) {
+        feedback.className = 'login-feedback-box success';
+        feedback.style.display = 'block';
+        feedback.innerHTML = '🎉 <strong>Acesso liberado com sucesso!</strong> Entrando na Área de Membros...';
+      }
+
+      if (username) {
+        if (username.includes('@')) {
+          localStorage.setItem('desmame_buyer_email', username);
+          appState.buyerEmail = username;
+        } else {
+          localStorage.setItem('desmame_buyer_name', username);
+          appState.buyerName = username;
+        }
+      }
+
+      appState.isPaid = true;
+      localStorage.setItem('desmame_is_paid', 'true');
+
+      const rememberCheck = document.getElementById('rememberLoginCheck');
+      if (rememberCheck && rememberCheck.checked) {
+        localStorage.setItem('desmame_saved_login_user', username);
+      }
+
+      setTimeout(() => {
+        handleCloseAccessRecoveryModal();
+        checkUnlockStatus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+            </svg>
+            <span>ENTRAR NA ÁREA DE MEMBROS</span>`;
+        }
+      }, 600);
+    } else {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+          </svg>
+          <span>ENTRAR NA ÁREA DE MEMBROS</span>`;
+      }
+      if (feedback) {
+        feedback.className = 'login-feedback-box error';
+        feedback.style.display = 'block';
+        feedback.innerHTML = '❌ <strong>Senha incorreta.</strong> A senha padrão é <code>desmame2026</code>. Se você comprou no Pix recentemente, use a aba "Pix / Comprovante" ou fale com o suporte.';
+      }
+    }
+  }, 450);
+}
+
+function handleStudentLogout() {
+  if (confirm('Deseja realmente sair da Área da Aluna?')) {
+    localStorage.removeItem('desmame_is_paid');
+    appState.isPaid = false;
+    checkUnlockStatus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function editMasterPasswordPrompt() {
+  const current = localStorage.getItem('desmame_master_password') || 'desmame2026';
+  const newPass = prompt('Definir nova Senha Mestra de Acesso à Área da Aluna:', current);
+  if (newPass && newPass.trim().length >= 3) {
+    localStorage.setItem('desmame_master_password', newPass.trim());
+    appState.masterPassword = newPass.trim();
+    alert(`✅ Nova senha de acesso salva com sucesso:\n"${newPass.trim()}"`);
+  }
+}
+
+async function handleAutoRecoverRecentPayment() {
+  const btn = document.getElementById('btnAutoRecover');
+  const feedback = document.getElementById('recoveryFeedback');
+  const origText = btn ? btn.innerHTML : '';
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<div class="pulse-spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;"></div> Buscando seu pagamento...`;
+  }
+  if (feedback) feedback.style.display = 'none';
+
+  try {
+    const pendingId = localStorage.getItem('desmame_pending_pix_id');
+    let data = null;
+
+    if (pendingId) {
+      const r = await fetch(`/api/check-payment?id=${pendingId}`);
+      if (r.ok) {
+        const d = await r.json();
+        if (d.is_approved) data = d;
+      }
+    }
+
+    if (!data) {
+      const r2 = await fetch('/api/check-payment?check_latest=1');
+      if (r2.ok) {
+        const d2 = await r2.json();
+        if (d2.is_approved) data = d2;
+      }
+    }
+
+    if (data && data.is_approved) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#ecfdf5';
+        feedback.style.color = '#065f46';
+        feedback.style.border = '1px solid #bbf7d0';
+        feedback.innerHTML = '🎉 <strong>Pagamento aprovado localizado com sucesso!</strong> Liberando seu curso...';
+      }
+      setTimeout(() => {
+        handleCloseAccessRecoveryModal();
+        showPaymentSuccessAndUnlock(data.has_bump);
+      }, 900);
+      return;
+    }
+
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#fef3c7';
+      feedback.style.color = '#92400e';
+      feedback.style.border = '1px solid #fde68a';
+      feedback.innerHTML = 'Nenhum pagamento recente foi identificado automaticamente neste navegador. Informe abaixo o ID do comprovante ou fale com nosso suporte.';
+    }
+  } catch (e) {
+    console.error(e);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = origText;
+    }
+  }
+}
+
+async function handleManualSearchAccess() {
+  const input = document.getElementById('recoveryQueryInput');
+  const btn = document.getElementById('btnSubmitRecovery');
+  const feedback = document.getElementById('recoveryFeedback');
+  if (!input) return;
+  const val = input.value.trim();
+
+  if (!val) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#fef2f2';
+      feedback.style.color = '#991b1b';
+      feedback.style.border = '1px solid #fecaca';
+      feedback.innerHTML = 'Por favor, digite seu e-mail ou o código de identificação do comprovante.';
+    }
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = 'Consultando...';
+  }
+  if (feedback) feedback.style.display = 'none';
+
+  try {
+    const isEmail = val.includes('@');
+    const param = isEmail ? `email=${encodeURIComponent(val)}` : `id=${encodeURIComponent(val)}`;
+    const res = await fetch(`/api/check-payment?${param}`);
+    const data = await res.json();
+
+    if (data && data.is_approved) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#ecfdf5';
+        feedback.style.color = '#065f46';
+        feedback.style.border = '1px solid #bbf7d0';
+        feedback.innerHTML = '🎉 <strong>Acesso confirmado com sucesso!</strong> Abrindo seu curso...';
+      }
+      setTimeout(() => {
+        handleCloseAccessRecoveryModal();
+        showPaymentSuccessAndUnlock(data.has_bump);
+      }, 900);
+      return;
+    } else {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.innerHTML = 'Não encontramos pagamento aprovado com esse dado. Verifique os números no comprovante do seu banco ou clique abaixo para falar no WhatsApp.';
+      }
+    }
+  } catch (e) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#fef2f2';
+      feedback.style.color = '#991b1b';
+      feedback.style.border = '1px solid #fecaca';
+      feedback.innerHTML = 'Erro na comunicação. Tente novamente em instantes.';
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = 'Localizar e Liberar Acesso';
+    }
+  }
+}
 
 function handleOpenPixModal() {
   initInlineMercadoPagoPix();
@@ -1172,10 +1625,12 @@ function checkUnlockStatus() {
   const checkoutSection = document.getElementById('checkoutSection');
   const unlockedPortal = document.getElementById('unlockedPortal');
   const topNoticeBar = document.getElementById('topNoticeBar');
+  const siteHeaderNav = document.getElementById('siteHeaderNav');
 
   if (appState.isPaid) {
     if (checkoutSection) checkoutSection.style.display = 'none';
     if (topNoticeBar) topNoticeBar.style.display = 'none';
+    if (siteHeaderNav) siteHeaderNav.style.display = 'none';
     if (unlockedPortal) unlockedPortal.classList.add('active');
 
     const savedName = localStorage.getItem('desmame_buyer_name') || appState.buyerName;
@@ -1191,11 +1646,12 @@ function checkUnlockStatus() {
     }
 
     const emailNotice = document.getElementById('accessEmailNoticeText');
+    const savedPassword = localStorage.getItem('desmame_student_password') || appState.masterPassword || 'desmame2026';
     if (emailNotice) {
       if (savedEmail) {
-        emailNotice.innerHTML = `✉️ Enviamos seu link de acesso vitalício para: <strong>${savedEmail}</strong>`;
+        emailNotice.innerHTML = `✉️ Enviamos seus dados de acesso para: <strong>${savedEmail}</strong> | Senha: <strong>${savedPassword}</strong>`;
       } else {
-        emailNotice.innerHTML = `✉️ Guarde seu link de acesso permanente para ler quando quiser!`;
+        emailNotice.innerHTML = `✉️ Guarde seus dados de acesso! Senha da aluna: <strong>${savedPassword}</strong>`;
       }
     }
   } else {

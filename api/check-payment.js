@@ -1,6 +1,11 @@
 /**
  * VERCEL SERVERLESS FUNCTION - CONSULTAR STATUS DO PAGAMENTO NO MERCADO PAGO
- * Endpoint: GET /api/check-payment?id=ORDER_ID_OR_PAYMENT_ID
+ * Suporta consulta por:
+ *  - ID do pagamento (ex: 178505683281)
+ *  - ID do pedido (ex: ORD01M2QYQ39SVN9SBDTDR12HMFD7)
+ *  - E-mail da compradora (?email=...)
+ *  - Busca genérica (?query=...)
+ *  - Checagem do último Pix aprovado (?check_latest=1)
  */
 
 module.exports = async (req, res) => {
@@ -20,58 +25,163 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Método não permitido. Use GET.' });
   }
 
-  const id = req.query.id;
-  if (!id) {
-    return res.status(400).json({ error: 'Parâmetro id é obrigatório.' });
+  const rawId = req.query.id || req.query.query || '';
+  const email = req.query.email ? req.query.email.trim().toLowerCase() : '';
+  const checkLatest = req.query.check_latest === '1';
+
+  if (!rawId && !email && !checkLatest) {
+    return res.status(400).json({ error: 'Parâmetro id, query, email ou check_latest é obrigatório.' });
   }
 
   const accessToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-7126802170179896-091702-1da1c976ed6f743042127cd7cf856164-1084454515').trim();
 
   try {
-    // Se o ID começar com ORD, consulta na API de Orders
-    const isOrder = id.startsWith('ORD');
-    const endpoint = isOrder 
-      ? `https://api.mercadopago.com/v1/orders/${id}`
-      : `https://api.mercadopago.com/v1/payments/${id}`;
+    const cleanId = rawId.trim();
 
-    const mpResponse = await fetch(endpoint, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    });
-
-    const data = await mpResponse.json();
-
-    if (!mpResponse.ok) {
-      return res.status(mpResponse.status).json({
-        error: data.message || 'Erro ao consultar status no Mercado Pago',
-        details: data
+    // 1. Consulta por ID de Pedido (ORD...)
+    if (cleanId.startsWith('ORD')) {
+      const mpResponse = await fetch(`https://api.mercadopago.com/v1/orders/${cleanId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
       });
+      const data = await mpResponse.json();
+
+      if (mpResponse.ok) {
+        const pStatus = data.transactions?.payments?.[0]?.status || data.status;
+        const isApproved = (data.status === 'processed' || data.status === 'paid' || pStatus === 'approved' || pStatus === 'accredited');
+        const amount = Number(data.total_amount || 29.90);
+        const hasBump = amount >= 39.0 || (data.description && data.description.toLowerCase().includes('dicas'));
+
+        return res.status(200).json({
+          success: true,
+          id: data.id,
+          status: isApproved ? 'approved' : pStatus,
+          status_detail: data.status_detail,
+          is_approved: isApproved,
+          amount: amount,
+          has_bump: hasBump
+        });
+      }
     }
 
-    // Identifica se está aprovado (no Orders é 'processed' / 'paid' ou 'approved', no Payments é 'approved')
-    let isApproved = false;
-    let paymentStatus = data.status;
+    // 2. Consulta por ID Numérico de Pagamento (ex: 178505683281)
+    if (/^\d+$/.test(cleanId)) {
+      const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${cleanId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      const data = await mpResponse.json();
 
-    if (isOrder) {
-      const pStatus = data.transactions?.payments?.[0]?.status || data.status;
-      paymentStatus = pStatus;
-      if (data.status === 'processed' || data.status === 'paid' || pStatus === 'approved') {
-        isApproved = true;
+      if (mpResponse.ok) {
+        const isApproved = (data.status === 'approved' || data.status_detail === 'accredited');
+        const amount = Number(data.transaction_amount || 29.90);
+        const desc = data.description || '';
+        const hasBump = amount >= 39.0 || desc.toLowerCase().includes('dicas');
+
+        return res.status(200).json({
+          success: true,
+          id: data.id,
+          status: isApproved ? 'approved' : data.status,
+          status_detail: data.status_detail,
+          is_approved: isApproved,
+          amount: amount,
+          has_bump: hasBump,
+          payer_name: data.payer ? `${data.payer.first_name || ''} ${data.payer.last_name || ''}`.trim() : '',
+          payer_email: data.payer ? data.payer.email : ''
+        });
       }
-    } else {
-      if (data.status === 'approved') {
-        isApproved = true;
+    }
+
+    // 3. Busca por E-mail ou Query genérica nos pagamentos aprovados recentes
+    const searchUrl = new URL('https://api.mercadopago.com/v1/payments/search');
+    searchUrl.searchParams.set('sort', 'date_created');
+    searchUrl.searchParams.set('criteria', 'desc');
+    searchUrl.searchParams.set('status', 'approved');
+    searchUrl.searchParams.set('limit', '20');
+
+    const searchRes = await fetch(searchUrl.toString(), {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    });
+    const searchData = await searchRes.json();
+
+    if (searchRes.ok && searchData.results && searchData.results.length > 0) {
+      // Se veio email para busca
+      if (email && email.includes('@')) {
+        const match = searchData.results.find(p => 
+          (p.payer?.email && p.payer.email.toLowerCase() === email) ||
+          (p.additional_info?.payer?.email && p.additional_info.payer.email.toLowerCase() === email)
+        );
+        if (match) {
+          const amount = Number(match.transaction_amount || 29.90);
+          const hasBump = amount >= 39.0 || (match.description && match.description.toLowerCase().includes('dicas'));
+          return res.status(200).json({
+            success: true,
+            id: match.id,
+            status: 'approved',
+            status_detail: match.status_detail,
+            is_approved: true,
+            amount: amount,
+            has_bump: hasBump,
+            payer_name: match.payer ? `${match.payer.first_name || ''} ${match.payer.last_name || ''}`.trim() : ''
+          });
+        }
+      }
+
+      // Se veio check_latest=1 (verifica se houve pagamento aprovado nas últimas 6 horas)
+      if (checkLatest) {
+        const now = Date.now();
+        const sixHoursAgo = now - (6 * 60 * 60 * 1000);
+        const recentApproved = searchData.results.find(p => {
+          const created = new Date(p.date_created).getTime();
+          const approved = p.date_approved ? new Date(p.date_approved).getTime() : created;
+          return (approved >= sixHoursAgo || created >= sixHoursAgo) && Number(p.transaction_amount) >= 20.0;
+        });
+
+        if (recentApproved) {
+          const amount = Number(recentApproved.transaction_amount || 29.90);
+          const hasBump = amount >= 39.0 || (recentApproved.description && recentApproved.description.toLowerCase().includes('dicas'));
+          return res.status(200).json({
+            success: true,
+            id: recentApproved.id,
+            status: 'approved',
+            status_detail: recentApproved.status_detail,
+            is_approved: true,
+            amount: amount,
+            has_bump: hasBump,
+            found_latest: true
+          });
+        }
+      }
+
+      // Se veio query genérica (busca em external_reference, txid ou id)
+      if (cleanId) {
+        const match = searchData.results.find(p => {
+          const strId = String(p.id);
+          const extRef = String(p.external_reference || '');
+          const qrCode = String(p.point_of_interaction?.transaction_data?.qr_code || '');
+          const e2e = String(p.point_of_interaction?.transaction_data?.e2e_id || '');
+          return strId === cleanId || extRef === cleanId || qrCode.includes(cleanId) || e2e.includes(cleanId);
+        });
+
+        if (match) {
+          const amount = Number(match.transaction_amount || 29.90);
+          const hasBump = amount >= 39.0 || (match.description && match.description.toLowerCase().includes('dicas'));
+          return res.status(200).json({
+            success: true,
+            id: match.id,
+            status: 'approved',
+            status_detail: match.status_detail,
+            is_approved: true,
+            amount: amount,
+            has_bump: hasBump
+          });
+        }
       }
     }
 
     return res.status(200).json({
-      success: true,
-      id: data.id,
-      status: isApproved ? 'approved' : paymentStatus,
-      status_detail: data.status_detail,
-      is_approved: isApproved
+      success: false,
+      is_approved: false,
+      status: 'not_found',
+      message: 'Nenhum pagamento aprovado foi localizado para estes dados.'
     });
 
   } catch (err) {

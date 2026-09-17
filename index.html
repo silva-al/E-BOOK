@@ -31,6 +31,22 @@
     </div>
   </div>
 
+  <!-- Barra de Navegação Superior / Acesso da Aluna -->
+  <header class="site-header-nav" id="siteHeaderNav">
+    <div class="site-header-container">
+      <div class="site-logo">
+        <span class="logo-badge">📖</span>
+        <span class="logo-text">Desmame Noturno</span>
+      </div>
+      <button type="button" class="btn-student-access" onclick="handleOpenAccessRecoveryModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>Já é aluna? Entrar / Login</span>
+      </button>
+    </div>
+  </header>
 
   <!-- =========================================================================
        TELA DE CHECKOUT (VISÍVEL ANTES DO PAGAMENTO)
@@ -89,6 +105,19 @@
               WhatsApp com DDD
             </label>
             <input type="tel" id="buyerPhone" class="kiwi-input-field" placeholder="(11) 99999-9999" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="kiwi-input-group">
+          <label for="buyerPassword" style="display: flex; align-items: center; justify-content: space-between;">
+            <span>Definir Senha de Acesso (para entrar na Área de Membros)</span>
+            <span style="font-size: 11px; color: #10b981; font-weight: 600;">Opcional (padrão: desmame2026)</span>
+          </label>
+          <div class="password-input-wrapper">
+            <input type="password" id="buyerPassword" class="kiwi-input-field" placeholder="Crie uma senha ou use a padrão (desmame2026)" autocomplete="new-password">
+            <button type="button" class="btn-toggle-password" onclick="handleTogglePasswordVisibility('buyerPassword', this)" title="Mostrar / Ocultar Senha">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
           </div>
         </div>
 
@@ -177,6 +206,12 @@
               <span>⚡ Já realizei o pagamento (Verificar e Liberar)</span>
             </button>
             <div id="manualVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 6px; text-align: left; line-height: 1.4;"></div>
+            <div style="margin-top: 12px; font-size: 12.5px; color: #6b7280; text-align: center;">
+              Já realizou o pagamento pelo app do banco? 
+              <a href="javascript:void(0)" onclick="handleOpenAccessRecoveryModal()" style="color: #059669; font-weight: 700; text-decoration: underline;">
+                Liberar acesso pelo comprovante
+              </a>
+            </div>
           </div>
 
           <!-- Notificação de Sucesso Imediato PIX -->
@@ -524,8 +559,9 @@
           </button>
         </div>
       </div>
-      <div>
-        <button class="btn-view-receipt" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+        <button class="btn-view-receipt" onclick="window.print()">🖨️ Salvar PDF</button>
+        <button class="btn-student-logout" onclick="handleStudentLogout()" title="Sair da área da aluna">🚪 Sair</button>
       </div>
     </div>
     <!-- ACESSO AOS MÓDULOS DO E-BOOK & PDF -->
@@ -568,6 +604,115 @@
 
   </section>
 
+  <!-- MODAL DE LOGIN E ACESSO DA ALUNA -->
+  <div class="pix-modal-overlay" id="accessRecoveryModal">
+    <div class="pix-modal-box" style="max-width: 460px; padding: 22px; text-align: left;">
+      <div class="pix-modal-header" style="background: none; color: #1e293b; padding: 0 0 14px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <span>🎓</span> Área de Membros
+          </h3>
+          <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0;">Faça login com seu e-mail e senha de acesso</p>
+        </div>
+        <button type="button" class="pix-modal-close" onclick="handleCloseAccessRecoveryModal()" style="position: static; font-size: 26px; color: #94a3b8; background: none; border: none; cursor: pointer; line-height: 1;">&times;</button>
+      </div>
+
+      <!-- Abas de Acesso -->
+      <div class="login-nav-tabs">
+        <button type="button" class="login-nav-tab active" id="tabLoginDirect" onclick="switchLoginTab('credentials')">
+          <span>🔐 Login com Senha</span>
+        </button>
+        <button type="button" class="login-nav-tab" id="tabLoginRecovery" onclick="switchLoginTab('recovery')">
+          <span>⚡ Pix / Comprovante</span>
+        </button>
+      </div>
+
+      <!-- PAINEL 1: LOGIN DIRETO COM EMAIL E SENHA -->
+      <div id="loginCredentialsPanel">
+        <form onsubmit="event.preventDefault(); handleStudentLogin();">
+          <div class="kiwi-input-group" style="margin-bottom: 12px;">
+            <label for="loginUsername" style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block;">
+              Seu E-mail ou Nome de Usuário
+            </label>
+            <input type="text" id="loginUsername" class="kiwi-input-field" placeholder="exemplo@email.com ou seu nome" style="width: 100%;" autocomplete="username">
+          </div>
+
+          <div class="kiwi-input-group" style="margin-bottom: 12px;">
+            <label for="loginPassword" style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+              <span>Senha de Acesso</span>
+              <a href="javascript:void(0)" onclick="switchLoginTab('recovery')" style="font-size: 11.5px; color: #059669; font-weight: 600; text-decoration: none;">Esqueceu a senha?</a>
+            </label>
+            <div class="password-input-wrapper">
+              <input type="password" id="loginPassword" class="kiwi-input-field" placeholder="Digite sua senha de acesso" style="width: 100%;" autocomplete="current-password">
+              <button type="button" class="btn-toggle-password" onclick="handleTogglePasswordVisibility('loginPassword', this)" title="Mostrar / Ocultar Senha">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; font-size: 12.5px; color: #64748b;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="rememberLoginCheck" checked style="accent-color: #10b981; width: 15px; height: 15px;">
+              <span>Lembrar meu acesso</span>
+            </label>
+          </div>
+
+          <button type="button" id="btnSubmitLogin" class="btn-login-submit" onclick="handleStudentLogin()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+            </svg>
+            <span>ENTRAR NA ÁREA DE MEMBROS</span>
+          </button>
+
+          <div id="loginFeedback" class="login-feedback-box" style="display: none;"></div>
+
+          <div class="login-hint-badge">
+            <span style="font-size: 16px;">💡</span>
+            <span>Senha padrão de acesso do curso: <strong>desmame2026</strong> (ou a senha cadastrada na compra).</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- PAINEL 2: RECUPERAÇÃO POR COMPROVANTE OU PIX -->
+      <div id="loginRecoveryPanel" style="display: none;">
+        <!-- Opção 1: Reconhecer último Pix deste celular -->
+        <div style="background: #f0fdf4; border: 1.5px solid #10b981; border-radius: 10px; padding: 14px; margin-bottom: 16px; text-align: center;">
+          <p style="font-size: 13px; font-weight: 700; color: #166534; margin-bottom: 8px;">
+            ⚡ Já pagou o Pix neste celular ou computador?
+          </p>
+          <button type="button" id="btnAutoRecover" onclick="handleAutoRecoverRecentPayment()" style="width: 100%; padding: 11px; background: #059669; color: #ffffff; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);">
+            Liberar Meu Curso Agora
+          </button>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 14px; position: relative;">
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 0;">
+          <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ffffff; padding: 0 10px; font-size: 11.5px; color: #94a3b8; font-weight: 600;">OU BUSCAR COMPROVANTE</span>
+        </div>
+
+        <!-- Opção 2: Informar comprovante ou e-mail -->
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px;">
+            ID do comprovante (ex: 178505683281) ou seu e-mail:
+          </label>
+          <input type="text" id="recoveryQueryInput" class="kiwi-input-field" placeholder="Ex: 178505683281 ou seu@email.com" style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 13.5px;">
+          <button type="button" id="btnSubmitRecovery" onclick="handleManualSearchAccess()" style="width: 100%; margin-top: 9px; padding: 11px; background: #0f172a; color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
+            Localizar e Liberar Acesso
+          </button>
+        </div>
+
+        <div id="recoveryFeedback" style="display: none; padding: 10px 12px; border-radius: 8px; font-size: 13px; line-height: 1.4; margin-bottom: 14px;"></div>
+      </div>
+
+      <!-- Suporte WhatsApp -->
+      <div style="text-align: center; border-top: 1px solid #f1f5f9; padding-top: 14px; margin-top: 16px;">
+        <a href="https://wa.me/5519994744297?text=Olá!%20Preciso%20de%20ajuda%20com%20meu%20login%20e%20senha%20do%20Desmame%20Noturno" target="_blank" style="color: #10b981; font-weight: 700; font-size: 12.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+          💬 Dúvida com seu login? Fale no WhatsApp Oficial
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Rodapé Institucional Kiwify -->
   <footer class="kiwi-checkout-footer">
     <p>Este produto não substitui o parecer médico profissional. Sempre consulte um pediatra para questões de saúde
@@ -580,6 +725,7 @@
       <button type="button" class="alan-admin-btn" onclick="toggleBumpMode()">🎁 Alternar Adicional</button>
       <button type="button" class="alan-admin-btn" onclick="resetBuyerSession()">🔄 Resetar para Novo Visitante</button>
       <button type="button" class="alan-admin-btn" onclick="editPixKeyPrompt()">Chave PIX</button>
+      <button type="button" class="alan-admin-btn" onclick="editMasterPasswordPrompt()">🔑 Senha de Acesso</button>
     </div>
   </footer>
 
@@ -593,8 +739,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=25.0"></script>
-  <script src="assets/js/app.js?v=25.0"></script>
+  <script src="assets/js/pix-engine.js?v=26.0"></script>
+  <script src="assets/js/app.js?v=26.0"></script>
 </body>
 
 </html>
