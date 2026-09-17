@@ -48,3 +48,26 @@
 7. **Publicação, Deploy e Cache-Busting**:
    - Incrementar versão (`?v=X.X`) em `index.html` a cada atualização de CSS ou JS.
    - **REGRA OBRIGATÓRIA**: Sempre que qualquer alteração for realizada em qualquer arquivo do projeto, ela deve ser IMEDIATAMENTE commitada e enviada via `git push origin main` para que a Vercel atualize o site no ar sem intervenção manual do usuário.
+
+8. **Identidade Visual Materna & Feminina Unificada (Checkout + Portal)**:
+   - **Paleta Oficial**: Tons *Twilight Rose & Maternal Berry* (`#be185d`, `#9d174d`, `#831843`, `#f43f5e`), fundo acolhedor `#fdf8f9`, bordas rosadas `#fce7f3` e acentos âmbar/pêssego suaves para o bônus diurno (`#fffbeb`, `#fed7aa`, `#f97316`).
+   - **Proibição de Cores Desarmônicas**: Não utilizar verdes de conversão genéricos (`#10b981`, `#28b463`) ou gradientes vermelhos/laranjas agressivos no checkout.
+   - **Tipografia**: Padronizada com **Plus Jakarta Sans** em toda a aplicação.
+   - **Estrutura dos Cards**: Bordas arredondadas (18px a 20px), fundo branco, bordas `1.5px solid #fce7f3` e sombras suaves rosadas.
+
+9. **Cabeçalho de Checkout Limpo**:
+   - O cabeçalho de vendas (`site-header-nav`) NÃO deve exibir botão ou card de "Entrar / Login".
+   - Deve conter apenas a identidade oficial materna centralizada com avatar 🌸, kicker "MÉTODO EXCLUSIVO" e título "Método Desmame Noturno".
+
+10. **Design dos Módulos da Área de Membros (Clean & Objetivo)**:
+   - Manter foco estrito no conteúdo dos 5 passos noturnos e no bônus diurno.
+   - Widgets extras (checklist de ritual noturno, card circular de evolução, banner roxo de boas-vindas) foram removidos para evitar poluição visual.
+   - Cada módulo possui botão de ação direta de 1-clique (`btn-module-open`) para expandir/recolher o passo com clareza.
+   - Badges dos módulos simplificados para `PASSO 01` a `PASSO 05` para perfeita visualização mobile sem quebras de texto.
+
+11. **Garantia de Não-Cache Mobile**:
+   - Carregamento de `ebook/content.json` com cache-busting dinâmico (`?v=` + `Date.now()`) e `{ cache: 'no-store' }`.
+
+12. **Restrições de Ferramental**:
+   - **JAMAIS utilizar `browser_subagent` ou abrir janelas de navegador**: O usuário realiza todos os testes diretamente no próprio smartphone. Validações externas devem usar `read_url_content` silencioso.
+
