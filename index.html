@@ -8,14 +8,14 @@
   <meta name="description"
     content="Aprenda o passo a passo completo e prático para desmamar seu bebê no período noturno com amor, respeito e sem traumas. Acesso imediato após o pagamento via PIX.">
 
-  <!-- Fontes Google estilo Kiwify / Moderno -->
+  <!-- Fontes Google estilo Kiwify / Moderno Materno -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=29.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=30.0">
 </head>
 
 <body>
@@ -538,19 +538,43 @@
        ========================================================================= -->
   <section class="unlocked-portal-wrapper" id="unlockedPortal">
 
-    <!-- Banner de Boas-Vindas & Acesso Liberado -->
+    <!-- BARRA SUPERIOR DO APP MATERNO -->
+    <div class="portal-app-topbar">
+      <div class="portal-topbar-brand">
+        <div class="portal-brand-avatar">🌸</div>
+        <div>
+          <span class="portal-brand-kicker">ÁREA EXCLUSIVA DA MÃE</span>
+          <h1 class="portal-brand-title">Método Desmame Noturno</h1>
+        </div>
+      </div>
+
+      <!-- Ações de Bem-Estar: Modo Quarto Escuro & Ruído Suave -->
+      <div class="portal-topbar-controls">
+        <button type="button" class="btn-portal-pill audio-pill" id="btnToggleAmbientAudio" onclick="handleToggleAmbientAudio()" title="Tocar som de chuva suave/útero para ajudar o bebê a relaxar">
+          <span class="audio-icon">🌧️</span>
+          <span id="labelAmbientAudio">Som Calmante (Tocar)</span>
+        </button>
+
+        <button type="button" class="btn-portal-pill theme-pill" id="btnToggleNightMode" onclick="handleToggleNightMode()" title="Ativar luz suave para ler sem incomodar o sono do bebê">
+          <span class="theme-icon">🌙</span>
+          <span id="labelNightMode">Quarto Escuro</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- BANNER DE BOAS-VINDAS MATERNO (ROSE GOLD & TWILIGHT BERRY) -->
     <div class="unlocked-header-banner">
       <div class="unlocked-header-main">
         <div class="unlocked-badge-access">
-          <span class="pulse-dot"></span> Acesso Imediato e Vitalício
+          <span class="pulse-dot"></span> Acesso Imediato e Vitalício Garantido
         </div>
-        <h2>🎉 Seu acesso está liberado!</h2>
-        <p id="unlockedWelcomeDesc">Seu pagamento foi confirmado com sucesso. Agora você já pode começar o <strong>Método Desmame Noturno</strong>.</p>
+        <h2 id="unlockedWelcomeTitle">🌸 Bem-vinda ao seu refúgio de noites tranquilas!</h2>
+        <p id="unlockedWelcomeDesc">Seu pagamento foi confirmado com sucesso. Agora você tem em mãos um método prático, gradual e cheio de amor para noites inteiras de sono profundo.</p>
         
-        <!-- Botão Principal em Destaque & Ação Secundária -->
+        <!-- Botão Principal em Destaque & Ações -->
         <div class="unlocked-main-cta-row">
           <button type="button" class="btn-start-method-hero" id="btnStartMethod" onclick="handleStartMethod()">
-            ▶ COMEÇAR O MÉTODO
+            <span>▶ COMEÇAR O PASSO A PASSO</span>
           </button>
           <button type="button" id="btnCopyMagicLink" class="btn-secondary-access" onclick="handleCopyAccessMagicLink()">
             📋 <span id="labelCopyMagicLink">Copiar Meu Link de Acesso</span>
@@ -578,68 +602,85 @@
       </div>
     </div>
 
-    <!-- Guia Rápido: Comece por aqui -->
-    <div class="quick-start-card">
-      <div class="quick-start-header">
-        <div class="quick-start-icon-wrap">💡</div>
+    <!-- WIDGET 1: RITUAL NOTURNO DO ACONCHEGO (CHECKLIST INTERATIVO DE SONO) -->
+    <div class="bedtime-routine-widget">
+      <div class="routine-widget-header">
+        <div class="routine-badge-icon">🕯️</div>
         <div>
-          <h4>Comece por aqui: Orientações fundamentais</h4>
-          <p>3 princípios para conduzir o desmame com tranquilidade e apego seguro</p>
+          <span class="routine-kicker">PRÁTICA DIÁRIA COM O BEBÊ</span>
+          <h3 class="routine-title">Ritual Noturno do Aconchego</h3>
+          <p class="routine-subtitle">4 hábitos simples para aplicar hoje à noite antes de colocar o bebê no berço:</p>
         </div>
       </div>
-      <div class="quick-start-grid">
-        <div class="quick-step-item">
-          <span class="quick-step-num">1</span>
-          <div>
-            <strong>Siga a sequência dos 5 módulos</strong>
-            <p>Cada etapa prepara o bebê para a próxima sem rupturas bruscas ou frustração.</p>
+
+      <div class="routine-checklist-grid" id="routineChecklistGrid">
+        <div class="routine-check-card" onclick="toggleRoutineItem(1)">
+          <div class="routine-card-check" id="routineCheck1">○</div>
+          <div class="routine-card-body">
+            <strong>1. Penumbra e tom suave</strong>
+            <p>Reduza as luzes da casa 1 hora antes e fale em tom bem calmo e desacelerado.</p>
           </div>
         </div>
-        <div class="quick-step-item">
-          <span class="quick-step-num">2</span>
-          <div>
-            <strong>Uma mudança de cada vez com afeto</strong>
-            <p>Consistência com carinho. Nunca deixe o bebê chorar sozinho ou desamparado.</p>
+
+        <div class="routine-check-card" onclick="toggleRoutineItem(2)">
+          <div class="routine-card-check" id="routineCheck2">○</div>
+          <div class="routine-card-body">
+            <strong>2. Banho morno & pijama soltinho</strong>
+            <p>Conforto térmico gostoso para sinalizar ao corpinho que o descanso chegou.</p>
           </div>
         </div>
-        <div class="quick-step-item">
-          <span class="quick-step-num">3</span>
-          <div>
-            <strong>Acompanhe o seu progresso</strong>
-            <p>Ao concluir a leitura de cada módulo, marque como concluído para acompanhar sua evolução.</p>
+
+        <div class="routine-check-card" onclick="toggleRoutineItem(3)">
+          <div class="routine-card-check" id="routineCheck3">○</div>
+          <div class="routine-card-body">
+            <strong>3. Ruído de chuva constante</strong>
+            <p>Ligue o som calmante (no topo) para abafar ruídos externos e manter o sono contínuo.</p>
+          </div>
+        </div>
+
+        <div class="routine-check-card" onclick="toggleRoutineItem(4)">
+          <div class="routine-card-check" id="routineCheck4">○</div>
+          <div class="routine-card-body">
+            <strong>4. Colo e presença no despertar</strong>
+            <p>Espere alguns instantes, dê colo e cafuné acolhedor antes de pensar em dar o peito.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Barra de Progresso da Aluna -->
+    <!-- WIDGET 2: BARRA DE PROGRESSO COM VISUAL CIRCULAR & JORNADA -->
     <div class="student-progress-card" id="studentProgressCard">
-      <div class="student-progress-top">
-        <div>
-          <span class="progress-kicker">SUA JORNADA NO MÉTODO</span>
-          <h4 class="progress-title">Progresso do Curso</h4>
+      <div class="progress-dial-wrapper">
+        <div class="progress-dial-left">
+          <svg class="progress-ring-svg" width="68" height="68" viewBox="0 0 68 68">
+            <circle class="progress-ring-bg" cx="34" cy="34" r="28" stroke-width="6"></circle>
+            <circle class="progress-ring-circle" id="progressRingCircle" cx="34" cy="34" r="28" stroke-width="6"></circle>
+          </svg>
+          <div class="progress-ring-text" id="progressRingPercent">0%</div>
         </div>
-        <div class="progress-status-badge" id="progressPercentageText">0% concluído</div>
+        <div class="progress-dial-info">
+          <span class="progress-kicker">SUA EVOLUÇÃO NO MÉTODO</span>
+          <h4 class="progress-title" id="progressTitleStage">Começando sua jornada com carinho</h4>
+          <p class="progress-caption" id="progressCompletedCountText">0 de 5 passos concluídos</p>
+        </div>
       </div>
-      <div class="progress-bar-track">
-        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
-      </div>
+
       <div class="progress-modules-pills" id="progressModulesPills">
         <!-- Renderizado dinamicamente via JS -->
       </div>
     </div>
 
-    <!-- Módulos do Método Noturno (Estilo Curso Premium) -->
+    <!-- MÓDULOS DO MÉTODO NOTURNO (DESIGN ULTRA MODERNO & FEMININO) -->
     <div class="ebook-access-box" id="modulesMainBox">
       <div class="ebook-access-top">
         <div>
           <span class="section-tag-sub">MÉTODO PRINCIPAL</span>
-          <h3>Método Desmame Noturno Passo a Passo 🌙</h3>
-          <p style="font-size: 13.5px; color: #64748b; font-weight: 600; margin-top: 4px;">Orientações práticas para guiar você rumo a noites inteiras de sono tranquilo</p>
+          <h3>Passo a Passo do Desmame Noturno 🌙</h3>
+          <p class="modules-box-desc">Orientações amorosas para você e seu bebê conquistarem noites inteiras de sono profundo</p>
         </div>
         <div class="ebook-actions-group">
           <button class="btn-action-ebook secondary" onclick="window.print()">
-            📄 Salvar Método em PDF
+            📄 Salvar em PDF
           </button>
         </div>
       </div>
@@ -650,13 +691,13 @@
       </div>
     </div>
 
-    <!-- Seção Quem Criou Este Conteúdo -->
+    <!-- Seção Quem Criou Este Conteúdo (Humanizada e Feminina) -->
     <div class="author-story-card">
       <div class="author-avatar-wrap">
         <img src="assets/images/author_mother.jpg" alt="Quem criou o método" class="author-avatar-img">
       </div>
       <div class="author-info-content">
-        <span class="author-kicker">💜 Conexão materna</span>
+        <span class="author-kicker">💜 Conexão de mãe para mãe</span>
         <h3 class="author-title">Quem criou este método?</h3>
         <p class="author-text">
           Eu vivi na pele a exaustão física e emocional das madrugadas acordando várias vezes, o cansaço acumulado e a sensação de que o peito era o único recurso para acalmar meu bebê. Criei este material compartilhando a experiência real e prática que transformou as noites da nossa família.
@@ -839,8 +880,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=29.0"></script>
-  <script src="assets/js/app.js?v=29.0"></script>
+  <script src="assets/js/pix-engine.js?v=30.0"></script>
+  <script src="assets/js/app.js?v=30.0"></script>
 </body>
 
 </html>

@@ -82,6 +82,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   initCountdownTimer();
   updatePriceDisplay();
   initInputHandlers();
+  initBedtimeRoutine();
+  initNightModeState();
   await loadEbookContent();
   checkUnlockStatus();
 
@@ -486,41 +488,99 @@ function handleToggleModuleComplete(moduleId) {
   updateProgressUI();
 }
 
+function handleCompleteAndAdvance(moduleId) {
+  let completed = getCompletedModules();
+  if (!completed.includes(moduleId)) {
+    completed.push(moduleId);
+    localStorage.setItem('desmame_completed_modules', JSON.stringify(completed));
+  }
+  if (appState.ebookData && appState.ebookData.modules) {
+    renderEbookModules(appState.ebookData.modules);
+  }
+  updateProgressUI();
+
+  // Avança com suavidade para o próximo módulo
+  const nextId = moduleId + 1;
+  if (nextId <= 5) {
+    setTimeout(() => {
+      jumpToModule(nextId);
+    }, 280);
+  }
+}
+
 function updateProgressUI() {
   const completed = getCompletedModules();
   const total = 5;
   const completedCount = completed.filter(id => id <= 5).length;
   const percent = Math.min(100, Math.round((completedCount / total) * 100));
 
-  const fill = document.getElementById('progressBarFill');
-  const text = document.getElementById('progressPercentageText');
+  // 1. Atualiza Indicador Circular SVG
+  const circle = document.getElementById('progressRingCircle');
+  const percentText = document.getElementById('progressRingPercent');
+  const titleStage = document.getElementById('progressTitleStage');
+  const countText = document.getElementById('progressCompletedCountText');
   const pillsContainer = document.getElementById('progressModulesPills');
 
-  if (fill) fill.style.width = `${percent}%`;
-  if (text) text.textContent = `${percent}% concluído`;
+  // Circunferência de raio r=28: 2 * PI * 28 ≈ 175.93
+  const circumference = 175.93;
+  if (circle) {
+    const offset = circumference - (percent / 100) * circumference;
+    circle.style.strokeDasharray = `${circumference}`;
+    circle.style.strokeDashoffset = offset;
+  }
+  if (percentText) {
+    percentText.textContent = `${percent}%`;
+  }
+  if (countText) {
+    countText.textContent = `${completedCount} de 5 passos concluídos`;
+  }
 
+  // Título motivacional da jornada materna
+  if (titleStage) {
+    if (percent === 0) {
+      titleStage.textContent = "Começando sua jornada com carinho";
+    } else if (percent <= 20) {
+      titleStage.textContent = "🌱 Passo 1: Transição suave e acolhimento";
+    } else if (percent <= 40) {
+      titleStage.textContent = "🌸 Passo 2: Novas formas de ninar e acalmar";
+    } else if (percent <= 60) {
+      titleStage.textContent = "✨ Passo 3: Ritual previsível consolidado";
+    } else if (percent <= 80) {
+      titleStage.textContent = "⭐ Passo 4: Rompendo a dependência noturna";
+    } else {
+      titleStage.textContent = "🎉 Parabéns! Noites inteiras de sono conquistadas!";
+    }
+  }
+
+  // Pílulas clicáveis de navegação rápida
   if (pillsContainer) {
     pillsContainer.innerHTML = [1, 2, 3, 4, 5].map(num => {
       const isDone = completed.includes(num);
-      return `<span class="progress-pill-item ${isDone ? 'done' : ''}">${isDone ? '✓' : '•'} Módulo 0${num}</span>`;
+      return `
+        <button type="button" class="progress-pill-item ${isDone ? 'done' : ''}" onclick="jumpToModule(${num})" title="Abrir Passo 0${num}">
+          ${isDone ? '✓' : '•'} Passo 0${num}
+        </button>
+      `;
     }).join('');
   }
 }
 
-function handleStartMethod() {
-  const firstModule = document.getElementById('moduleItem1');
-  if (firstModule) {
-    firstModule.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const content = document.getElementById('moduleContent1');
-    const arrow = document.getElementById('moduleArrow1');
-    const btnText = document.getElementById('btnAccessText1');
+function jumpToModule(num) {
+  const item = document.getElementById(`moduleItem${num}`);
+  if (item) {
+    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const content = document.getElementById(`moduleContent${num}`);
+    const arrow = document.getElementById(`moduleArrow${num}`);
     if (content && content.style.display === 'none') {
       content.style.display = 'block';
-      firstModule.classList.add('active');
+      item.classList.add('active');
       if (arrow) arrow.textContent = '▲';
-      if (btnText) btnText.textContent = 'Recolher Conteúdo ▲';
     }
   }
+}
+
+function handleStartMethod() {
+  jumpToModule(1);
 }
 
 function renderEbookModules(modules) {
@@ -533,63 +593,104 @@ function renderEbookModules(modules) {
   const dayModules = (bonusData && bonusData.modules) || [];
   const completed = getCompletedModules();
 
-  // 1. Módulos Noturnos (1 a 5) com visual refinado de Área de Curso
+  const moduleThemes = {
+    1: {
+      themeClass: 'mod-theme-rose',
+      badge: 'PASSO 01 • TRANSIÇÃO SUAVE',
+      icon: '🌙',
+      tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Não tente retirar todas as mamadas de uma só vez. Comece escolhendo a mamada que você sente menos necessidade e comemore cada pequena vitória com muito carinho.'
+    },
+    2: {
+      themeClass: 'mod-theme-lilac',
+      badge: 'PASSO 02 • ACOLHIMENTO E COLO',
+      icon: '🤍',
+      tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Quando o bebê despertar, ofereça o calor do seu peito com cafuné e voz sussurrada. A sensação de segurança é o que ajuda o corpinho dele a voltar ao sono profundo.'
+    },
+    3: {
+      themeClass: 'mod-theme-peach',
+      badge: 'PASSO 03 • RITUAL DO SONO',
+      icon: '🛁',
+      tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> A previsibilidade acalma o sistema nervoso. Repita sempre a mesma sequência: banho morno + pijama confortável + penumbra e ruído de chuva.'
+    },
+    4: {
+      themeClass: 'mod-theme-violet',
+      badge: 'PASSO 04 • QUEBRA DE ASSOCIAÇÃO',
+      icon: '✨',
+      tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Espere 30 a 60 segundos antes de oferecer o peito no primeiro despertar. Muitas vezes é só uma troca de ciclo de sono que se resolve com um toque suave nas costas.'
+    },
+    5: {
+      themeClass: 'mod-theme-berry',
+      badge: 'PASSO 05 • CONSISTÊNCIA & PAZ',
+      icon: '🌸',
+      tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Consistência amorosa é o segredo! Nunca deixe o bebê chorar desamparado. Em poucos dias, noites inteiras e contínuas de sono serão a nova realidade da sua família!'
+    }
+  };
+
+  // Renderização Feminina e Criativa dos Módulos Noturnos
   container.innerHTML = nocturnalModules.map((mod, index) => {
     const isCompleted = completed.includes(mod.id);
-    const modNumber = mod.number || `MÓDULO 0${mod.id}`;
     let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Módulo\s+[0-9]+:\s*/i, '');
-    const icon = mod.icon || (mod.id === 1 ? '🌙' : mod.id === 2 ? '🤍' : mod.id === 3 ? '🛁' : mod.id === 4 ? '✨' : '🌙');
-    const duration = mod.duration || '5 minutos';
+    const duration = mod.duration || '5 min';
     const summary = mod.summary || 'Aprenda orientações práticas e acolhedoras para este passo do desmame.';
+    const theme = moduleThemes[mod.id] || {
+      themeClass: 'mod-theme-rose',
+      badge: `PASSO 0${mod.id}`,
+      icon: '🌙',
+      tip: ''
+    };
 
     return `
-      <div class="module-card-item ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
-        <!-- Topo do Card com Número e Status -->
+      <div class="module-card-item ${theme.themeClass} ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+        <!-- Topo Elegante do Card -->
         <div class="module-card-header" onclick="toggleModule(${mod.id})">
-          <div class="module-card-header-left">
-            <div class="module-number-row">
-              <span class="module-number-pill">${modNumber}</span>
+          <div class="module-card-visual-pill">
+            <span class="module-visual-icon">${theme.icon}</span>
+          </div>
+          <div class="module-card-header-center">
+            <div class="module-badge-row">
+              <span class="module-theme-badge">${theme.badge}</span>
               ${isCompleted 
                 ? `<span class="module-status-tag completed">✓ Concluído</span>` 
                 : `<span class="module-status-tag pending">Pendente</span>`
               }
             </div>
-            <h4 class="module-title-main">${icon} ${cleanTitle}</h4>
+            <h4 class="module-title-main">${cleanTitle}</h4>
             <div class="module-meta-info-row">
-              <span class="module-meta-time">⏱️ ${duration}</span>
-              <span class="module-meta-dot">•</span>
-              <span class="module-meta-type">Método Noturno</span>
+              <span>⏱️ ${duration} de leitura</span>
+              <span class="meta-dot">•</span>
+              <span>🌸 Guia Acolhedor</span>
             </div>
           </div>
-          <button type="button" class="module-card-chevron" id="moduleArrow${mod.id}" aria-label="Expandir módulo">
-            ${index === 0 ? '▲' : '▼'}
-          </button>
+          <div class="module-card-header-actions">
+            <button type="button" class="btn-module-quick-check ${isCompleted ? 'is-done' : ''}" onclick="event.stopPropagation(); handleToggleModuleComplete(${mod.id});" title="${isCompleted ? 'Desmarcar' : 'Marcar como concluído'}">
+              <span class="check-icon">${isCompleted ? '✓' : '○'}</span>
+            </button>
+            <div class="module-card-chevron" id="moduleArrow${mod.id}">
+              ${index === 0 ? '▲' : '▼'}
+            </div>
+          </div>
         </div>
 
-        <!-- O que você vai aprender -->
+        <!-- O que você vai aplicar neste passo -->
         <div class="module-learn-summary-box">
           <div class="learn-summary-title">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
-            <span>O que você vai aprender:</span>
+            <span>O que você vai aplicar:</span>
           </div>
           <p class="learn-summary-desc">${summary}</p>
         </div>
 
-        <!-- Ações do Módulo -->
-        <div class="module-actions-bar">
-          <button type="button" class="btn-module-open" onclick="toggleModule(${mod.id})">
-            <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
-          </button>
-          <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
-            ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
-          </button>
-        </div>
-
         <!-- Conteúdo Expandido do Módulo -->
         <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+          ${theme.tip ? `
+            <div class="golden-tip-banner">
+              ${theme.tip}
+            </div>
+          ` : ''}
+
           <div class="module-chapters-area">
             ${mod.chapters.map(chap => {
               const isDayHook = chap.title && (chap.title.includes('Desmame Durante o Dia') || (chap.content && chap.content.includes('desmamar na parte do dia')));
@@ -599,7 +700,7 @@ function renderEbookModules(modules) {
                   <p class="chapter-text">${chap.content}</p>
                   ${isDayHook && !hasBump ? `
                     <div style="margin-top: 14px;">
-                      <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 10px 18px;" onclick="handleOpenBumpUpgradeModal()">
+                      <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 11px 20px;" onclick="handleOpenBumpUpgradeModal()">
                         ☀️ Conhecer Bônus Opcional: Desmame Durante o Dia (R$ 9,90)
                       </button>
                     </div>
@@ -609,13 +710,13 @@ function renderEbookModules(modules) {
             }).join('')}
           </div>
 
-          <!-- Rodapé do Módulo com Conclusão de Leitura -->
+          <!-- Rodapé do Módulo com Conclusão e Avanço -->
           <div class="module-bottom-status-bar">
             <div class="module-bottom-text">
-              <span>${isCompleted ? '🎉 Parabéns! Você concluiu este módulo.' : 'Leu todo o conteúdo? Marque para avançar seu progresso:'}</span>
+              <span>${isCompleted ? '🌸 Passo concluído com sucesso!' : 'Leu as orientações? Marque para avançar:'}</span>
             </div>
-            <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
-              ${isCompleted ? '✓ Módulo Concluído' : '✓ Concluir Este Módulo'}
+            <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleCompleteAndAdvance(${mod.id})">
+              ${isCompleted ? '✓ Passo Concluído' : '✓ Concluir Este Passo e Avançar →'}
             </button>
           </div>
         </div>
@@ -626,7 +727,7 @@ function renderEbookModules(modules) {
   // 2. Renderiza Seção Separada do Bônus Especial Diurno
   renderBonusSection(dayModules, hasBump);
 
-  // 3. Atualiza Barra de Progresso
+  // 3. Atualiza Indicador Circular de Progresso
   updateProgressUI();
 }
 
@@ -650,13 +751,13 @@ function renderBonusSection(dayModules, hasBump) {
         </div>
         <h4 class="bump-locked-heading">Quer aprender o Desmame Durante o Dia?</h4>
         <p class="bump-locked-text">
-          Você já tem acesso garantido ao método de <strong>Desmame Noturno</strong>. Este conteúdo adicional ensina estratégias práticas e específicas para reduzir as mamadas durante o dia de forma gradual e amorosa.
+          Você já tem acesso garantido ao método de <strong>Desmame Noturno</strong>. Este conteúdo adicional ensina estratégias práticas e acolhedoras para reduzir as mamadas durante o dia de forma gradual e amorosa.
         </p>
         <div class="bump-locked-perks">
           <div class="bump-perk-item">✓ <strong>Passo 01:</strong> Observação e desvio de atenção</div>
-          <div class="bump-perk-item">✓ <strong>Passo 02:</strong> Estratégia do sabor</div>
+          <div class="bump-perk-item">✓ <strong>Passo 02:</strong> Estratégia do sabor seguro</div>
           <div class="bump-perk-item">✓ <strong>Passo 03:</strong> Rotina alimentar alternativa</div>
-          <div class="bump-perk-item">✓ <strong>Passo 04:</strong> Redução gradual</div>
+          <div class="bump-perk-item">✓ <strong>Passo 04:</strong> Redução gradual diurna</div>
           <div class="bump-perk-item">✓ <strong>Passo 05:</strong> Acolhimento e carinho</div>
         </div>
         <div class="bump-locked-cta-box">
@@ -690,48 +791,47 @@ function renderBonusSection(dayModules, hasBump) {
           const isCompleted = completed.includes(mod.id);
           const modNumber = mod.number || `PASSO 0${index + 1}`;
           let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Passo\s+[0-9]+:\s*/i, '');
-          const duration = mod.duration || '3 minutos';
+          const duration = mod.duration || '3 min';
           const summary = mod.summary || 'Orientações práticas para o desmame durante o dia.';
 
           return `
-            <div class="module-card-item module-card-bump ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+            <div class="module-card-item module-card-bump mod-theme-peach ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
               <div class="module-card-header" onclick="toggleModule(${mod.id})">
-                <div class="module-card-header-left">
-                  <div class="module-number-row">
-                    <span class="module-number-pill vip">${modNumber}</span>
+                <div class="module-card-visual-pill">
+                  <span class="module-visual-icon">☀️</span>
+                </div>
+                <div class="module-card-header-center">
+                  <div class="module-badge-row">
+                    <span class="module-theme-badge vip">${modNumber}</span>
                     <span class="unlocked-badge-pill" style="font-size: 11px;">✨ Bônus VIP</span>
                     ${isCompleted ? '<span class="module-status-tag completed">✓ Concluído</span>' : ''}
                   </div>
-                  <h4 class="module-title-main">☀️ ${cleanTitle}</h4>
+                  <h4 class="module-title-main">${cleanTitle}</h4>
                   <div class="module-meta-info-row">
-                    <span class="module-meta-time">⏱️ ${duration}</span>
-                    <span class="module-meta-dot">•</span>
-                    <span class="module-meta-type">Conteúdo Diurno</span>
+                    <span>⏱️ ${duration} de leitura</span>
+                    <span class="meta-dot">•</span>
+                    <span>Conteúdo Diurno</span>
                   </div>
                 </div>
-                <button type="button" class="module-card-chevron" id="moduleArrow${mod.id}">
-                  ${index === 0 ? '▲' : '▼'}
-                </button>
+                <div class="module-card-header-actions">
+                  <button type="button" class="btn-module-quick-check ${isCompleted ? 'is-done' : ''}" onclick="event.stopPropagation(); handleToggleModuleComplete(${mod.id});" title="${isCompleted ? 'Desmarcar' : 'Marcar como concluído'}">
+                    <span class="check-icon">${isCompleted ? '✓' : '○'}</span>
+                  </button>
+                  <div class="module-card-chevron" id="moduleArrow${mod.id}">
+                    ${index === 0 ? '▲' : '▼'}
+                  </div>
+                </div>
               </div>
 
               <div class="module-learn-summary-box">
                 <div class="learn-summary-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                   </svg>
-                  <span>O que você vai aprender:</span>
+                  <span>O que você vai aplicar:</span>
                 </div>
                 <p class="learn-summary-desc">${summary}</p>
-              </div>
-
-              <div class="module-actions-bar">
-                <button type="button" class="btn-module-open" onclick="toggleModule(${mod.id})">
-                  <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
-                </button>
-                <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
-                  ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
-                </button>
               </div>
 
               <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
@@ -746,7 +846,7 @@ function renderBonusSection(dayModules, hasBump) {
 
                 <div class="module-bottom-status-bar">
                   <div class="module-bottom-text">
-                    <span>${isCompleted ? 'Passo concluído com sucesso!' : 'Leu o passo? Marque para avançar:'}</span>
+                    <span>${isCompleted ? '🌸 Passo diurno concluído com sucesso!' : 'Leu o passo? Marque para avançar:'}</span>
                   </div>
                   <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
                     ${isCompleted ? '✓ Passo Concluído' : '✓ Concluir Este Passo'}
@@ -759,6 +859,144 @@ function renderBonusSection(dayModules, hasBump) {
       </div>
     `;
   }
+}
+
+/* ==========================================================================
+   WIDGETS INTERATIVOS: ÁUDIO CALMANTE (CHUVA SUAVE) & MODO QUARTO ESCURO
+   ========================================================================== */
+let ambientAudioCtx = null;
+let ambientNoiseNode = null;
+let ambientGainNode = null;
+let isAmbientPlaying = false;
+
+function handleToggleAmbientAudio() {
+  const btn = document.getElementById('btnToggleAmbientAudio');
+  const label = document.getElementById('labelAmbientAudio');
+  
+  if (isAmbientPlaying) {
+    stopAmbientNoise();
+    isAmbientPlaying = false;
+    if (btn) btn.classList.remove('playing');
+    if (label) label.textContent = 'Som Calmante (Tocar)';
+  } else {
+    startAmbientNoise();
+    isAmbientPlaying = true;
+    if (btn) btn.classList.add('playing');
+    if (label) label.textContent = '🌧️ Parar Som (Tocando)';
+  }
+}
+
+function startAmbientNoise() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    if (!ambientAudioCtx) {
+      ambientAudioCtx = new AudioContext();
+    }
+    if (ambientAudioCtx.state === 'suspended') {
+      ambientAudioCtx.resume();
+    }
+
+    const bufferSize = ambientAudioCtx.sampleRate * 2;
+    const noiseBuffer = ambientAudioCtx.createBuffer(1, bufferSize, ambientAudioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.035;
+      b6 = white * 0.115926;
+    }
+
+    const whiteNoise = ambientAudioCtx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.loop = true;
+
+    const filter = ambientAudioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(650, ambientAudioCtx.currentTime);
+
+    ambientGainNode = ambientAudioCtx.createGain();
+    ambientGainNode.gain.setValueAtTime(0.01, ambientAudioCtx.currentTime);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.35, ambientAudioCtx.currentTime + 1.2);
+
+    whiteNoise.connect(filter);
+    filter.connect(ambientGainNode);
+    ambientGainNode.connect(ambientAudioCtx.destination);
+
+    whiteNoise.start();
+    ambientNoiseNode = whiteNoise;
+  } catch (err) {
+    console.warn('Web Audio indisponível:', err);
+  }
+}
+
+function stopAmbientNoise() {
+  if (ambientGainNode && ambientAudioCtx) {
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.001, ambientAudioCtx.currentTime + 0.5);
+    setTimeout(() => {
+      if (ambientNoiseNode) {
+        try { ambientNoiseNode.stop(); } catch (e) {}
+        ambientNoiseNode = null;
+      }
+    }, 500);
+  } else if (ambientNoiseNode) {
+    try { ambientNoiseNode.stop(); } catch (e) {}
+    ambientNoiseNode = null;
+  }
+}
+
+function initNightModeState() {
+  const isDark = localStorage.getItem('desmame_bedtime_dark_mode') === 'true';
+  const portal = document.getElementById('unlockedPortal');
+  const label = document.getElementById('labelNightMode');
+  if (isDark && portal) {
+    portal.classList.add('bedtime-dark-mode');
+    if (label) label.textContent = '☀️ Modo Claro';
+  }
+}
+
+function handleToggleNightMode() {
+  const portal = document.getElementById('unlockedPortal');
+  const label = document.getElementById('labelNightMode');
+  if (!portal) return;
+
+  const isDark = portal.classList.toggle('bedtime-dark-mode');
+  localStorage.setItem('desmame_bedtime_dark_mode', isDark ? 'true' : 'false');
+  if (label) {
+    label.textContent = isDark ? '☀️ Modo Claro' : '🌙 Quarto Escuro';
+  }
+}
+
+function initBedtimeRoutine() {
+  const saved = JSON.parse(localStorage.getItem('desmame_bedtime_routine') || '[]');
+  [1, 2, 3, 4].forEach(id => {
+    const card = document.querySelector(`.routine-check-card:nth-child(${id})`);
+    const check = document.getElementById(`routineCheck${id}`);
+    if (saved.includes(id)) {
+      if (card) card.classList.add('checked');
+      if (check) check.textContent = '✓';
+    } else {
+      if (card) card.classList.remove('checked');
+      if (check) check.textContent = '○';
+    }
+  });
+}
+
+function toggleRoutineItem(id) {
+  let saved = JSON.parse(localStorage.getItem('desmame_bedtime_routine') || '[]');
+  if (saved.includes(id)) {
+    saved = saved.filter(item => item !== id);
+  } else {
+    saved.push(id);
+  }
+  localStorage.setItem('desmame_bedtime_routine', JSON.stringify(saved));
+  initBedtimeRoutine();
 }
 
 function handleEditModuleVideo(moduleId, moduleTitle) {
@@ -1887,15 +2125,21 @@ function checkUnlockStatus() {
     const savedName = localStorage.getItem('desmame_buyer_name') || appState.buyerName;
     const savedEmail = localStorage.getItem('desmame_buyer_email') || appState.buyerEmail;
 
+    const welcomeTitle = document.getElementById('unlockedWelcomeTitle');
     const welcomeDesc = document.getElementById('unlockedWelcomeDesc');
+    if (welcomeTitle && savedName) {
+      welcomeTitle.innerHTML = `🌸 Olá, <strong>${savedName}</strong>! Bem-vinda ao seu refúgio de noites tranquilas!`;
+    }
     if (welcomeDesc) {
       if (savedName) {
-        welcomeDesc.innerHTML = `Olá, <strong>${savedName}</strong>! Seu pagamento foi confirmado com sucesso. Agora você já pode começar o <strong>Método Desmame Noturno</strong>.`;
+        welcomeDesc.innerHTML = `Seu acesso permanente está 100% liberado. Aqui está o seu passo a passo acolhedor para noites inteiras de sono tranquilo com o seu bebê.`;
       } else {
-        welcomeDesc.innerHTML = `Seu pagamento foi confirmado com sucesso. Agora você já pode começar o <strong>Método Desmame Noturno</strong>.`;
+        welcomeDesc.innerHTML = `Seu pagamento foi confirmado com sucesso. Agora você já pode começar o seu passo a passo acolhedor do <strong>Método Desmame Noturno</strong>.`;
       }
     }
 
+    initBedtimeRoutine();
+    initNightModeState();
     updateProgressUI();
 
     const whatsNotice = document.getElementById('accessWhatsappNoticeText');
