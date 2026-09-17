@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadEbookContent();
   checkUnlockStatus();
 
+  if (!appState.isPaid) {
+    initInlineMercadoPagoPix();
+  }
+
   const bumpCheck = document.getElementById('orderBumpCheck');
   if (bumpCheck) {
     bumpCheck.checked = appState.hasBump;
@@ -457,6 +461,9 @@ function handleToggleBump(checkbox) {
   appState.hasBump = checkbox.checked;
   localStorage.setItem('desmame_has_bump', String(checkbox.checked));
   updatePriceDisplay();
+  if (!appState.isPaid) {
+    initInlineMercadoPagoPix();
+  }
 }
 
 function getCurrentTotal() {
@@ -565,48 +572,55 @@ function updatePriceDisplay() {
   const pixModalAmount = document.getElementById('pixModalAmount');
   if (pixModalAmount) pixModalAmount.textContent = formatted;
 
-  // 7. Atualiza o QR Code e Copia e Cola na tela
+  // 7. Valor no box direto de pagamento
+  const directBoxAmountTag = document.getElementById('directBoxAmountTag');
+  if (directBoxAmountTag) directBoxAmountTag.textContent = formatted;
+
+  const inlineSuccessTag = document.getElementById('inlineSuccessTag');
+  if (inlineSuccessTag) inlineSuccessTag.textContent = `✅ STATUS: PAGO (${formatted})`;
+
+  // 8. Atualiza o QR Code e Copia e Cola na tela
   renderInlinePix();
 }
 
 /* ==========================================================================
+   MERCADO PAGO PIX INTEGRATION & REAL-TIME CHECKOUT
+   ========================================================================== */
 let currentMpPaymentId = null;
 let mpPollingInterval = null;
 let autoCheckTimer = null;
+let currentMainPixCode = '';
+let unlockCountdownInterval = null;
 
-async function handleOpenPixModal() {
-  const buyerNameInput = document.getElementById('buyerName');
-  const buyerEmailInput = document.getElementById('buyerEmail');
-  const buyerPhoneInput = document.getElementById('buyerPhone');
+/**
+ * Inicializa o PIX do Mercado Pago diretamente na tela de checkout principal
+ */
+async function initInlineMercadoPagoPix() {
+  if (appState.isPaid) return;
 
-  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || 'Aluna Desmame Noturno';
-  const buyerEmail = buyerEmailInput ? buyerEmailInput.value.trim() : '';
-  const buyerPhone = buyerPhoneInput ? buyerPhoneInput.value.trim() : '';
-
-  if (buyerName && buyerName !== 'Aluna Desmame Noturno') localStorage.setItem('desmame_buyer_name', buyerName);
-  if (buyerEmail) localStorage.setItem('desmame_buyer_email', buyerEmail);
-  if (buyerPhone) localStorage.setItem('desmame_buyer_phone', buyerPhone);
+  const qrImg = document.getElementById('mainPixQrImage');
+  const qrCanvas = document.getElementById('mainPixQrCanvas');
+  const qrLoading = document.getElementById('mainPixLoading');
+  const statusEl = document.getElementById('mainPaymentStatusText');
+  const tagEl = document.getElementById('directBoxAmountTag');
 
   const totalAmount = getCurrentTotal();
+  const formatted = totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  if (tagEl) tagEl.textContent = formatted;
 
-  // Abre modal imediatamente
-  const modal = document.getElementById('pixModal');
-  if (modal) modal.classList.add('active');
+  if (qrLoading) qrLoading.style.display = 'flex';
+  if (qrImg) qrImg.style.display = 'none';
+  if (qrCanvas) qrCanvas.style.display = 'none';
 
-  const pendingContent = document.getElementById('pixPendingContent');
-  const successNotification = document.getElementById('pixPaidNotification');
-  if (pendingContent) pendingContent.style.display = 'block';
-  if (successNotification) successNotification.style.display = 'none';
+  if (statusEl) {
+    statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Conectando ao Mercado Pago...</span>`;
+  }
 
-  const codeBox = document.getElementById('pixCopyCodeText');
-  const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
-  const qrImage = document.getElementById('pixQrImage');
-  const canvas = document.getElementById('pixQrCanvas');
+  const buyerNameInput = document.getElementById('buyerName');
+  const buyerEmailInput = document.getElementById('buyerEmail');
+  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || 'Aluna Desmame Noturno';
+  const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || 'contato@desmamenoturno.com';
 
-  if (codeBox) codeBox.textContent = 'Gerando PIX oficial via Mercado Pago...';
-  if (statusEl) statusEl.textContent = 'Conectando ao Mercado Pago...';
-
-  // 1. Tenta gerar via API do Mercado Pago
   try {
     const res = await fetch('/api/create-pix', {
       method: 'POST',
@@ -622,76 +636,88 @@ async function handleOpenPixModal() {
     const data = await res.json();
 
     if (res.ok && data.success && data.qr_code) {
-      currentMpPaymentId = data.payment_id;
+      currentMainPixCode = data.qr_code;
+      currentMpPaymentId = data.order_id || data.payment_id;
 
-      if (codeBox) {
-        codeBox.textContent = data.qr_code;
-        codeBox.setAttribute('data-full-code', data.qr_code);
+      if (data.qr_code_base64 && qrImg) {
+        qrImg.src = `data:image/png;base64,${data.qr_code_base64}`;
+        qrImg.style.display = 'block';
+        if (qrCanvas) qrCanvas.style.display = 'none';
+      } else if (qrCanvas && typeof window.generateQRCodeCanvas === 'function') {
+        if (qrImg) qrImg.style.display = 'none';
+        qrCanvas.style.display = 'block';
+        window.generateQRCodeCanvas(data.qr_code, qrCanvas, 190);
+      }
+      if (qrLoading) qrLoading.style.display = 'none';
+
+      if (statusEl) {
+        statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Aguardando pagamento no Mercado Pago...</span>`;
       }
 
-      if (data.qr_code_base64 && qrImage) {
-        qrImage.src = `data:image/png;base64,${data.qr_code_base64}`;
-        qrImage.style.display = 'block';
-        if (canvas) canvas.style.display = 'none';
-      } else if (canvas && typeof window.generateQRCodeCanvas === 'function') {
-        if (qrImage) qrImage.style.display = 'none';
-        canvas.style.display = 'block';
-        window.generateQRCodeCanvas(data.qr_code, canvas, 220);
-      }
-
-      // Inicia verificação em tempo real
-      const trackingId = data.order_id || data.payment_id;
-      startMercadoPagoPolling(trackingId);
+      startMercadoPagoPolling(currentMpPaymentId);
       return;
-    } else {
-      console.warn('Mercado Pago API indisponível ou aguardando MP_ACCESS_TOKEN:', data);
     }
   } catch (err) {
-    console.warn('Falha conectando à API do Mercado Pago, usando fallback:', err);
+    console.warn('Erro chamando API do Mercado Pago:', err);
   }
 
-  // Fallback seguro caso MP_ACCESS_TOKEN ainda não tenha sido inserido na Vercel
-  renderFallbackPix(totalAmount);
-}
-
-function renderFallbackPix(totalAmount) {
-  const qrImage = document.getElementById('pixQrImage');
-  const canvas = document.getElementById('pixQrCanvas');
-  if (qrImage) qrImage.style.display = 'none';
-  if (canvas) canvas.style.display = 'block';
-
-  let pixPayload = '';
+  // Fallback local via PixEngine caso API offline
   try {
-    pixPayload = window.PixEngine.generatePayload({
+    currentMainPixCode = window.PixEngine.generatePayload({
       key: appState.pixKey,
       name: appState.pixRecipient,
       city: appState.pixCity,
       amount: totalAmount,
       txId: '***'
     });
+    if (qrCanvas && typeof window.generateQRCodeCanvas === 'function') {
+      window.generateQRCodeCanvas(currentMainPixCode, qrCanvas, 190);
+      qrCanvas.style.display = 'block';
+      if (qrImg) qrImg.style.display = 'none';
+      if (qrLoading) qrLoading.style.display = 'none';
+    }
+    if (statusEl) {
+      statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Aguardando confirmação do PIX...</span>`;
+    }
   } catch (e) {
-    console.error('Erro gerando payload:', e);
+    console.error('Erro no fallback de PIX:', e);
   }
-
-  const codeBox = document.getElementById('pixCopyCodeText');
-  if (codeBox) {
-    codeBox.textContent = pixPayload;
-    codeBox.setAttribute('data-full-code', pixPayload);
-  }
-
-  if (canvas && typeof window.generateQRCodeCanvas === 'function') {
-    window.generateQRCodeCanvas(pixPayload, canvas, 220);
-  }
-
-  startAutoPaymentDetector();
 }
 
+/**
+ * Copia o código PIX Oficial do Mercado Pago com feedback visual instantâneo
+ */
+function handleCopyMainPixCode() {
+  if (!currentMainPixCode) {
+    initInlineMercadoPagoPix();
+  }
+  const code = currentMainPixCode;
+  const label = document.getElementById('labelCopyMainPix');
+
+  if (navigator.clipboard && code) {
+    navigator.clipboard.writeText(code).then(() => {
+      if (label) {
+        const orig = label.textContent;
+        label.textContent = "✅ CÓDIGO PIX COPIADO COM SUCESSO!";
+        setTimeout(() => { label.textContent = orig; }, 3000);
+      }
+    }).catch(() => {
+      prompt("Copie o código PIX Copia e Cola abaixo:", code);
+    });
+  } else if (code) {
+    prompt("Copie o código PIX Copia e Cola abaixo:", code);
+  }
+}
+
+/**
+ * Polling em tempo real consultando se o Mercado Pago já deu baixa no PIX
+ */
 function startMercadoPagoPolling(paymentId) {
   stopPaymentPolling();
 
-  const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
+  const statusEl = document.getElementById('mainPaymentStatusText');
   if (statusEl) {
-    statusEl.innerHTML = `<span>⚡ Aguardando pagamento no Mercado Pago...</span>`;
+    statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Aguardando pagamento no Mercado Pago...</span>`;
   }
 
   mpPollingInterval = setInterval(async () => {
@@ -700,16 +726,19 @@ function startMercadoPagoPolling(paymentId) {
       if (!res.ok) return;
       const data = await res.json();
 
-      if (data.status === 'approved') {
+      if (data.status === 'approved' || data.is_approved) {
         stopPaymentPolling();
         showPaymentSuccessAndUnlock();
       }
     } catch (e) {
       console.error('Erro no polling do Mercado Pago:', e);
     }
-  }, 2500);
+  }, 2000);
 }
 
+/**
+ * Sinal sonoro de sucesso ao aprovar o PIX
+ */
 function playSuccessSound() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -729,26 +758,37 @@ function playSuccessSound() {
   }
 }
 
-let unlockCountdownInterval = null;
-
+/**
+ * Exibe confirmação visual de pagamento na tela com contagem de 3s e desbloqueia o portal
+ */
 function showPaymentSuccessAndUnlock() {
   stopPaymentPolling();
   playSuccessSound();
 
+  // Esconde área de espera e exibe o bloco verde comemorativo diretamente na página
+  const inlinePaymentArea = document.getElementById('inlinePaymentArea');
+  const inlineSuccessArea = document.getElementById('inlineSuccessArea');
+  const inlineCountdown = document.getElementById('inlineRedirectCountdown');
+
+  if (inlinePaymentArea) inlinePaymentArea.style.display = 'none';
+  if (inlineSuccessArea) inlineSuccessArea.style.display = 'block';
+
+  // Atualiza modal se estiver aberto
   const pendingContent = document.getElementById('pixPendingContent');
   const successNotification = document.getElementById('pixPaidNotification');
   const countdownEl = document.getElementById('redirectCountdown');
-
   if (pendingContent) pendingContent.style.display = 'none';
   if (successNotification) successNotification.style.display = 'block';
 
   let seconds = 3;
+  if (inlineCountdown) inlineCountdown.textContent = seconds;
   if (countdownEl) countdownEl.textContent = seconds;
 
   if (unlockCountdownInterval) clearInterval(unlockCountdownInterval);
 
   unlockCountdownInterval = setInterval(() => {
     seconds--;
+    if (inlineCountdown) inlineCountdown.textContent = seconds;
     if (countdownEl) countdownEl.textContent = seconds;
     if (seconds <= 0) {
       clearInterval(unlockCountdownInterval);
@@ -773,44 +813,6 @@ function stopPaymentPolling() {
   }
 }
 
-function startAutoPaymentDetector() {
-  stopPaymentPolling();
-  let secondsLeft = 10;
-  const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
-  if (statusEl) {
-    statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
-  }
-
-  autoCheckTimer = setInterval(() => {
-    secondsLeft--;
-    if (statusEl) {
-      if (secondsLeft > 0) {
-        statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
-      } else {
-        showPaymentSuccessAndUnlock();
-      }
-    }
-  }, 1000);
-}
-
-function handleDirectUnlockCheck() {
-  const buyerNameInput = document.getElementById('buyerName');
-  const buyerEmailInput = document.getElementById('buyerEmail');
-  const buyerPhoneInput = document.getElementById('buyerPhone');
-
-  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || 'Aluna Desmame Noturno';
-  const buyerEmail = buyerEmailInput ? buyerEmailInput.value.trim() : '';
-  const buyerPhone = buyerPhoneInput ? buyerPhoneInput.value.trim() : '';
-
-  if (buyerName && buyerName !== 'Aluna Desmame Noturno') localStorage.setItem('desmame_buyer_name', buyerName);
-  if (buyerEmail) localStorage.setItem('desmame_buyer_email', buyerEmail);
-  if (buyerPhone) localStorage.setItem('desmame_buyer_phone', buyerPhone);
-
-  const modal = document.getElementById('pixModal');
-  if (modal) modal.classList.add('active');
-  showPaymentSuccessAndUnlock();
-}
-
 function handleClosePixModal() {
   const modal = document.getElementById('pixModal');
   if (modal) {
@@ -827,7 +829,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Fechar ao clicar fora da caixa do modal (no fundo escuro)
+// Fechar ao clicar fora da caixa do modal
 window.addEventListener('click', (e) => {
   const modal = document.getElementById('pixModal');
   if (modal && e.target === modal) {
@@ -839,41 +841,23 @@ window.addEventListener('click', (e) => {
   }
 });
 
-function handleCopyPixCode() {
-  const codeBox = document.getElementById('pixCopyCodeText');
-  const btnLabel = document.getElementById('copyPixBtnLabel');
-  const code = codeBox ? (codeBox.getAttribute('data-full-code') || codeBox.textContent) : '';
+function handleOpenPixModal() {
+  initInlineMercadoPagoPix();
+}
 
-  if (navigator.clipboard && code) {
-    navigator.clipboard.writeText(code).then(() => {
-      if (btnLabel) {
-        const original = btnLabel.textContent;
-        btnLabel.textContent = "✅ Código PIX Copiado com Sucesso!";
-        setTimeout(() => { btnLabel.textContent = original; }, 3000);
-      }
-    });
-  } else {
-    alert("Código copiado: " + code);
-  }
+function handleCopyPixCode() {
+  handleCopyMainPixCode();
 }
 
 function handleCopyDirectPixKey() {
   const key = appState.directPixKey || '5519994744297';
-  
   if (navigator.clipboard) {
     navigator.clipboard.writeText(key).then(() => {
-      // Feedback nos botões
       const btn1 = document.getElementById('labelDirectCopyForm');
-      const btn2 = document.getElementById('labelDirectCopyModal');
       if (btn1) {
         const orig = btn1.textContent;
         btn1.textContent = "✅ Copiada!";
         setTimeout(() => { btn1.textContent = orig; }, 3000);
-      }
-      if (btn2) {
-        const orig = btn2.textContent;
-        btn2.textContent = "✅ Copiada!";
-        setTimeout(() => { btn2.textContent = orig; }, 3000);
       }
       alert(`Chave PIX copiada com sucesso:\n${key}\n\nAbra o aplicativo do seu banco e cole na opção PIX > Telefone.`);
     }).catch(() => {
