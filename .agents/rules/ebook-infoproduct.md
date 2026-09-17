@@ -34,12 +34,16 @@
 
 6. **Exibição Dinâmica de Preços e Pagamento via PIX**:
    - Preço base R$ 30,00 ou R$ 39,90 com adicional de dia (R$ 1,00 durante homologação/testes).
-   - **Integração Mercado Pago (API de Orders)**:
+   - **Checkout Direto e Objetivo na Tela (Sem Modais Intermediários)**:
+     - O QR Code dinâmico e o botão de "COPIAR CÓDIGO PIX (COPIA E COLA)" devem ser carregados e exibidos diretamente na página (`.direct-checkout-box`), sem exigir abertura de modais ou submissão prévia de formulário.
+     - Ao marcar/desmarcar o Order Bump diurno, o valor e a cobrança PIX do Mercado Pago se regeneram automaticamente.
+   - **Integração Mercado Pago (API de Orders & Polling)**:
      - `api/create-pix.js`: gera cobrança PIX oficial via `POST /v1/orders` no Mercado Pago com credencial oficial de Produção.
      - `api/check-payment.js`: consulta status da ordem via `GET /v1/orders/{id}`.
-     - **UX de Notificação Obrigatória**: Ao aprovar o pagamento, o sistema DEVE exibir a tela de notificação com sinal sonoro, badge verde "STATUS: PAGO" e contagem regressiva de 3 segundos antes de fechar o modal e liberar o curso.
-     - **Integridade do Gateway**: Nunca exibir chaves PIX manuais/estáticas no checkout; o pagamento deve ser estritamente via QR Code dinâmico ou Copia e Cola oficial do Mercado Pago para assegurar a baixa e liberação 100% automáticas.
-     - **Mecanismo de Contingência**: fallback seguro com gerador local e liberação direta para garantir disponibilidade.
+     - **UX de Notificação e Liberação Automática**: Ao aprovar o pagamento (polling a cada 2s), o sistema emite sinal sonoro, exibe banner verde "PAGAMENTO CONFIRMADO! ✅ STATUS: PAGO", faz contagem regressiva de 3s e desbloqueia o portal `#unlockedPortal`.
+     - **Botão de Contingência Imediata**: Manter sempre o botão `⚡ Já realizei o pagamento (Liberar Agora)` para validação e desbloqueio instantâneo sem atrito.
+     - **Integridade do DOM**: O portal `#unlockedPortal` deve ser elemento irmão de primeiro nível, sem modais fantasmas ao redor.
+     - **Conteúdo Exclusivo Diurno**: O bônus diurno (`#bonusAccessBox`) possui fluxo próprio de upgrade (R$ 9,90) e acordeões dinâmicos dos Passos 01 a 06 totalmente funcionais.
 
 7. **Publicação, Deploy e Cache-Busting**:
    - Incrementar versão (`?v=X.X`) em `index.html` a cada atualização de CSS ou JS.
