@@ -47,7 +47,7 @@ class PixEngine {
    */
   static generatePayload({ key, name, city, amount, txId = '***', description = '' }) {
     const cleanKey = key.trim();
-    const cleanName = this.sanitizeText(name).substring(0, 25) || 'DESMAME GENTIL';
+    const cleanName = this.sanitizeText(name).substring(0, 25) || 'DESMAME NOTURNO';
     const cleanCity = this.sanitizeText(city).substring(0, 15) || 'SAO PAULO';
     const formattedAmount = Number(amount).toFixed(2);
     const cleanTxId = this.sanitizeText(txId).replace(/\s/g, '').substring(0, 25) || '***';

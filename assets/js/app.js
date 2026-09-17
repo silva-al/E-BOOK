@@ -1,5 +1,5 @@
 /**
- * APP CONTROLLER - E-BOOK DESMAME GENTIL & CHECKOUT PIX KIWIFY
+ * APP CONTROLLER - E-BOOK DESMAME NOTURNO & CHECKOUT PIX KIWIFY
  */
 
 // Estado da Aplicação
@@ -17,11 +17,50 @@ const appState = {
 
 // Ao carregar a página
 document.addEventListener('DOMContentLoaded', async () => {
+  clearFormFields();
   initCountdownTimer();
   updatePriceDisplay();
+  initInputHandlers();
   await loadEbookContent();
   checkUnlockStatus();
 });
+
+function clearFormFields() {
+  const form = document.getElementById('checkoutForm');
+  if (form) form.reset();
+  const nameInput = document.getElementById('buyerName');
+  const emailInput = document.getElementById('buyerEmail');
+  const phoneInput = document.getElementById('buyerPhone');
+  if (nameInput) nameInput.value = '';
+  if (emailInput) emailInput.value = '';
+  if (phoneInput) phoneInput.value = '';
+
+  // Limpa resquícios de testes anteriores caso existam
+  if (localStorage.getItem('desmame_buyer_name') === 'Camila Silva Martins' || localStorage.getItem('desmame_buyer_name') === 'Aluna Desmame Gentil') {
+    localStorage.removeItem('desmame_buyer_name');
+    localStorage.removeItem('desmame_buyer_email');
+    localStorage.removeItem('desmame_buyer_phone');
+  }
+}
+
+function initInputHandlers() {
+  const phoneInput = document.getElementById('buyerPhone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      if (v.length > 6) {
+        e.target.value = `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}`;
+      } else if (v.length > 2) {
+        e.target.value = `(${v.slice(0, 2)}) ${v.slice(2)}`;
+      } else if (v.length > 0) {
+        e.target.value = `(${v}`;
+      } else {
+        e.target.value = '';
+      }
+    });
+  }
+}
 
 /* ==========================================================================
    CARREGAR CONTEÚDO DO CONTENT.JSON
@@ -55,7 +94,7 @@ async function loadEbookContent() {
       },
       {
         id: 2,
-        title: "Módulo 2: O Método dos 4 Pilares do Desmame Gentil",
+        title: "Módulo 2: O Método dos 4 Pilares do Desmame Noturno e Respeitoso",
         duration: "18 min de aula",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         videoTitle: "Aula 2: Aplicando os 4 Pilares na prática diária com carinho e firmeza",
@@ -349,7 +388,18 @@ function updatePriceDisplay() {
    CHECKOUT PIX KIWIFY (GERAÇÃO REAL COM QR CODE & COPIA E COLA)
    ========================================================================== */
 function handleOpenPixModal() {
-  const buyerName = document.getElementById('buyerName').value.trim() || 'Aluna Desmame Gentil';
+  const buyerNameInput = document.getElementById('buyerName');
+  const buyerEmailInput = document.getElementById('buyerEmail');
+  const buyerPhoneInput = document.getElementById('buyerPhone');
+
+  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || 'Aluna Desmame Noturno';
+  const buyerEmail = buyerEmailInput ? buyerEmailInput.value.trim() : '';
+  const buyerPhone = buyerPhoneInput ? buyerPhoneInput.value.trim() : '';
+
+  if (buyerName && buyerName !== 'Aluna Desmame Noturno') localStorage.setItem('desmame_buyer_name', buyerName);
+  if (buyerEmail) localStorage.setItem('desmame_buyer_email', buyerEmail);
+  if (buyerPhone) localStorage.setItem('desmame_buyer_phone', buyerPhone);
+
   const totalAmount = getCurrentTotal();
 
   // 1. Gera o payload BR Code oficial do PIX através do PixEngine
@@ -361,7 +411,7 @@ function handleOpenPixModal() {
       city: appState.pixCity,
       amount: totalAmount,
       txId: 'DESMAME' + Math.floor(Math.random() * 89999 + 10000),
-      description: 'Ebook Desmame Gentil'
+      description: 'Ebook Desmame Noturno'
     });
   } catch (e) {
     console.error('Erro gerando payload:', e);
@@ -487,6 +537,16 @@ function checkUnlockStatus() {
     if (checkoutSection) checkoutSection.style.display = 'none';
     if (topNoticeBar) topNoticeBar.style.display = 'none';
     if (unlockedPortal) unlockedPortal.classList.add('active');
+
+    const savedName = localStorage.getItem('desmame_buyer_name');
+    const welcomeDesc = document.getElementById('unlockedWelcomeDesc');
+    if (welcomeDesc) {
+      if (savedName) {
+        welcomeDesc.innerHTML = `Olá, <strong>${savedName}</strong>! Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Noturno</strong>.`;
+      } else {
+        welcomeDesc.innerHTML = `Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Noturno</strong>.`;
+      }
+    }
   } else {
     if (checkoutSection) checkoutSection.style.display = 'grid';
     if (topNoticeBar) topNoticeBar.style.display = 'flex';
