@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   try {
     const { buyerName, buyerEmail, buyerPhone, amount, orderBump, originUrl } = req.body || {};
 
-    const totalAmount = Number(amount || 15.00);
+    const totalAmount = Number(amount || 29.90);
     const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.aluna@desmamenoturno.com';
     const baseUrl = (originUrl && originUrl.startsWith('https://')) ? originUrl.replace(/\/$/, '') : 'https://ebook-desmame.vercel.app';
 

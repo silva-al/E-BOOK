@@ -77,7 +77,7 @@ module.exports = async (req, res) => {
     const cleanCard = String(cardNumber).replace(/\D/g, '');
     const cleanDoc = String(docNumber || '').replace(/\D/g, '') || '19119119100';
     const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.aluna@desmamenoturno.com';
-    const transactionAmount = Number(amount || 15.00);
+    const transactionAmount = Number(amount || 29.90);
     const numInstallments = Math.max(1, parseInt(installments, 10) || 1);
 
     let expYear = parseInt(cardExpirationYear, 10);

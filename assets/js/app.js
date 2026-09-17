@@ -8,7 +8,7 @@ const appState = {
   directPixKey: '5519994744297',
   pixRecipient: localStorage.getItem('alan_pix_name') || 'ALAN RONALDO',
   pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
-  basePrice: 15.00,
+  basePrice: 29.90,
   bumpPrice: 9.90,
   paymentMethod: 'pix',
   hasBump: localStorage.getItem('desmame_has_bump') === 'true',
