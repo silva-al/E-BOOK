@@ -850,136 +850,77 @@ function startAmbientNoise() {
     }
 
     const ctx = ambientAudioCtx;
-    const sr = ctx.sampleRate;
+    const sr  = ctx.sampleRate;
     const now = ctx.currentTime;
 
-    // ── Mixer principal ───────────────────────────────────────────────────────
+    // ── Mixer final — sem filtros no master (som aberto, não abafado) ────────
     const masterGain = ctx.createGain();
     masterGain.gain.setValueAtTime(0.001, now);
-    masterGain.gain.linearRampToValueAtTime(0.55, now + 2.0); // fade-in suave de 2s
-    masterGain.connect(ctx.destination);
+    masterGain.gain.linearRampToValueAtTime(0.65, now + 2.0);
+    masterGain.connect(ctx.destination); // direto — sem passar por filtro
 
-    // ────────────────────────────────────────────────────────────────────────
-    // CAMADA A — "Shhh" de fundo: ruído rosa leve, som de chuva caindo longe
-    // Banda estreita: 400 Hz – 3 kHz — suave, sem grave pesado, sem agudo duro
-    // ────────────────────────────────────────────────────────────────────────
-    const baseSize = sr * 5;
-    const baseBuffer = ctx.createBuffer(1, baseSize, sr);
-    const baseData = baseBuffer.getChannelData(0);
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0;
-    for (let i = 0; i < baseSize; i++) {
-      const w = Math.random() * 2 - 1;
-      // Pink noise (Paul Kellet algorithm — tom mais natural que white noise)
-      b0 = 0.99886 * b0 + w * 0.0555179;
-      b1 = 0.99332 * b1 + w * 0.0750759;
-      b2 = 0.96900 * b2 + w * 0.1538520;
-      b3 = 0.86650 * b3 + w * 0.3104856;
-      baseData[i] = (b0 + b1 + b2 + b3 + w * 0.115926) * 0.11;
-    }
-    const baseSource = ctx.createBufferSource();
-    baseSource.buffer = baseBuffer;
-    baseSource.loop = true;
+    // ════════════════════════════════════════════════════════════════════════
+    // CAMADA ÚNICA — Gotas individuais realistas em estéreo
+    //
+    // Cada gota = senoide com decaimento + ruído leve (como gota em superfície)
+    // SEM filtro lowpass nas gotas — som fica limpo e cristalino
+    // ════════════════════════════════════════════════════════════════════════
+    const bufSecs  = 12;
+    const bufLen   = sr * bufSecs;
+    const rainBuf  = ctx.createBuffer(2, bufLen, sr);
+    const chL = rainBuf.getChannelData(0);
+    const chR = rainBuf.getChannelData(1);
 
-    const baseHp = ctx.createBiquadFilter();
-    baseHp.type = 'highpass';
-    baseHp.frequency.value = 400;
-    baseHp.Q.value = 0.4;
+    // ~35 gotas por segundo = chuva moderada contínua
+    const numDrops = Math.floor(35 * bufSecs);
 
-    const baseLp = ctx.createBiquadFilter();
-    baseLp.type = 'lowpass';
-    baseLp.frequency.value = 3000;
-    baseLp.Q.value = 0.4;
+    for (let d = 0; d < numDrops; d++) {
+      const pos    = Math.floor(Math.random() * (bufLen - sr * 0.06));
+      const amp    = 0.06 + Math.pow(Math.random(), 1.5) * 0.55; // mistura gotas leves e fortes
+      const freq   = 600 + Math.random() * 3200;   // 600Hz–3800Hz — gotas grossas a finas
+      const tau    = sr  * (0.004 + Math.random() * 0.014); // decaimento 4ms–18ms
+      const len    = Math.floor(tau * 5);           // duração = 5x o decaimento
+      const pan    = Math.random();                 // posição estéreo aleatória
+      const pL     = Math.cos(pan * Math.PI * 0.5);
+      const pR     = Math.sin(pan * Math.PI * 0.5);
 
-    const baseGain = ctx.createGain();
-    baseGain.gain.value = 0.60;
-
-    baseSource.connect(baseHp);
-    baseHp.connect(baseLp);
-    baseLp.connect(baseGain);
-    baseGain.connect(masterGain);
-
-    // ────────────────────────────────────────────────────────────────────────
-    // CAMADA B — Gotinhas individuais: impulsos curtos e aleatórios
-    // Simula o "tique-tique" de gotas tocando numa superfície
-    // ────────────────────────────────────────────────────────────────────────
-    const dropRate = 18;           // gotas por segundo (média)
-    const dropDuration = 0.018;    // duração de cada gota em segundos
-    const dropSamples = Math.floor(sr * dropDuration);
-    const totalDrops = dropRate * 8; // gera 8 segundos de gotas no buffer
-
-    const dropBuffer = ctx.createBuffer(1, sr * 8, sr);
-    const dropData = dropBuffer.getChannelData(0);
-
-    for (let d = 0; d < totalDrops; d++) {
-      // Posição aleatória dentro do buffer
-      const offset = Math.floor(Math.random() * (sr * 8 - dropSamples));
-      // Amplitude aleatória — gotas grandes e pequenas
-      const amp = 0.08 + Math.random() * 0.22;
-      for (let s = 0; s < dropSamples; s++) {
-        // Impulso com decaimento exponencial — "tic" limpo
-        const env = Math.exp(-s / (sr * 0.006));
-        dropData[offset + s] += (Math.random() * 2 - 1) * amp * env;
+      for (let s = 0; s < len && (pos + s) < bufLen; s++) {
+        const env    = Math.exp(-s / tau);
+        // Senoide na frequência da gota + ruído leve (10%) para naturalidade
+        const val    = (Math.sin(2 * Math.PI * freq * s / sr) * 0.9
+                       + (Math.random() * 2 - 1) * 0.1) * env * amp;
+        chL[pos + s] += val * pL;
+        chR[pos + s] += val * pR;
       }
     }
 
-    const dropSource = ctx.createBufferSource();
-    dropSource.buffer = dropBuffer;
-    dropSource.loop = true;
-
-    // Bandpass centrado nas frequências de gota (~1.5 kHz – 5 kHz)
-    const dropBp = ctx.createBiquadFilter();
-    dropBp.type = 'bandpass';
-    dropBp.frequency.value = 2800;
-    dropBp.Q.value = 1.2;
-
-    const dropGain = ctx.createGain();
-    dropGain.gain.value = 0.45;
-
-    dropSource.connect(dropBp);
-    dropBp.connect(dropGain);
-    dropGain.connect(masterGain);
-
-    // ────────────────────────────────────────────────────────────────────────
-    // CAMADA C — Ar de chuva: "sshhh" muito suave nos agudos
-    // ────────────────────────────────────────────────────────────────────────
-    const airSize = sr * 3;
-    const airBuffer = ctx.createBuffer(1, airSize, sr);
-    const airData = airBuffer.getChannelData(0);
-    for (let i = 0; i < airSize; i++) {
-      airData[i] = (Math.random() * 2 - 1) * 0.12;
+    // Normalização — evita clipping sem comprimir o som
+    let peak = 0.001;
+    for (let i = 0; i < bufLen; i++) {
+      if (Math.abs(chL[i]) > peak) peak = Math.abs(chL[i]);
+      if (Math.abs(chR[i]) > peak) peak = Math.abs(chR[i]);
     }
-    const airSource = ctx.createBufferSource();
-    airSource.buffer = airBuffer;
-    airSource.loop = true;
+    const norm = 0.88 / peak;
+    for (let i = 0; i < bufLen; i++) { chL[i] *= norm; chR[i] *= norm; }
 
-    const airHp = ctx.createBiquadFilter();
-    airHp.type = 'highpass';
-    airHp.frequency.value = 6000;
-    airHp.Q.value = 0.5;
+    const rainSrc = ctx.createBufferSource();
+    rainSrc.buffer = rainBuf;
+    rainSrc.loop   = true;
+    rainSrc.playbackRate.value = 0.96 + Math.random() * 0.08; // variação sutil
 
-    const airLp = ctx.createBiquadFilter();
-    airLp.type = 'lowpass';
-    airLp.frequency.value = 12000;
-    airLp.Q.value = 0.5;
+    // Único filtro: highpass em 200Hz — remove apenas subgrave pesado
+    // NÃO há lowpass — agudos passam livres (sem abafamento)
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 200;
+    hp.Q.value = 0.5;
 
-    const airGain = ctx.createGain();
-    airGain.gain.value = 0.18;
+    rainSrc.connect(hp);
+    hp.connect(masterGain);
 
-    airSource.connect(airHp);
-    airHp.connect(airLp);
-    airLp.connect(airGain);
-    airGain.connect(masterGain);
-
-    // Inicia todas as camadas
-    baseSource.start();
-    dropSource.start();
-    airSource.start();
-
-    // Salva referências para parar depois
-    ambientNoiseNode = baseSource;
-    ambientGainNode = masterGain;
-    ctx._dropNode = dropSource;
-    ctx._airNode = airSource;
+    rainSrc.start();
+    ambientNoiseNode = rainSrc;
+    ambientGainNode  = masterGain;
 
   } catch (err) {
     console.warn('Web Audio indisponível:', err);
@@ -990,17 +931,11 @@ function stopAmbientNoise() {
   if (ambientGainNode && ambientAudioCtx) {
     ambientGainNode.gain.linearRampToValueAtTime(0.001, ambientAudioCtx.currentTime + 0.8);
     setTimeout(() => {
-      ['_dropNode', '_airNode'].forEach(key => {
-        if (ambientAudioCtx && ambientAudioCtx[key]) {
-          try { ambientAudioCtx[key].stop(); } catch (e) {}
-          ambientAudioCtx[key] = null;
-        }
-      });
       if (ambientNoiseNode) {
         try { ambientNoiseNode.stop(); } catch (e) {}
         ambientNoiseNode = null;
       }
-    }, 800);
+    }, 900);
   } else if (ambientNoiseNode) {
     try { ambientNoiseNode.stop(); } catch (e) {}
     ambientNoiseNode = null;
@@ -1008,6 +943,7 @@ function stopAmbientNoise() {
 }
 
 function initNightModeState() {
+
   const isDark = localStorage.getItem('desmame_bedtime_dark_mode') === 'true';
   const portal = document.getElementById('unlockedPortal');
   const label = document.getElementById('labelNightMode');
