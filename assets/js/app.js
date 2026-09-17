@@ -849,40 +849,56 @@ function startAmbientNoise() {
       ambientAudioCtx.resume();
     }
 
-    const bufferSize = ambientAudioCtx.sampleRate * 2;
-    const noiseBuffer = ambientAudioCtx.createBuffer(1, bufferSize, ambientAudioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    // Gerador de Som de Chuva Suave Acolhedora (Stereo Pink Noise com gotas suaves)
+    const bufferSize = ambientAudioCtx.sampleRate * 3;
+    const noiseBuffer = ambientAudioCtx.createBuffer(2, bufferSize, ambientAudioCtx.sampleRate);
+    const left = noiseBuffer.getChannelData(0);
+    const right = noiseBuffer.getChannelData(1);
+
+    let b0L = 0, b1L = 0, b2L = 0;
+    let b0R = 0, b1R = 0, b2R = 0;
     for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179;
-      b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
-      output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.035;
-      b6 = white * 0.115926;
+      const whiteL = Math.random() * 2 - 1;
+      const whiteR = Math.random() * 2 - 1;
+
+      // Filtro Pink Noise equilibrado (sem abafamento)
+      b0L = 0.99 * b0L + whiteL * 0.055;
+      b1L = 0.96 * b1L + whiteL * 0.115;
+      b2L = 0.86 * b2L + whiteL * 0.250;
+      left[i] = (b0L + b1L + b2L + whiteL * 0.18) * 0.22;
+
+      b0R = 0.99 * b0R + whiteR * 0.055;
+      b1R = 0.96 * b1R + whiteR * 0.115;
+      b2R = 0.86 * b2R + whiteR * 0.250;
+      right[i] = (b0R + b1R + b2R + whiteR * 0.18) * 0.22;
     }
 
-    const whiteNoise = ambientAudioCtx.createBufferSource();
-    whiteNoise.buffer = noiseBuffer;
-    whiteNoise.loop = true;
+    const rainSource = ambientAudioCtx.createBufferSource();
+    rainSource.buffer = noiseBuffer;
+    rainSource.loop = true;
 
-    const filter = ambientAudioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(650, ambientAudioCtx.currentTime);
+    // Remove o som abafado/fechado cortando o subgrave pesado
+    const highpass = ambientAudioCtx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.setValueAtTime(160, ambientAudioCtx.currentTime);
+
+    // Abre o som da chuva suave nas frequências das gotas (2.200 Hz ao invés de 650 Hz)
+    const lowpass = ambientAudioCtx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.setValueAtTime(2200, ambientAudioCtx.currentTime);
+    lowpass.Q.setValueAtTime(0.65, ambientAudioCtx.currentTime);
 
     ambientGainNode = ambientAudioCtx.createGain();
     ambientGainNode.gain.setValueAtTime(0.01, ambientAudioCtx.currentTime);
-    ambientGainNode.gain.exponentialRampToValueAtTime(0.35, ambientAudioCtx.currentTime + 1.2);
+    ambientGainNode.gain.exponentialRampToValueAtTime(0.60, ambientAudioCtx.currentTime + 1.0);
 
-    whiteNoise.connect(filter);
-    filter.connect(ambientGainNode);
+    rainSource.connect(highpass);
+    highpass.connect(lowpass);
+    lowpass.connect(ambientGainNode);
     ambientGainNode.connect(ambientAudioCtx.destination);
 
-    whiteNoise.start();
-    ambientNoiseNode = whiteNoise;
+    rainSource.start();
+    ambientNoiseNode = rainSource;
   } catch (err) {
     console.warn('Web Audio indisponível:', err);
   }
@@ -2504,7 +2520,15 @@ async function handleProcessCardPayment() {
       return;
     } else {
       const errorMsg = data.error || data.message || 'Cartão recusado pela operadora. Tente outro cartão ou utilize o PIX.';
-      showCardFeedback(errorMsg, 'error');
+      const fallbackHtml = `
+        ${errorMsg}
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn-copy-main-pix" style="margin: 0; padding: 11px 14px; font-size: 13px; background: linear-gradient(135deg, #059669 0%, #047857 100%);" onclick="switchPaymentMethod('pix')">
+            ⚡ Pagar com PIX (Aprovação Imediata Sem Risco de Recusa)
+          </button>
+        </div>
+      `;
+      showCardFeedback(fallbackHtml, 'error');
       if (btn) btn.disabled = false;
       if (label) {
         const formatted = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });

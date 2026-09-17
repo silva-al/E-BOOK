@@ -95,6 +95,14 @@ module.exports = async (req, res) => {
       lastName = parts.slice(1).join(' ') || 'Cliente';
     }
 
+    const cleanPhone = String(buyerPhone || '').replace(/\D/g, '');
+    let phoneArea = '11';
+    let phoneNum = '999999999';
+    if (cleanPhone.length >= 10) {
+      phoneArea = cleanPhone.slice(0, 2);
+      phoneNum = cleanPhone.slice(2);
+    }
+
     // 1. Gerar Card Token na API do Mercado Pago
     const tokenPayload = {
       card_number: cleanCard,
@@ -131,11 +139,9 @@ module.exports = async (req, res) => {
 
     const cardToken = tokenData.id;
     const idempotencyKey = `card-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-    const description = orderBump
-      ? 'E-book Desmame Noturno + Dicas Durante o Dia'
-      : 'E-book Desmame Noturno Oficial';
+    const description = 'E-book Desmame Diurno e Noturno Oficial';
 
-    // 2. Efetuar cobrança na API /v1/payments
+    // 2. Efetuar cobrança na API /v1/payments com dados completos antifraude
     const paymentPayload = {
       transaction_amount: Number(transactionAmount.toFixed(2)),
       token: cardToken,
@@ -150,10 +156,35 @@ module.exports = async (req, res) => {
         identification: {
           type: docType || 'CPF',
           number: cleanDoc
+        },
+        phone: {
+          area_code: phoneArea,
+          number: phoneNum
+        }
+      },
+      additional_info: {
+        items: [
+          {
+            id: 'desmame-diurno-noturno',
+            title: description,
+            description: 'Guia Prático Passo a Passo: Desmame Diurno e Noturno',
+            category_id: 'learnings',
+            quantity: 1,
+            unit_price: Number(transactionAmount.toFixed(2))
+          }
+        ],
+        payer: {
+          first_name: firstName,
+          last_name: lastName,
+          phone: {
+            area_code: phoneArea,
+            number: phoneNum
+          }
         }
       },
       metadata: {
         buyer_phone: buyerPhone || '',
+        buyer_name: buyerName || '',
         order_bump: Boolean(orderBump)
       }
     };
