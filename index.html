@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=21.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=24.0">
 </head>
 
 <body>
@@ -50,10 +50,9 @@
             completo oficial</p>
           <div class="product-price-tag">
             <span class="price-old">R$ 97,00</span>
-            <span class="price-current" id="displayPrice">R$ 29,90</span>
+            <span class="price-current" id="displayPrice">R$ 15,00</span>
             <span
-              style="font-size: 11px; color: #10b981; font-weight: 700; background: #e6f9f0; padding: 2px 6px; border-radius: 4px;">À
-              VISTA NO PIX</span>
+              style="font-size: 11px; color: #10b981; font-weight: 700; background: #e6f9f0; padding: 2px 6px; border-radius: 4px;">OFERTA ESPECIAL</span>
           </div>
         </div>
       </div>
@@ -93,13 +92,37 @@
           </div>
         </div>
 
-        <!-- Seleção de Forma de Pagamento (Exclusivo PIX) -->
+        <!-- Seleção de Forma de Pagamento (PIX ou Cartão de Crédito) -->
         <div class="form-section-title" style="margin-top: 16px;">
           <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          2. Pagamento Exclusivo via PIX
+          2. Escolha a Forma de Pagamento
+        </div>
+
+        <!-- Abas de Seleção de Pagamento -->
+        <div class="payment-methods-nav">
+          <div class="payment-method-tab active pix-tab" id="tabPayPix" onclick="switchPaymentMethod('pix')">
+            <div class="tab-icon-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              <span>PIX</span>
+            </div>
+            <span class="tab-badge">Aprovação Imediata</span>
+          </div>
+
+          <div class="payment-method-tab card-tab" id="tabPayCard" onclick="switchPaymentMethod('card')">
+            <div class="tab-icon-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              <span>Cartão de Crédito</span>
+            </div>
+            <span class="tab-badge">Em até 12x</span>
+          </div>
         </div>
 
         <!-- Order Bump / Bônus Especial Opcional -->
@@ -113,13 +136,13 @@
         </label>
 
         <!-- SEÇÃO OBJETIVA: PIX MERCADO PAGO DIRETO NA TELA -->
-        <div class="direct-checkout-box" style="background: #ffffff; border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin: 18px 0; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15); text-align: center;">
+        <div class="direct-checkout-box" id="pixCheckoutContainer" style="background: #ffffff; border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin: 18px 0; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15); text-align: center;">
           
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 16px;">
             <div style="font-weight: 800; font-size: 16px; color: #111827; display: flex; align-items: center; gap: 8px;">
               <span>⚡ Pagar com PIX</span>
             </div>
-            <span style="background: #ecfdf5; color: #059669; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-size: 16px;" id="directBoxAmountTag">R$ 29,90</span>
+            <span style="background: #ecfdf5; color: #059669; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-size: 16px;" id="directBoxAmountTag">R$ 15,00</span>
           </div>
 
           <!-- Estado enquanto aguarda o pagamento -->
@@ -156,7 +179,7 @@
             <div id="manualVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 6px; text-align: left; line-height: 1.4;"></div>
           </div>
 
-          <!-- Notificação de Sucesso Imediato -->
+          <!-- Notificação de Sucesso Imediato PIX -->
           <div id="inlineSuccessArea" style="display: none; padding: 20px 10px;">
             <div style="width: 70px; height: 70px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
@@ -165,14 +188,98 @@
             </div>
             <h3 style="color: #065f46; font-size: 22px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO CONFIRMADO!</h3>
             <p style="color: #047857; font-size: 15px; font-weight: 600; margin-bottom: 12px;">Seu PIX foi aprovado com sucesso!</p>
-            <div style="background: #10b981; color: #ffffff; padding: 8px 18px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block;">
-              ✅ STATUS: PAGO (R$ 29,90)
+            <div style="background: #10b981; color: #ffffff; padding: 8px 18px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block;" id="inlineSuccessTag">
+              ✅ STATUS: PAGO (R$ 15,00)
             </div>
             <p style="color: #4b5563; font-size: 13px; margin-top: 14px;">
               Liberando o curso completo em <span id="inlineRedirectCountdown" style="font-weight: 800; color: #10b981; font-size: 16px;">3</span> segundos...
             </p>
           </div>
 
+        </div>
+
+        <!-- SEÇÃO CARTÃO DE CRÉDITO DIRETO NA TELA -->
+        <div class="credit-card-checkout-box" id="cardCheckoutContainer" style="display: none;">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 16px;">
+            <div style="font-weight: 800; font-size: 16px; color: #111827; display: flex; align-items: center; gap: 8px;">
+              <span>💳 Pagar com Cartão de Crédito</span>
+            </div>
+            <span style="background: #eff6ff; color: #1d4ed8; font-weight: 800; padding: 4px 12px; border-radius: 6px; font-size: 16px;" id="cardBoxAmountTag">R$ 15,00</span>
+          </div>
+
+          <!-- Campos do Cartão -->
+          <div id="cardInputsArea">
+            <div class="kiwi-input-group">
+              <label for="cardNumber">Número do Cartão</label>
+              <div class="card-input-relative">
+                <input type="tel" id="cardNumber" class="kiwi-input-field" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">
+                <span class="card-brand-badge" id="cardBrandBadge">CARTÃO</span>
+              </div>
+            </div>
+
+            <div class="kiwi-input-group">
+              <label for="cardholderName">Nome Impresso no Cartão</label>
+              <input type="text" id="cardholderName" class="kiwi-input-field" placeholder="Como impresso no cartão" autocomplete="cc-name" style="text-transform: uppercase;">
+            </div>
+
+            <div class="card-row-three">
+              <div class="kiwi-input-group">
+                <label for="cardExpiration">Validade</label>
+                <input type="tel" id="cardExpiration" class="kiwi-input-field" placeholder="MM/AA" maxlength="5" autocomplete="cc-exp">
+              </div>
+
+              <div class="kiwi-input-group">
+                <label for="cardCvv">CVV</label>
+                <input type="tel" id="cardCvv" class="kiwi-input-field" placeholder="123" maxlength="4" autocomplete="cc-csc">
+              </div>
+
+              <div class="kiwi-input-group">
+                <label for="cardDocNumber">CPF do Titular</label>
+                <input type="tel" id="cardDocNumber" class="kiwi-input-field" placeholder="000.000.000-00" maxlength="14" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="kiwi-input-group" style="margin-top: 6px;">
+              <label for="cardInstallments">Opções de Parcelamento</label>
+              <select id="cardInstallments" class="kiwi-select-field">
+                <option value="1">1x de R$ 15,00 (sem juros)</option>
+              </select>
+            </div>
+
+            <button type="button" class="btn-submit-card" id="btnSubmitCard" onclick="handleProcessCardPayment()">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              <span id="labelSubmitCard">PAGAR COM CARTÃO (R$ 15,00) E LIBERAR AGORA</span>
+            </button>
+
+            <button type="button" class="btn-secondary-mp" id="btnMpCheckoutPro" onclick="handleOpenMpCheckoutPro()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <span>Ou pagar pelo Checkout Oficial Mercado Pago</span>
+            </button>
+
+            <div id="cardFeedbackBox" class="card-feedback-box" style="display: none;"></div>
+          </div>
+
+          <!-- Estado de Sucesso Imediato Cartão -->
+          <div id="cardSuccessArea" style="display: none; padding: 20px 10px; text-align: center;">
+            <div style="width: 70px; height: 70px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h3 style="color: #065f46; font-size: 22px; font-weight: 800; margin-bottom: 6px;">PAGAMENTO APROVADO!</h3>
+            <p style="color: #047857; font-size: 15px; font-weight: 600; margin-bottom: 12px;">Seu cartão foi processado com sucesso!</p>
+            <div style="background: #10b981; color: #ffffff; padding: 8px 18px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block;" id="cardSuccessAmountTag">
+              ✅ STATUS: PAGO NO CARTÃO (R$ 15,00)
+            </div>
+            <p style="color: #4b5563; font-size: 13px; margin-top: 14px;">
+              Liberando o curso completo em <span id="cardRedirectCountdown" style="font-weight: 800; color: #10b981; font-size: 16px;">3</span> segundos...
+            </p>
+          </div>
         </div>
 
         <div class="checkout-security-notice">
@@ -486,8 +593,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=21.0"></script>
-  <script src="assets/js/app.js?v=21.0"></script>
+  <script src="assets/js/pix-engine.js?v=24.0"></script>
+  <script src="assets/js/app.js?v=24.0"></script>
 </body>
 
 </html>

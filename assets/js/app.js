@@ -8,8 +8,9 @@ const appState = {
   directPixKey: '5519994744297',
   pixRecipient: localStorage.getItem('alan_pix_name') || 'ALAN RONALDO',
   pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
-  basePrice: 29.90,
+  basePrice: 15.00,
   bumpPrice: 9.90,
+  paymentMethod: 'pix',
   hasBump: localStorage.getItem('desmame_has_bump') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
   ebookData: null
@@ -127,6 +128,91 @@ function initInputHandlers() {
       if (val) {
         appState.buyerEmail = val;
         localStorage.setItem('desmame_buyer_email', val);
+      }
+    });
+  }
+
+  // Máscaras e formatações de Cartão de Crédito
+  const cardNumberInput = document.getElementById('cardNumber');
+  const cardBrandBadge = document.getElementById('cardBrandBadge');
+  if (cardNumberInput) {
+    cardNumberInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 16) v = v.slice(0, 16);
+      
+      const parts = v.match(/[\s\S]{1,4}/g) || [];
+      e.target.value = parts.join(' ');
+
+      if (cardBrandBadge) {
+        cardBrandBadge.className = 'card-brand-badge';
+        if (/^(4011|4312|4389|4514|4573|4576|5041|5067|5090|6277|6362|6363|650|6516|6550)/.test(v)) {
+          cardBrandBadge.textContent = 'ELO';
+          cardBrandBadge.classList.add('elo');
+        } else if (/^4/.test(v)) {
+          cardBrandBadge.textContent = 'VISA';
+          cardBrandBadge.classList.add('visa');
+        } else if (/^(5[1-5]|2[2-7])/.test(v)) {
+          cardBrandBadge.textContent = 'MASTERCARD';
+          cardBrandBadge.classList.add('master');
+        } else if (/^3[47]/.test(v)) {
+          cardBrandBadge.textContent = 'AMEX';
+          cardBrandBadge.classList.add('amex');
+        } else if (/^(606282|3841)/.test(v)) {
+          cardBrandBadge.textContent = 'HIPER';
+          cardBrandBadge.classList.add('hipercard');
+        } else {
+          cardBrandBadge.textContent = 'CARTÃO';
+        }
+      }
+    });
+  }
+
+  const cardholderInput = document.getElementById('cardholderName');
+  if (cardholderInput) {
+    cardholderInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.toUpperCase();
+    });
+  }
+
+  const cardExpInput = document.getElementById('cardExpiration');
+  if (cardExpInput) {
+    cardExpInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 4) v = v.slice(0, 4);
+      if (v.length >= 2) {
+        let month = parseInt(v.slice(0, 2), 10);
+        if (month > 12) month = 12;
+        if (month === 0) month = 1;
+        const formattedMonth = String(month).padStart(2, '0');
+        e.target.value = `${formattedMonth}/${v.slice(2)}`;
+      } else {
+        e.target.value = v;
+      }
+    });
+  }
+
+  const cardCvvInput = document.getElementById('cardCvv');
+  if (cardCvvInput) {
+    cardCvvInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 4) v = v.slice(0, 4);
+      e.target.value = v;
+    });
+  }
+
+  const cardDocInput = document.getElementById('cardDocNumber');
+  if (cardDocInput) {
+    cardDocInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      if (v.length > 9) {
+        e.target.value = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6, 9)}-${v.slice(9)}`;
+      } else if (v.length > 6) {
+        e.target.value = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6)}`;
+      } else if (v.length > 3) {
+        e.target.value = `${v.slice(0, 3)}.${v.slice(3)}`;
+      } else {
+        e.target.value = v;
       }
     });
   }
@@ -621,8 +707,21 @@ function updatePriceDisplay() {
   const directBoxAmountTag = document.getElementById('directBoxAmountTag');
   if (directBoxAmountTag) directBoxAmountTag.textContent = formatted;
 
+  const cardBoxAmountTag = document.getElementById('cardBoxAmountTag');
+  if (cardBoxAmountTag) cardBoxAmountTag.textContent = formatted;
+
+  const labelSubmitCard = document.getElementById('labelSubmitCard');
+  if (labelSubmitCard) {
+    labelSubmitCard.textContent = `PAGAR COM CARTÃO (${formatted}) E LIBERAR AGORA`;
+  }
+
+  const cardSuccessAmountTag = document.getElementById('cardSuccessAmountTag');
+  if (cardSuccessAmountTag) cardSuccessAmountTag.textContent = `✅ STATUS: PAGO NO CARTÃO (${formatted})`;
+
   const inlineSuccessTag = document.getElementById('inlineSuccessTag');
   if (inlineSuccessTag) inlineSuccessTag.textContent = `✅ STATUS: PAGO (${formatted})`;
+
+  updateInstallmentOptions(total);
 
   // 8. Atualiza o QR Code e Copia e Cola na tela
   renderInlinePix();
@@ -1335,6 +1434,277 @@ document.addEventListener('visibilitychange', () => {
     }
   }
 });
+
+/* ==========================================================================
+   CONTROLE DE PAGAMENTO POR CARTÃO DE CRÉDITO & ABAS
+   ========================================================================== */
+function switchPaymentMethod(method) {
+  appState.paymentMethod = method;
+  const tabPix = document.getElementById('tabPayPix');
+  const tabCard = document.getElementById('tabPayCard');
+  const pixBox = document.getElementById('pixCheckoutContainer');
+  const cardBox = document.getElementById('cardCheckoutContainer');
+
+  if (method === 'pix') {
+    if (tabPix) tabPix.classList.add('active');
+    if (tabCard) tabCard.classList.remove('active');
+    if (pixBox) pixBox.style.display = 'block';
+    if (cardBox) cardBox.style.display = 'none';
+    if (!appState.isPaid) {
+      initInlineMercadoPagoPix();
+    }
+  } else {
+    if (tabPix) tabPix.classList.remove('active');
+    if (tabCard) tabCard.classList.add('active');
+    if (pixBox) pixBox.style.display = 'none';
+    if (cardBox) cardBox.style.display = 'block';
+    updateInstallmentOptions(getCurrentTotal());
+  }
+}
+
+function updateInstallmentOptions(total) {
+  const select = document.getElementById('cardInstallments');
+  if (!select) return;
+
+  const currentSelected = select.value || '1';
+  select.innerHTML = '';
+
+  const maxInstallments = Math.min(12, Math.max(1, Math.floor(total / 5)));
+
+  for (let i = 1; i <= maxInstallments; i++) {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+
+    if (i === 1) {
+      opt.textContent = `1x de ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} (sem juros)`;
+    } else {
+      // Cálculo suave de parcelas simuladas
+      const factor = 1 + (i * 0.024);
+      const installmentVal = (total * factor) / i;
+      opt.textContent = `${i}x de ${installmentVal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+    }
+
+    if (String(i) === currentSelected) {
+      opt.selected = true;
+    }
+    select.appendChild(opt);
+  }
+}
+
+async function handleProcessCardPayment() {
+  const btn = document.getElementById('btnSubmitCard');
+  const label = document.getElementById('labelSubmitCard');
+  const feedback = document.getElementById('cardFeedbackBox');
+
+  const nameInput = document.getElementById('buyerName');
+  const emailInput = document.getElementById('buyerEmail');
+  const phoneInput = document.getElementById('buyerPhone');
+
+  const cardNumber = document.getElementById('cardNumber');
+  const cardholderName = document.getElementById('cardholderName');
+  const cardExp = document.getElementById('cardExpiration');
+  const cardCvv = document.getElementById('cardCvv');
+  const cardDoc = document.getElementById('cardDocNumber');
+  const cardInstallments = document.getElementById('cardInstallments');
+
+  if (feedback) feedback.style.display = 'none';
+
+  // Validação dos dados da compradora
+  const buyerName = (nameInput ? nameInput.value.trim() : '') || appState.buyerName;
+  const buyerEmail = (emailInput ? emailInput.value.trim() : '') || appState.buyerEmail;
+  const buyerPhone = phoneInput ? phoneInput.value.trim() : '';
+
+  if (!buyerName || buyerName.length < 3) {
+    if (nameInput) nameInput.focus();
+    showCardFeedback('Por favor, informe seu Nome Completo acima.', 'error');
+    return;
+  }
+
+  if (!buyerEmail || !buyerEmail.includes('@') || !buyerEmail.includes('.')) {
+    if (emailInput) emailInput.focus();
+    showCardFeedback('Por favor, informe um E-mail válido acima para receber o acesso.', 'error');
+    return;
+  }
+
+  // Validação dos campos do cartão
+  const cleanCard = cardNumber ? cardNumber.value.replace(/\D/g, '') : '';
+  if (cleanCard.length < 13 || cleanCard.length > 19) {
+    if (cardNumber) cardNumber.focus();
+    showCardFeedback('Número de cartão de crédito inválido.', 'error');
+    return;
+  }
+
+  const holder = cardholderName ? cardholderName.value.trim() : '';
+  if (!holder || holder.length < 3) {
+    if (cardholderName) cardholderName.focus();
+    showCardFeedback('Informe o nome impresso no cartão de crédito.', 'error');
+    return;
+  }
+
+  const expValue = cardExp ? cardExp.value.trim() : '';
+  const expParts = expValue.split('/');
+  if (expParts.length !== 2) {
+    if (cardExp) cardExp.focus();
+    showCardFeedback('Data de validade inválida. Formato: MM/AA (ex: 08/28).', 'error');
+    return;
+  }
+  const expMonth = parseInt(expParts[0], 10);
+  const expYear = parseInt(expParts[1], 10);
+  if (isNaN(expMonth) || expMonth < 1 || expMonth > 12) {
+    if (cardExp) cardExp.focus();
+    showCardFeedback('Mês de validade incorreto (deve ser entre 01 e 12).', 'error');
+    return;
+  }
+
+  const cvv = cardCvv ? cardCvv.value.trim() : '';
+  if (cvv.length < 3 || cvv.length > 4) {
+    if (cardCvv) cardCvv.focus();
+    showCardFeedback('Código de segurança (CVV) inválido (3 ou 4 dígitos no verso do cartão).', 'error');
+    return;
+  }
+
+  const cleanDoc = cardDoc ? cardDoc.value.replace(/\D/g, '') : '';
+  if (cleanDoc.length !== 11) {
+    if (cardDoc) cardDoc.focus();
+    showCardFeedback('CPF do titular obrigatório (11 dígitos para emissão segura antifraude).', 'error');
+    return;
+  }
+
+  const total = getCurrentTotal();
+  const installments = cardInstallments ? cardInstallments.value : '1';
+
+  // Iniciar processamento visual
+  if (btn) btn.disabled = true;
+  if (label) {
+    label.innerHTML = `<div class="pulse-spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;"></div> Processando com segurança...`;
+  }
+
+  try {
+    const res = await fetch('/api/create-card-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cardNumber: cleanCard,
+        cardholderName: holder,
+        cardExpirationMonth: expMonth,
+        cardExpirationYear: expYear,
+        securityCode: cvv,
+        docNumber: cleanDoc,
+        docType: 'CPF',
+        installments: installments,
+        buyerEmail: buyerEmail,
+        buyerName: buyerName,
+        buyerPhone: buyerPhone,
+        amount: total,
+        orderBump: appState.hasBump
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && (data.status === 'approved' || data.is_approved)) {
+      showCardSuccessAndUnlock();
+      return;
+    } else {
+      const errorMsg = data.error || data.message || 'Cartão recusado pela operadora. Tente outro cartão ou utilize o PIX.';
+      showCardFeedback(errorMsg, 'error');
+      if (btn) btn.disabled = false;
+      if (label) {
+        const formatted = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        label.textContent = `PAGAR COM CARTÃO (${formatted}) E LIBERAR AGORA`;
+      }
+    }
+  } catch (err) {
+    console.error('Erro na chamada do cartão:', err);
+    showCardFeedback('Erro ao conectar com a operadora do cartão. Verifique sua conexão ou tente via PIX.', 'error');
+    if (btn) btn.disabled = false;
+    if (label) {
+      const formatted = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      label.textContent = `PAGAR COM CARTÃO (${formatted}) E LIBERAR AGORA`;
+    }
+  }
+}
+
+function showCardFeedback(message, type) {
+  const feedback = document.getElementById('cardFeedbackBox');
+  if (!feedback) return;
+  feedback.className = `card-feedback-box ${type}`;
+  feedback.innerHTML = type === 'error' ? `⚠️ <strong>Atenção:</strong> ${message}` : `✅ ${message}`;
+  feedback.style.display = 'block';
+}
+
+function showCardSuccessAndUnlock() {
+  playSuccessSound();
+  triggerSendAccessEmail(appState.hasBump);
+
+  const inputsArea = document.getElementById('cardInputsArea');
+  const successArea = document.getElementById('cardSuccessArea');
+  const countdown = document.getElementById('cardRedirectCountdown');
+
+  if (inputsArea) inputsArea.style.display = 'none';
+  if (successArea) successArea.style.display = 'block';
+
+  let seconds = 3;
+  if (countdown) countdown.textContent = seconds;
+
+  const interval = setInterval(() => {
+    seconds--;
+    if (countdown) countdown.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      handleConfirmPixPayment();
+    }
+  }, 1000);
+}
+
+async function handleOpenMpCheckoutPro() {
+  const nameInput = document.getElementById('buyerName');
+  const emailInput = document.getElementById('buyerEmail');
+  const phoneInput = document.getElementById('buyerPhone');
+
+  const buyerName = (nameInput ? nameInput.value.trim() : '') || appState.buyerName || 'Aluna';
+  const buyerEmail = (emailInput ? emailInput.value.trim() : '') || appState.buyerEmail || 'contato@desmamenoturno.com';
+  const buyerPhone = phoneInput ? phoneInput.value.trim() : '';
+
+  const total = getCurrentTotal();
+  const btn = document.getElementById('btnMpCheckoutPro');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `Gerando link seguro Mercado Pago...`;
+  }
+
+  try {
+    const res = await fetch('/api/create-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyerName,
+        buyerEmail,
+        buyerPhone,
+        amount: total,
+        orderBump: appState.hasBump,
+        originUrl: window.location.origin + window.location.pathname
+      })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.init_point) {
+      window.location.href = data.init_point;
+    } else {
+      showCardFeedback('Não foi possível gerar o link de pagamento. Preencha seus dados acima ou pague via PIX.', 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `🔒 Ou pagar pelo Checkout Oficial Mercado Pago`;
+      }
+    }
+  } catch (e) {
+    showCardFeedback('Erro ao conectar com o Mercado Pago. Tente via PIX.', 'error');
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `🔒 Ou pagar pelo Checkout Oficial Mercado Pago`;
+    }
+  }
+}
 
 /* ==========================================================================
    PAINEL RÁPIDO DO ALAN

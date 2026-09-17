@@ -2120,3 +2120,254 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ==========================================================================
+   SELETOR DE FORMA DE PAGAMENTO (PIX & CARTÃO DE CRÉDITO)
+   ========================================================================== */
+.payment-methods-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0 14px;
+}
+
+.payment-method-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-align: center;
+  position: relative;
+}
+
+.payment-method-tab:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.payment-method-tab.active.pix-tab {
+  border-color: #10b981;
+  background: #f0fdf4;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+}
+
+.payment-method-tab.active.card-tab {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+}
+
+.payment-method-tab .tab-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.payment-method-tab.active.pix-tab .tab-icon-row {
+  color: #047857;
+}
+
+.payment-method-tab.active.card-tab .tab-icon-row {
+  color: #1d4ed8;
+}
+
+.payment-method-tab .tab-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.payment-method-tab.pix-tab .tab-badge {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.payment-method-tab.card-tab .tab-badge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* ==========================================================================
+   FORMULÁRIO DE CARTÃO DE CRÉDITO ESTILO KIWIFY
+   ========================================================================== */
+.credit-card-checkout-box {
+  background: #ffffff;
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 18px 0;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
+}
+
+.card-input-relative {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.card-brand-badge {
+  position: absolute;
+  right: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.card-brand-badge.visa {
+  background: #1a1f71;
+  color: #ffffff;
+}
+
+.card-brand-badge.master {
+  background: #eb001b;
+  color: #ffffff;
+}
+
+.card-brand-badge.elo {
+  background: #000000;
+  color: #ffcc00;
+}
+
+.card-brand-badge.amex {
+  background: #006fcf;
+  color: #ffffff;
+}
+
+.card-brand-badge.hipercard {
+  background: #b3141a;
+  color: #ffffff;
+}
+
+.card-row-three {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .card-row-three {
+    grid-template-columns: 1fr 1fr;
+  }
+  .card-row-three > div:last-child {
+    grid-column: span 2;
+  }
+}
+
+.kiwi-select-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.kiwi-select-field:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.btn-submit-card {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+  transition: all 0.2s ease;
+  margin-top: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.btn-submit-card:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+}
+
+.btn-submit-card:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary-mp {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary-mp:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #94a3b8;
+}
+
+.card-feedback-box {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.card-feedback-box.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.card-feedback-box.success {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #065f46;
+}
