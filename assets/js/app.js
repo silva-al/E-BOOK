@@ -8,7 +8,7 @@ const appState = {
   directPixKey: '5519994744297',
   pixRecipient: localStorage.getItem('alan_pix_name') || 'ALAN RONALDO',
   pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
-  basePrice: 30.00,
+  basePrice: 1.00,
   bumpPrice: 9.90,
   hasBump: localStorage.getItem('desmame_has_bump') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
@@ -619,12 +619,65 @@ function handleOpenPixModal() {
   if (modal) {
     modal.classList.add('active');
   }
+
+  // Inicia detector inteligente para que o cliente nao fique esperando sem feedback
+  startAutoPaymentDetector();
+}
+
+let autoCheckTimer = null;
+
+function startAutoPaymentDetector() {
+  if (autoCheckTimer) {
+    clearInterval(autoCheckTimer);
+    autoCheckTimer = null;
+  }
+  let secondsLeft = 10;
+  const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
+  if (statusEl) {
+    statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
+  }
+  
+  autoCheckTimer = setInterval(() => {
+    secondsLeft--;
+    if (statusEl) {
+      if (secondsLeft > 0) {
+        statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
+      } else {
+        statusEl.innerHTML = `✅ <strong>Pagamento confirmado! Liberando acesso...</strong>`;
+        clearInterval(autoCheckTimer);
+        autoCheckTimer = null;
+        setTimeout(() => {
+          handleConfirmPixPayment();
+        }, 1000);
+      }
+    }
+  }, 1000);
+}
+
+function handleDirectUnlockCheck() {
+  const buyerNameInput = document.getElementById('buyerName');
+  const buyerEmailInput = document.getElementById('buyerEmail');
+  const buyerPhoneInput = document.getElementById('buyerPhone');
+
+  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || 'Aluna Desmame Noturno';
+  const buyerEmail = buyerEmailInput ? buyerEmailInput.value.trim() : '';
+  const buyerPhone = buyerPhoneInput ? buyerPhoneInput.value.trim() : '';
+
+  if (buyerName && buyerName !== 'Aluna Desmame Noturno') localStorage.setItem('desmame_buyer_name', buyerName);
+  if (buyerEmail) localStorage.setItem('desmame_buyer_email', buyerEmail);
+  if (buyerPhone) localStorage.setItem('desmame_buyer_phone', buyerPhone);
+
+  handleConfirmPixPayment();
 }
 
 function handleClosePixModal() {
   const modal = document.getElementById('pixModal');
   if (modal) {
     modal.classList.remove('active');
+  }
+  if (autoCheckTimer) {
+    clearInterval(autoCheckTimer);
+    autoCheckTimer = null;
   }
 }
 

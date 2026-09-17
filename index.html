@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=7.8">
+  <link rel="stylesheet" href="assets/css/style.css?v=8.0">
 </head>
 
 <body>
@@ -50,7 +50,7 @@
             completo oficial</p>
           <div class="product-price-tag">
             <span class="price-old">R$ 97,00</span>
-            <span class="price-current" id="displayPrice">R$ 30,00</span>
+            <span class="price-current" id="displayPrice">R$ 1,00</span>
             <span
               style="font-size: 11px; color: #10b981; font-weight: 700; background: #e6f9f0; padding: 2px 6px; border-radius: 4px;">À
               VISTA NO PIX</span>
@@ -113,7 +113,7 @@
             </svg>
             <span>PIX (Pagamento Direto & Instantâneo)</span>
           </div>
-          <span class="payment-exclusive-badge" id="pixHeaderBadgeAmount">Valor: R$ 30,00</span>
+          <span class="payment-exclusive-badge" id="pixHeaderBadgeAmount">Valor: R$ 1,00</span>
         </div>
 
         <div class="pix-instant-notice">
@@ -141,7 +141,7 @@
           <div class="inline-pix-qr-box">
             <div class="inline-qr-canvas-wrapper">
               <canvas id="inlinePixQrCanvas" width="180" height="180"></canvas>
-              <div class="inline-qr-amount-tag" id="inlineQrAmountTag">Valor: R$ 30,00</div>
+              <div class="inline-qr-amount-tag" id="inlineQrAmountTag">Valor: R$ 1,00</div>
             </div>
             <div class="inline-qr-actions">
               <p class="inline-qr-hint">Escaneie o QR Code acima com o app do seu banco ou use o Copia e Cola:</p>
@@ -151,6 +151,12 @@
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
                 <span id="labelCopyInlinePix">Copiar Código PIX (Copia e Cola)</span>
+              </button>
+              <button type="button" class="btn-direct-unlock" onclick="handleDirectUnlockCheck()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Já fiz o PIX! Liberar Conteúdo Agora</span>
               </button>
             </div>
           </div>
@@ -193,6 +199,12 @@
               </svg>
               <span id="labelDirectCopyForm">Copiar Chave</span>
             </button>
+            <button type="button" class="btn-direct-unlock" onclick="handleDirectUnlockCheck()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Já fiz o PIX! Liberar Conteúdo Agora</span>
+            </button>
           </div>
         </div>
 
@@ -215,7 +227,7 @@
           <div class="pix-summary-list">
             <div class="pix-summary-item">
               <span>E-book Desmame Noturno</span>
-              <span class="pix-summary-item-val" id="summaryBasePrice">R$ 30,00</span>
+              <span class="pix-summary-item-val" id="summaryBasePrice">R$ 1,00</span>
             </div>
             <div class="pix-summary-item bump-item" id="bumpSummaryRow" style="display: none;">
               <span style="color: #b45309; font-weight: 600;">+ Dicas Especiais: Desmame Durante o Dia</span>
@@ -228,7 +240,7 @@
               <div class="pix-total-label">Total a Pagar via PIX:</div>
               <div class="pix-total-subtext">Sem taxas • Liberação instantânea</div>
             </div>
-            <div class="pix-total-price" id="checkoutTotalPix">R$ 30,00</div>
+            <div class="pix-total-price" id="checkoutTotalPix">R$ 1,00</div>
           </div>
         </div>
 
@@ -238,7 +250,7 @@
             <path
               d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
           </svg>
-          <span id="btnSubmitCheckoutText">PAGAR COM PIX (R$ 30,00) E LIBERAR O CURSO AGORA</span>
+          <span id="btnSubmitCheckoutText">PAGAR COM PIX (R$ 1,00) E LIBERAR O CURSO AGORA</span>
         </button>
 
         <div class="checkout-security-notice">
@@ -399,7 +411,7 @@
       <div class="pix-modal-body">
 
         <div class="pix-amount-badge">
-          Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 30,00</strong>
+          Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 1,00</strong>
         </div>
 
         <!-- Chave PIX Direta no Modal -->
@@ -464,12 +476,12 @@
 
         <div class="pix-status-check">
           <div class="pulse-spinner"></div>
-          <span>Aguardando identificação do pagamento...</span>
+          <span id="pixStatusDetectorText">Aguardando confirmação do banco...</span>
         </div>
 
-        <!-- Botão de Demonstração / Aprovação Imediata -->
+        <!-- Botão de Aprovação Imediata -->
         <button type="button" class="btn-simulate-pix" onclick="handleConfirmPixPayment()">
-          ⚡ Já realizei o pagamento (Liberar Curso Agora)
+          ⚡ Já realizei o pagamento no banco (Liberar Curso Imediatamente)
         </button>
 
       </div>
@@ -631,8 +643,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=7.8"></script>
-  <script src="assets/js/app.js?v=7.8"></script>
+  <script src="assets/js/pix-engine.js?v=8.0"></script>
+  <script src="assets/js/app.js?v=8.0"></script>
 </body>
 
 </html>
