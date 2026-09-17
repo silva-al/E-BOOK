@@ -17,6 +17,14 @@ const appState = {
 
 // Ao carregar a página
 document.addEventListener('DOMContentLoaded', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reset') === '1' || urlParams.get('checkout') === '1' || urlParams.get('logout') === '1') {
+    localStorage.removeItem('desmame_is_paid');
+    localStorage.removeItem('desmame_has_bump');
+    appState.isPaid = false;
+    appState.hasBump = false;
+  }
+
   clearFormFields();
   initCountdownTimer();
   updatePriceDisplay();
@@ -30,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Ferramentas de administração: visíveis apenas se a URL contiver ?admin=1
-  if (new URLSearchParams(window.location.search).get('admin') === '1') {
+  if (urlParams.get('admin') === '1') {
     const adminTools = document.querySelector('.footer-admin-tools');
     if (adminTools) adminTools.classList.add('show-admin');
   }
@@ -825,6 +833,16 @@ function toggleBumpMode() {
   localStorage.setItem('desmame_has_bump', String(appState.hasBump));
   renderCurrentModules();
   alert(`Status do Adicional Diurno alterado para:\n${appState.hasBump ? 'PAGO / LIBERADO ✅' : 'NÃO PAGO / BLOQUEADO 🔒'}`);
+}
+
+function resetBuyerSession() {
+  localStorage.removeItem('desmame_is_paid');
+  localStorage.removeItem('desmame_has_bump');
+  appState.isPaid = false;
+  appState.hasBump = false;
+  checkUnlockStatus();
+  renderCurrentModules();
+  alert("Sessão resetada com sucesso! Você voltou para a visualização de novo cliente (Página de Vendas/Checkout).");
 }
 
 function editPixKeyPrompt() {
