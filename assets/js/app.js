@@ -18,11 +18,36 @@ const appState = {
 // Ao carregar a página
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
+  
   if (urlParams.get('reset') === '1' || urlParams.get('checkout') === '1' || urlParams.get('logout') === '1') {
     localStorage.removeItem('desmame_is_paid');
     localStorage.removeItem('desmame_has_bump');
+    localStorage.removeItem('desmame_buyer_name');
+    localStorage.removeItem('desmame_buyer_email');
+    localStorage.removeItem('desmame_buyer_phone');
     appState.isPaid = false;
     appState.hasBump = false;
+  } else if (urlParams.get('access') === 'approved' || urlParams.get('acesso') === '1' || urlParams.get('liberado') === '1') {
+    // Acesso liberado via link de e-mail / magic link
+    appState.isPaid = true;
+    localStorage.setItem('desmame_is_paid', 'true');
+    const paramName = urlParams.get('name');
+    const paramEmail = urlParams.get('email');
+    const paramBump = urlParams.get('bump');
+    if (paramName) {
+      const decodedName = decodeURIComponent(paramName);
+      appState.buyerName = decodedName;
+      localStorage.setItem('desmame_buyer_name', decodedName);
+    }
+    if (paramEmail) {
+      const decodedEmail = decodeURIComponent(paramEmail);
+      appState.buyerEmail = decodedEmail;
+      localStorage.setItem('desmame_buyer_email', decodedEmail);
+    }
+    if (paramBump === '1') {
+      appState.hasBump = true;
+      localStorage.setItem('desmame_has_bump', 'true');
+    }
   }
 
   clearFormFields();
@@ -80,6 +105,28 @@ function initInputHandlers() {
         e.target.value = `(${v}`;
       } else {
         e.target.value = '';
+      }
+    });
+  }
+
+  const nameInput = document.getElementById('buyerName');
+  if (nameInput) {
+    nameInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (val) {
+        appState.buyerName = val;
+        localStorage.setItem('desmame_buyer_name', val);
+      }
+    });
+  }
+
+  const emailInput = document.getElementById('buyerEmail');
+  if (emailInput) {
+    emailInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (val) {
+        appState.buyerEmail = val;
+        localStorage.setItem('desmame_buyer_email', val);
       }
     });
   }
@@ -510,9 +557,6 @@ function handleCopyInlinePixCode() {
         label.textContent = "✅ Código PIX Copiado com Sucesso!";
         setTimeout(() => { label.textContent = orig; }, 3000);
       }
-    });
-  } else {
-    prompt("Copie o código PIX Copia e Cola abaixo:", currentInlinePixPayload);
   }
 }
 
@@ -702,10 +746,8 @@ function handleCopyMainPixCode() {
         setTimeout(() => { label.textContent = orig; }, 3000);
       }
     }).catch(() => {
-      prompt("Copie o código PIX Copia e Cola abaixo:", code);
+      // Fallback gracioso
     });
-  } else if (code) {
-    prompt("Copie o código PIX Copia e Cola abaixo:", code);
   }
 }
 
@@ -838,6 +880,9 @@ function showPaymentSuccessAndUnlock() {
   stopPaymentPolling();
   playSuccessSound();
 
+  // Dispara e-mail de aprovação com link de acesso permanente e boas-vindas
+  triggerSendAccessEmail(appState.hasBump);
+
   // Esconde área de espera e exibe o bloco verde comemorativo diretamente na página
   const inlinePaymentArea = document.getElementById('inlinePaymentArea');
   const inlineSuccessArea = document.getElementById('inlineSuccessArea');
@@ -869,6 +914,68 @@ function showPaymentSuccessAndUnlock() {
       handleConfirmPixPayment();
     }
   }, 1000);
+}
+
+/**
+ * Gera o Magic Link de Acesso Vitalício Direto ao E-book
+ */
+function getMagicAccessLink(hasBumpParam) {
+  const name = appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
+  const email = appState.buyerEmail || localStorage.getItem('desmame_buyer_email') || '';
+  const bump = (typeof hasBumpParam === 'boolean') ? hasBumpParam : appState.hasBump;
+  const origin = window.location.origin;
+  const path = window.location.pathname;
+  return `${origin}${path}?access=approved&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&bump=${bump ? '1' : '0'}`;
+}
+
+/**
+ * Dispara envio de e-mail de confirmação e boas-vindas com o Magic Link
+ */
+async function triggerSendAccessEmail(hasBumpParam) {
+  const name = appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
+  const email = appState.buyerEmail || localStorage.getItem('desmame_buyer_email');
+  const bump = (typeof hasBumpParam === 'boolean') ? hasBumpParam : appState.hasBump;
+  const magicLink = getMagicAccessLink(bump);
+
+  if (!email || !email.includes('@')) {
+    console.log('[EMAIL] Sem e-mail válido para envio automático');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/send-access-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyerName: name,
+        buyerEmail: email,
+        hasBump: bump,
+        accessLink: magicLink
+      })
+    });
+    const data = await res.json();
+    console.log('[EMAIL RESPONSE]', data);
+  } catch (e) {
+    console.warn('Erro ao chamar /api/send-access-email:', e);
+  }
+}
+
+/**
+ * Permite que a aluna copie seu link de acesso permanente diretamente na tela
+ */
+function handleCopyAccessMagicLink() {
+  const link = getMagicAccessLink(appState.hasBump);
+  const label = document.getElementById('labelCopyMagicLink');
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(() => {
+      if (label) {
+        const orig = label.textContent;
+        label.textContent = "✅ LINK COPIADO!";
+        setTimeout(() => { label.textContent = orig; }, 3000);
+      }
+    });
+  }
 }
 
 function stopPaymentPolling() {
@@ -929,15 +1036,10 @@ function handleCopyDirectPixKey() {
       const btn1 = document.getElementById('labelDirectCopyForm');
       if (btn1) {
         const orig = btn1.textContent;
-        btn1.textContent = "✅ Copiada!";
+        btn1.textContent = "✅ CHAVE PIX COPIADA!";
         setTimeout(() => { btn1.textContent = orig; }, 3000);
       }
-      alert(`Chave PIX copiada com sucesso:\n${key}\n\nAbra o aplicativo do seu banco e cole na opção PIX > Telefone.`);
-    }).catch(() => {
-      prompt("Copie a chave PIX abaixo:", key);
     });
-  } else {
-    prompt("Copie a chave PIX abaixo:", key);
   }
 }
 
@@ -976,13 +1078,24 @@ function checkUnlockStatus() {
     if (topNoticeBar) topNoticeBar.style.display = 'none';
     if (unlockedPortal) unlockedPortal.classList.add('active');
 
-    const savedName = localStorage.getItem('desmame_buyer_name');
+    const savedName = localStorage.getItem('desmame_buyer_name') || appState.buyerName;
+    const savedEmail = localStorage.getItem('desmame_buyer_email') || appState.buyerEmail;
+
     const welcomeDesc = document.getElementById('unlockedWelcomeDesc');
     if (welcomeDesc) {
       if (savedName) {
         welcomeDesc.innerHTML = `Olá, <strong>${savedName}</strong>! Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Noturno</strong>.`;
       } else {
         welcomeDesc.innerHTML = `Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Noturno</strong>.`;
+      }
+    }
+
+    const emailNotice = document.getElementById('accessEmailNoticeText');
+    if (emailNotice) {
+      if (savedEmail) {
+        emailNotice.innerHTML = `✉️ Enviamos seu link de acesso vitalício para: <strong>${savedEmail}</strong>`;
+      } else {
+        emailNotice.innerHTML = `✉️ Guarde seu link de acesso permanente para ler quando quiser!`;
       }
     }
   } else {
@@ -997,16 +1110,27 @@ function checkUnlockStatus() {
    ========================================================================== */
 let currentBumpUpgradePixPayload = '';
 let currentBumpOrderId = null;
-let bumpPollingInterval = null;
+let bumpCountdownInterval = null;
 
 async function handleOpenBumpUpgradeModal() {
   const amount = appState.bumpPrice; // R$ 0,50
   const canvas = document.getElementById('bumpUpgradeQrCanvas');
+  const img = document.getElementById('bumpUpgradeQrImg');
+  const loading = document.getElementById('bumpUpgradeLoading');
   const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
   const modal = document.getElementById('bumpUpgradeModal');
-  if (modal) modal.classList.add('active');
+  const pendingArea = document.getElementById('bumpPendingArea');
+  const successArea = document.getElementById('bumpSuccessArea');
+  const feedback = document.getElementById('bumpVerifyFeedback');
 
-  if (codeBox) codeBox.textContent = 'Gerando PIX oficial de R$ 0,50 via Mercado Pago...';
+  if (pendingArea) pendingArea.style.display = 'block';
+  if (successArea) successArea.style.display = 'none';
+  if (feedback) feedback.style.display = 'none';
+  if (loading) loading.style.display = 'flex';
+  if (canvas) canvas.style.display = 'none';
+  if (img) img.style.display = 'none';
+
+  if (modal) modal.classList.add('active');
 
   try {
     const res = await fetch('/api/create-pix', {
@@ -1023,13 +1147,17 @@ async function handleOpenBumpUpgradeModal() {
     if (res.ok && data.success && data.qr_code) {
       currentBumpOrderId = data.order_id || data.payment_id;
       currentBumpUpgradePixPayload = data.qr_code;
-      if (codeBox) {
-        codeBox.textContent = data.qr_code;
-        codeBox.setAttribute('data-full-code', data.qr_code);
+
+      if (data.qr_code_base64 && img) {
+        img.src = `data:image/png;base64,${data.qr_code_base64}`;
+        img.style.display = 'block';
+        if (canvas) canvas.style.display = 'none';
+      } else if (canvas && typeof window.generateQRCodeCanvas === 'function') {
+        if (img) img.style.display = 'none';
+        canvas.style.display = 'block';
+        window.generateQRCodeCanvas(data.qr_code, canvas, 190);
       }
-      if (canvas && typeof window.generateQRCodeCanvas === 'function') {
-        window.generateQRCodeCanvas(data.qr_code, canvas, 200);
-      }
+      if (loading) loading.style.display = 'none';
 
       if (bumpPollingInterval) clearInterval(bumpPollingInterval);
       bumpPollingInterval = setInterval(async () => {
@@ -1039,10 +1167,10 @@ async function handleOpenBumpUpgradeModal() {
           if (checkData.status === 'approved' || checkData.is_approved) {
             clearInterval(bumpPollingInterval);
             bumpPollingInterval = null;
-            handleConfirmBumpUpgrade(true);
+            showBumpPaymentSuccessAndUnlock();
           }
         } catch (e) {}
-      }, 2500);
+      }, 2000);
       return;
     }
   } catch (err) {
@@ -1058,11 +1186,10 @@ async function handleOpenBumpUpgradeModal() {
     txId: '***'
   });
   if (canvas && typeof window.generateQRCodeCanvas === 'function') {
-    window.generateQRCodeCanvas(currentBumpUpgradePixPayload, canvas, 200);
-  }
-  if (codeBox) {
-    codeBox.textContent = currentBumpUpgradePixPayload;
-    codeBox.setAttribute('data-full-code', currentBumpUpgradePixPayload);
+    window.generateQRCodeCanvas(currentBumpUpgradePixPayload, canvas, 190);
+    canvas.style.display = 'block';
+    if (img) img.style.display = 'none';
+    if (loading) loading.style.display = 'none';
   }
 }
 
@@ -1073,62 +1200,140 @@ function handleCloseBumpUpgradeModal() {
     clearInterval(bumpPollingInterval);
     bumpPollingInterval = null;
   }
+  if (bumpCountdownInterval) {
+    clearInterval(bumpCountdownInterval);
+    bumpCountdownInterval = null;
+  }
 }
 
 function handleCopyBumpUpgradePixCode() {
-  const codeBox = document.getElementById('bumpUpgradeCopyCodeText');
+  const code = currentBumpUpgradePixPayload;
   const btnLabel = document.getElementById('copyBumpPixBtnLabel');
-  const code = codeBox ? (codeBox.getAttribute('data-full-code') || codeBox.textContent) : '';
 
   if (navigator.clipboard && code) {
     navigator.clipboard.writeText(code).then(() => {
       if (btnLabel) {
         const orig = btnLabel.textContent;
-        btnLabel.textContent = "✅ Código PIX Copiado!";
+        btnLabel.textContent = "✅ CÓDIGO PIX COPIADO COM SUCESSO!";
         setTimeout(() => { btnLabel.textContent = orig; }, 3000);
       }
     });
-  } else {
-    prompt("Copie o código PIX abaixo:", code);
   }
 }
 
-async function handleConfirmBumpUpgrade(bypassCheck = false) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const isAdmin = urlParams.get('admin') === '1';
+async function handleManualVerifyBumpPayment() {
+  const btn = document.getElementById('btnManualVerifyBump');
+  const feedback = document.getElementById('bumpVerifyFeedback');
+  const originalText = '⚡ Já realizei o pagamento (Verificar e Liberar)';
 
-  if (!bypassCheck && !isAdmin && currentBumpOrderId) {
-    try {
-      const res = await fetch(`/api/check-payment?id=${currentBumpOrderId}`);
-      const data = await res.json();
-      if (data.status !== 'approved' && !data.is_approved) {
-        alert("⚠️ Pagamento de R$ 0,50 ainda não identificado no Mercado Pago.\nSe você acabou de pagar no seu banco, aguarde alguns instantes pela compensação e tente novamente.");
-        return;
-      }
-    } catch (err) {
-      console.error(err);
-    }
+  if (!currentBumpOrderId) {
+    showBumpPaymentSuccessAndUnlock();
+    return;
   }
 
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<div class="pulse-spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;"></div> Consultando Mercado Pago...`;
+  }
+
+  if (feedback) feedback.style.display = 'none';
+
+  try {
+    const res = await fetch(`/api/check-payment?id=${currentBumpOrderId}`);
+    const data = await res.json();
+
+    if (data.status === 'approved' || data.is_approved) {
+      showBumpPaymentSuccessAndUnlock();
+      return;
+    } else {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>${originalText}</span>`;
+      }
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.innerHTML = '⚠️ <strong>Pagamento ainda não identificado no Mercado Pago.</strong><br>Se você acabou de pagar no seu banco, aguarde alguns instantes pela compensação do PIX e clique novamente.';
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>${originalText}</span>`;
+    }
+  }
+}
+
+function showBumpPaymentSuccessAndUnlock() {
   if (bumpPollingInterval) {
     clearInterval(bumpPollingInterval);
     bumpPollingInterval = null;
   }
+  playSuccessSound();
 
-  appState.hasBump = true;
-  localStorage.setItem('desmame_has_bump', 'true');
-  handleCloseBumpUpgradeModal();
-  renderCurrentModules();
+  // Dispara envio de e-mail atualizado com o pacote completo (Noturno + Diurno)
+  triggerSendAccessEmail(true);
 
-  setTimeout(() => {
-    const bonusBox = document.getElementById('bonusAccessBox');
-    if (bonusBox) {
-      bonusBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const pendingArea = document.getElementById('bumpPendingArea');
+  const successArea = document.getElementById('bumpSuccessArea');
+  const countdownEl = document.getElementById('bumpRedirectCountdown');
+
+  if (pendingArea) pendingArea.style.display = 'none';
+  if (successArea) successArea.style.display = 'block';
+
+  let seconds = 3;
+  if (countdownEl) countdownEl.textContent = seconds;
+
+  if (bumpCountdownInterval) clearInterval(bumpCountdownInterval);
+
+  bumpCountdownInterval = setInterval(() => {
+    seconds--;
+    if (countdownEl) countdownEl.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(bumpCountdownInterval);
+      bumpCountdownInterval = null;
+
+      appState.hasBump = true;
+      localStorage.setItem('desmame_has_bump', 'true');
+      handleCloseBumpUpgradeModal();
+      renderCurrentModules();
+
+      setTimeout(() => {
+        const bonusBox = document.getElementById('bonusAccessBox');
+        if (bonusBox) {
+          bonusBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
     }
-  }, 250);
-
-  alert("🎉 Parabéns! O bônus especial 'Como fiz o desmame durante o dia!' foi liberado com sucesso!");
+  }, 1000);
 }
+
+// Detecção de troca de aplicativo (quando o cliente paga no Nubank/Banco e volta ao navegador)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    if (!appState.isPaid && currentMpPaymentId) {
+      fetch(`/api/check-payment?id=${currentMpPaymentId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'approved' || data.is_approved) {
+            showPaymentSuccessAndUnlock();
+          }
+        }).catch(() => {});
+    }
+    if (!appState.hasBump && currentBumpOrderId) {
+      fetch(`/api/check-payment?id=${currentBumpOrderId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'approved' || data.is_approved) {
+            showBumpPaymentSuccessAndUnlock();
+          }
+        }).catch(() => {});
+    }
+  }
+});
 
 /* ==========================================================================
    PAINEL RÁPIDO DO ALAN
