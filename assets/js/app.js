@@ -635,7 +635,8 @@ async function handleOpenPixModal() {
       }
 
       // Inicia verificação em tempo real
-      startMercadoPagoPolling(data.payment_id);
+      const trackingId = data.order_id || data.payment_id;
+      startMercadoPagoPolling(trackingId);
       return;
     } else {
       console.warn('Mercado Pago API indisponível ou aguardando MP_ACCESS_TOKEN:', data);

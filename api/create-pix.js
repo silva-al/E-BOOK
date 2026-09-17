@@ -1,10 +1,9 @@
 /**
- * VERCEL SERVERLESS FUNCTION - CRIAR PAGAMENTO PIX VIA MERCADO PAGO
+ * VERCEL SERVERLESS FUNCTION - CRIAR PAGAMENTO PIX VIA MERCADO PAGO (ORDERS API)
  * Endpoint: POST /api/create-pix
  */
 
 module.exports = async (req, res) => {
-  // Configura CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -21,20 +20,13 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Método não permitido. Use POST.' });
   }
 
-  const accessToken = process.env.MP_ACCESS_TOKEN;
-
-  if (!accessToken) {
-    return res.status(500).json({
-      error: 'MP_ACCESS_TOKEN não configurado nas variáveis de ambiente da Vercel.',
-      needs_config: true
-    });
-  }
+  const accessToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-6818937706719064-091702-bff5e6cdf3a5b0670e12fdb2e7e7cda9-3696663622').trim();
 
   try {
     const { buyerName, buyerEmail, amount, orderBump } = req.body || {};
 
-    const transactionAmount = Number(amount) || 1.00;
-    const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.cliente@desmamenoturno.com';
+    const transactionAmount = Number(amount || 1.00).toFixed(2);
+    const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.aluna@desmamenoturno.com';
     
     let firstName = 'Aluna';
     let lastName = 'Desmame';
@@ -48,13 +40,25 @@ module.exports = async (req, res) => {
       ? 'E-book Desmame Noturno + Dicas Durante o Dia' 
       : 'E-book Desmame Noturno Oficial';
 
-    // Gera uma chave de idempotência única para evitar cobranças duplicadas
-    const idempotencyKey = `pix-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const idempotencyKey = `order-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const externalRef = `ref-${Date.now()}`;
 
-    const mpPayload = {
-      transaction_amount: transactionAmount,
+    const orderPayload = {
+      type: 'online',
+      total_amount: transactionAmount,
+      external_reference: externalRef,
       description: description,
-      payment_method_id: 'pix',
+      transactions: {
+        payments: [
+          {
+            payment_method: {
+              id: 'pix',
+              type: 'bank_transfer'
+            },
+            amount: transactionAmount
+          }
+        ]
+      },
       payer: {
         email: cleanEmail,
         first_name: firstName,
@@ -62,36 +66,39 @@ module.exports = async (req, res) => {
       }
     };
 
-    const mpResponse = await fetch('https://api.mercadopago.com/v1/payments', {
+    const mpResponse = await fetch('https://api.mercadopago.com/v1/orders', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken.trim()}`,
+        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
         'X-Idempotency-Key': idempotencyKey
       },
-      body: JSON.stringify(mpPayload)
+      body: JSON.stringify(orderPayload)
     });
 
     const data = await mpResponse.json();
 
     if (!mpResponse.ok) {
-      console.error('Erro na API do Mercado Pago:', data);
+      console.error('Erro na API de Orders do Mercado Pago:', data);
       return res.status(mpResponse.status).json({
         error: data.message || 'Erro ao gerar PIX no Mercado Pago',
         details: data
       });
     }
 
-    const txData = data.point_of_interaction?.transaction_data || {};
+    const paymentInfo = data.transactions?.payments?.[0] || {};
+    const paymentMethod = paymentInfo.payment_method || {};
 
     return res.status(200).json({
       success: true,
-      payment_id: data.id,
+      order_id: data.id,
+      payment_id: paymentInfo.id || data.id,
       status: data.status,
-      qr_code: txData.qr_code,
-      qr_code_base64: txData.qr_code_base64,
-      ticket_url: txData.ticket_url,
-      amount: data.transaction_amount
+      status_detail: data.status_detail,
+      qr_code: paymentMethod.qr_code,
+      qr_code_base64: paymentMethod.qr_code_base64,
+      ticket_url: paymentMethod.ticket_url,
+      amount: data.total_amount
     });
 
   } catch (err) {
