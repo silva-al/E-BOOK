@@ -737,6 +737,79 @@ function startMercadoPagoPolling(paymentId) {
 }
 
 /**
+ * Verificação manual ao clicar no botão "Já realizei o pagamento".
+ * Consulta obrigatoriamente a API do Mercado Pago e NÃO libera se não estiver aprovado!
+ */
+async function handleManualVerifyPayment() {
+  const btn = document.getElementById('btnManualVerify');
+  const feedback = document.getElementById('manualVerifyFeedback');
+  const originalText = '⚡ Já realizei o pagamento (Verificar e Liberar)';
+
+  if (!currentMpPaymentId) {
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#fef3c7';
+      feedback.style.color = '#92400e';
+      feedback.style.border = '1px solid #fde68a';
+      feedback.innerHTML = 'Aguarde a geração do PIX oficial para poder verificar.';
+    }
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<div class="pulse-spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;"></div> Consultando Mercado Pago...`;
+  }
+
+  if (feedback) {
+    feedback.style.display = 'none';
+  }
+
+  try {
+    const res = await fetch(`/api/check-payment?id=${currentMpPaymentId}`);
+    const data = await res.json();
+
+    if (data.status === 'approved' || data.is_approved) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#ecfdf5';
+        feedback.style.color = '#065f46';
+        feedback.style.border = '1px solid #bbf7d0';
+        feedback.innerHTML = '✅ Pagamento confirmado com sucesso pelo Mercado Pago!';
+      }
+      showPaymentSuccessAndUnlock();
+      return;
+    } else {
+      // PAGAMENTO AINDA NÃO APROVADO NA API
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>${originalText}</span>`;
+      }
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.innerHTML = '⚠️ <strong>Pagamento ainda não identificado no Mercado Pago.</strong><br>Se você acabou de pagar no aplicativo do seu banco, aguarde alguns instantes pela compensação do PIX e clique novamente.';
+      }
+    }
+  } catch (err) {
+    console.error('Erro ao verificar pagamento na API:', err);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>${originalText}</span>`;
+    }
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#fef2f2';
+      feedback.style.color = '#991b1b';
+      feedback.style.border = '1px solid #fecaca';
+      feedback.innerHTML = '⚠️ Não foi possível consultar o Mercado Pago no momento. Tente novamente em instantes.';
+    }
+  }
+}
+
+/**
  * Sinal sonoro de sucesso ao aprovar o PIX
  */
 function playSuccessSound() {
