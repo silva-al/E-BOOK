@@ -35,9 +35,10 @@
 6. **Exibição Dinâmica de Preços e Pagamento via PIX**:
    - Preço base R$ 30,00 ou R$ 39,90 com adicional de dia (R$ 1,00 durante homologação/testes).
    - **Integração Mercado Pago (API de Orders)**:
-     - `api/create-pix.js`: gera cobrança PIX oficial via `POST /v1/orders` no Mercado Pago.
+     - `api/create-pix.js`: gera cobrança PIX oficial via `POST /v1/orders` no Mercado Pago com credencial oficial de Produção.
      - `api/check-payment.js`: consulta status da ordem via `GET /v1/orders/{id}`.
      - **UX de Notificação Obrigatória**: Ao aprovar o pagamento, o sistema DEVE exibir a tela de notificação com sinal sonoro, badge verde "STATUS: PAGO" e contagem regressiva de 3 segundos antes de fechar o modal e liberar o curso.
+     - **Integridade do Gateway**: Nunca exibir chaves PIX manuais/estáticas no checkout; o pagamento deve ser estritamente via QR Code dinâmico ou Copia e Cola oficial do Mercado Pago para assegurar a baixa e liberação 100% automáticas.
      - **Mecanismo de Contingência**: fallback seguro com gerador local e liberação direta para garantir disponibilidade.
 
 7. **Publicação, Deploy e Cache-Busting**:
