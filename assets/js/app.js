@@ -83,9 +83,8 @@ async function loadEbookContent() {
       {
         id: 1,
         title: "Módulo 1: O Momento Certo e os Sinais de Prontidão",
-        duration: "14 min de aula",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoTitle: "Aula 1: Identificando os sinais de prontidão e blindagem emocional",
+        summary: "Como saber se você e seu bebê estão realmente prontos para iniciar o processo, sem culpa e sem pressões externas.",
+        duration: "14 min de leitura",
         chapters: [
           { title: "1.1 A decisão é sua: Libertando-se da culpa e de palpites", content: "A amamentação é uma dança a dois: mãe e bebê. Para que ela continue sendo saudável, precisa ser boa para os dois. Quando a mãe se sente esgotada, sobrecarregada ou simplesmente sente que é a hora de fechar esse ciclo, essa decisão é legítima e merece ser respeitada." },
           { title: "1.2 Sinais de prontidão da mãe e do bebê", content: "Observe se o bebê já come alimentos sólidos com consistência, se já aceita água em copinho e se demonstra curiosidade pelo mundo ao redor. Para a mãe, o sinal principal é a exaustão física e emocional ou o desejo sincero de recuperar a autonomia do próprio corpo." },
@@ -95,9 +94,8 @@ async function loadEbookContent() {
       {
         id: 2,
         title: "Módulo 2: O Método dos 4 Pilares do Desmame Noturno e Respeitoso",
-        duration: "18 min de aula",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoTitle: "Aula 2: Aplicando os 4 Pilares na prática diária com carinho e firmeza",
+        summary: "O passo a passo com base na psicologia do apego seguro para retirar as mamadas sem traumas e sem lágrimas de abandono.",
+        duration: "18 min de leitura",
         chapters: [
           { title: "2.1 Pilar 1: Não Oferecer, Não Recusar", content: "A regra de ouro do pediatra e dos especialistas: nunca ofereça o peito por iniciativa própria ou para acalmar um tédio passageiro. Se o bebê pedir com insistência, acolha, mas comece a adiar sutilmente." },
           { title: "2.2 Pilar 2: Substituição de Afeto e Contato Físico", content: "O peito nunca é apenas leite: é colo, cheiro, aconchego e segurança. Ao retirar o peito, dobre a dose de carinho, massagens, beijos e olhares olho no olho." },
@@ -108,9 +106,8 @@ async function loadEbookContent() {
       {
         id: 3,
         title: "Módulo 3: Método Noite de Paz - Os 6 Passos de Ouro do Desmame Noturno 🌙🤱🏻",
-        duration: "22 min de aula",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoTitle: "Vídeo Oficial: Método Noite de Paz - Os 6 Passos Práticos do Desmame Noturno",
+        summary: "O protocolo definitivo e acolhedor para a noite inteira de sono, retirando as mamadas noturnas sem choro de desespero.",
+        duration: "20 min de leitura",
         goldenTips: [
           { step: "1️⃣", title: "Escolha por onde começar", desc: "Você pode começar retirando uma mamada de dia ou noturna por vez, em vez de tentar mudar toda a rotina de uma vez." },
           { step: "2️⃣", title: "Quando o bebê acordar, tente outras formas de acalmar", desc: "Colo, carinho, embalo, cafuné, água ou simplesmente ficar pertinho. 🥹🤍" },
@@ -128,9 +125,8 @@ async function loadEbookContent() {
       {
         id: 4,
         title: "Módulo 4: O 7º Passo Especial - DESMAME DURANTE O DIA ☀️👶",
-        duration: "16 min de aula",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoTitle: "Vídeo Oficial: O 7º Passo - Como Conduzir o Desmame Diurno com Amor e Praticidade",
+        summary: "O sétimo pilar independente: estratégias exclusivas para a rotina diurna, sem misturar com as orientações da noite.",
+        duration: "15 min de leitura",
         goldenTips: [
           { step: "7️⃣", title: "Desmame Durante o Dia (Passo 7 Exclusivo)", desc: "Retire uma mamada diurna por vez a cada 3 a 5 dias. Mantenha garrafinha com água e lanchinhos visíveis, mude o sofá ou ambiente de costume e faça combinados claros e cheios de carinho." }
         ],
@@ -142,9 +138,8 @@ async function loadEbookContent() {
       {
         id: 5,
         title: "Módulo 5: Cuidados Físicos com o Corpo da Mãe 🤱",
-        duration: "12 min de aula",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoTitle: "Aula 5: Saúde da Mãe - Prevenção de mastite, alívio e autocuidado emocional",
+        summary: "Como evitar o empedramento, mastite e lidar com a queda hormonal pós-desmame com tranquilidade.",
+        duration: "12 min de leitura",
         chapters: [
           { title: "5.1 Alívio do empedramento e prevenção de mastite", content: "Ao diminuir as mamadas, a mama continuará produzindo leite por alguns dias. Nunca esvazie a mama completamente com bomba. Faça apenas 'ordenha de alívio' manual no chuveiro morno para tirar a pressão." },
           { title: "5.2 O luto da amamentação e o choque hormonal", content: "Com a redução da prolactina e oxitocina, é comum a mulher sentir melancolia e sensação de perda. Dê espaço para os seus sentimentos e celebre a linda jornada que você concluiu." }
@@ -153,9 +148,8 @@ async function loadEbookContent() {
       {
         id: 6,
         title: "Módulo 6: Materiais Práticos, Tabela de 21 Dias e Bônus 🎁",
-        duration: "10 min de aula",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoTitle: "Aula 6: Como usar o Calendário dos 21 Dias e Cardápios de Saciedade",
+        summary: "Seus instrumentos diários para imprimir e acompanhar o progresso em família.",
+        duration: "10 min de leitura",
         chapters: [
           { title: "6.1 O Calendário dos 21 Dias do Desmame Suave", content: "Semana 1: Eliminação das mamadas de distração e tédio. Semana 2: Substituição da mamada antes do sono diurno (sonecas). Semana 3: Desmame noturno e celebração da conquista." },
           { title: "6.2 Cardápio Noturno de Saciedade", content: "Sugestões de jantares nutritivos ricos em triptofano (aveia, banana, abacate) que mantêm o bebê saciado por mais horas durante a noite sem desconforto digestivo." }
@@ -210,17 +204,14 @@ function renderEbookModules(modules) {
   if (!container) return;
 
   container.innerHTML = modules.map((mod, index) => {
-    const currentVideoUrl = getModuleVideoUrl(mod.id, mod.videoUrl);
-    const parsed = parseVideoEmbedUrl(currentVideoUrl);
-
     return `
       <div class="module-accordion-item ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
         <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
           <div class="module-trigger-info">
             <span class="module-title-text">📖 ${mod.title}</span>
             <div class="module-badges-row">
-              ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration}</span>` : ''}
-              <span class="module-video-badge">▶️ Com Vídeo Aula</span>
+              ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration.replace('de aula', 'de leitura')}</span>` : ''}
+              <span class="module-text-badge">📝 Conteúdo Completo</span>
             </div>
           </div>
           <span class="module-arrow-icon" id="moduleArrow${mod.id}">${index === 0 ? '▲' : '▼'}</span>
@@ -228,39 +219,12 @@ function renderEbookModules(modules) {
 
         <div class="module-accordion-content" id="moduleContent${mod.id}">
           
-          <!-- Seção de Vídeo Deste Módulo -->
-          <div class="module-video-block">
-            <div class="module-video-header">
-              <div>
-                <span class="module-video-tag">Vídeo Aula Prática</span>
-                <h4 class="module-video-headline">${mod.videoTitle || `Aula Prática: ${mod.title}`}</h4>
-              </div>
-              <button type="button" class="btn-edit-module-video" onclick="handleEditModuleVideo(${mod.id}, '${mod.title.replace(/'/g, "\\'")}')" title="Configurar link do vídeo">
-                ✏️ Alterar Vídeo
-              </button>
+          <!-- Resumo / Objetivo do Módulo -->
+          ${mod.summary ? `
+            <div class="module-summary-intro">
+              <p><strong>🎯 Objetivo deste módulo:</strong> ${mod.summary}</p>
             </div>
-
-            <div class="module-player-wrapper" id="playerWrapper${mod.id}">
-              ${parsed.type === 'video' ? `
-                <video controls class="module-html5-video" poster="assets/images/ebook_cover.jpg">
-                  <source src="${parsed.src}" type="video/mp4">
-                  Seu navegador não suporta a tag de vídeo.
-                </video>
-              ` : `
-                <iframe 
-                  class="module-video-iframe" 
-                  src="${parsed.src}" 
-                  title="${mod.title}" 
-                  frameborder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowfullscreen>
-                </iframe>
-              `}
-            </div>
-            <div class="video-helper-tip">
-              <span>💡 Dica: Aceita links do YouTube (listado ou não-listado), Vimeo, Google Drive ou arquivo .MP4 direto.</span>
-            </div>
-          </div>
+          ` : ''}
 
           <!-- Dicas de Ouro Específicas do Módulo (ex: Desmame Noturno 6 passos) -->
           ${mod.goldenTips && mod.goldenTips.length ? `

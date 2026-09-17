@@ -12,12 +12,12 @@
    - O **Desmame Durante o Dia ☀️👶** é tratado como um módulo/passo complementar independente (**7º Passo Especial** e opção de Order Bump adicional por + R$ 9,90), nunca misturado com as regras noturnas.
 
 2. **Estrutura da Área de Membros (Alunas)**:
-   - Todo módulo da área de alunas deve possuir uma vídeo-aula prática associada (com suporte a YouTube embed/não-listado, Vimeo, Google Drive preview e arquivos .MP4).
-   - Permitir alteração rápida do link do vídeo diretamente na interface pelo criador do curso (persistido em LocalStorage e fallback em `content.json`).
-   - Cada módulo combina:
-     - (a) Vídeo aula em destaque;
-     - (b) Dicas rápidas / de ouro de aplicação imediata numeradas com ícones;
-     - (c) Texto aprofundado dos capítulos do e-book.
+   - A área da aluna é 100% focada em leitura e texto (sem players ou dependência de vídeos).
+   - O método e cada módulo combinam:
+     - (a) O Método Noite de Paz com os 6 Passos de Ouro práticos com ícones e listas;
+     - (b) O 7º Passo Especial para o Desmame Durante o Dia;
+     - (c) Resumos de objetivos claros por módulo;
+     - (d) Texto aprofundado dos capítulos do e-book oficial com navegação por acordeão e estimativas de tempo de leitura.
 
 3. **Formulário de Checkout e Preenchimento**:
    - Os campos de formulário (Nome, E-mail, WhatsApp) **devem iniciar sempre 100% zerados e limpos** para o cliente digitar seus próprios dados (sem dados fictícios pré-preenchidos como "Camila Silva Martins").
