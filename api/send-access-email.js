@@ -28,8 +28,8 @@ module.exports = async (req, res) => {
     const cleanPassword = (loginPassword && String(loginPassword).trim()) ? String(loginPassword).trim() : 'desmame2026';
     const siteUrl = 'https://desmame-noturno.vercel.app';
     
-    // Constrói o Magic Link de Acesso Vitalício Direto se não vier fornecido
-    const magicLink = accessLink || `${siteUrl}/?access=approved&name=${encodeURIComponent(cleanName)}&email=${encodeURIComponent(cleanEmail || '')}&bump=${hasBump ? '1' : '0'}`;
+    const isBumpApproved = (hasBump === true || hasBump === 'true' || hasBump === 1 || hasBump === '1');
+    const magicLink = accessLink || `${siteUrl}/?access=approved&name=${encodeURIComponent(cleanName)}&email=${encodeURIComponent(cleanEmail || '')}&bump=${isBumpApproved ? '1' : '0'}`;
 
     if (!cleanEmail) {
       return res.status(400).json({ error: 'E-mail do comprador é obrigatório.' });
@@ -124,7 +124,7 @@ module.exports = async (req, res) => {
                     <div style="font-size: 14.5px; color: #1e293b; margin-bottom: 6px;">
                       🎁 <strong>Bônus:</strong> Guia do Sono Tranquilo
                     </div>
-                    ${hasBump ? `
+                    ${isBumpApproved ? `
                     <div style="font-size: 14.5px; color: #047857; font-weight: 700;">
                       ☀️ <strong>Bônus VIP Desbloqueado:</strong> Dicas Especiais para Desmame Diurno (Passo a Passo)
                     </div>

@@ -11,7 +11,8 @@ const appState = {
   basePrice: 29.90,
   bumpPrice: 9.90,
   paymentMethod: 'pix',
-  hasBump: localStorage.getItem('desmame_has_bump') === 'true',
+  orderBumpSelected: false,
+  hasBump: localStorage.getItem('desmame_bump_paid') === 'true',
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
   masterPassword: localStorage.getItem('desmame_master_password') || 'desmame2026',
   ebookData: null
@@ -24,11 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (urlParams.get('reset') === '1' || urlParams.get('checkout') === '1' || urlParams.get('logout') === '1') {
     localStorage.removeItem('desmame_is_paid');
     localStorage.removeItem('desmame_has_bump');
+    localStorage.removeItem('desmame_bump_paid');
     localStorage.removeItem('desmame_buyer_name');
     localStorage.removeItem('desmame_buyer_email');
     localStorage.removeItem('desmame_buyer_phone');
     appState.isPaid = false;
     appState.hasBump = false;
+    appState.orderBumpSelected = false;
   } else if (urlParams.get('access') === 'approved' || urlParams.get('acesso') === '1' || urlParams.get('liberado') === '1') {
     // Acesso liberado via link de e-mail / magic link
     appState.isPaid = true;
@@ -46,9 +49,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       appState.buyerEmail = decodedEmail;
       localStorage.setItem('desmame_buyer_email', decodedEmail);
     }
-    if (paramBump === '1') {
-      appState.hasBump = true;
-      localStorage.setItem('desmame_has_bump', 'true');
+    // TRAVA RIGOROSA VIA API:
+    // O Bônus Diurno só é liberado se o link trouxer bump=1 E for validado na API do Mercado Pago!
+    if (paramBump === '1' && paramEmail && paramEmail.includes('@')) {
+      fetch(`/api/check-payment?email=${encodeURIComponent(paramEmail)}`)
+        .then(r => r.json())
+        .then(check => {
+          if (check && check.is_approved && check.has_bump === true) {
+            appState.hasBump = true;
+            localStorage.setItem('desmame_bump_paid', 'true');
+            localStorage.setItem('desmame_has_bump', 'true');
+          } else {
+            // Se o Mercado Pago registrar apenas o pagamento principal (R$ 29,90), bloqueia o especial!
+            appState.hasBump = false;
+            localStorage.removeItem('desmame_bump_paid');
+            localStorage.removeItem('desmame_has_bump');
+          }
+          renderCurrentModules();
+        }).catch(() => {
+          appState.hasBump = false;
+          localStorage.removeItem('desmame_bump_paid');
+          localStorage.removeItem('desmame_has_bump');
+        });
+    } else {
+      appState.hasBump = false;
+      localStorage.removeItem('desmame_bump_paid');
+      localStorage.removeItem('desmame_has_bump');
     }
   }
 
@@ -65,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const bumpCheck = document.getElementById('orderBumpCheck');
   if (bumpCheck) {
-    bumpCheck.checked = appState.hasBump;
+    bumpCheck.checked = appState.orderBumpSelected;
   }
 
   // Detecção instantânea quando a aluna volta do aplicativo do banco (Pix pago no celular)
@@ -806,8 +832,7 @@ function initCountdownTimer() {
    ORDER BUMP E CÁLCULO DE VALOR
    ========================================================================== */
 function handleToggleBump(checkbox) {
-  appState.hasBump = checkbox.checked;
-  localStorage.setItem('desmame_has_bump', String(checkbox.checked));
+  appState.orderBumpSelected = checkbox.checked;
   updatePriceDisplay();
   if (!appState.isPaid) {
     initInlineMercadoPagoPix();
@@ -815,7 +840,7 @@ function handleToggleBump(checkbox) {
 }
 
 function getCurrentTotal() {
-  return appState.hasBump ? (appState.basePrice + appState.bumpPrice) : appState.basePrice;
+  return appState.orderBumpSelected ? (appState.basePrice + appState.bumpPrice) : appState.basePrice;
 }
 
 let currentInlinePixPayload = '';
@@ -905,7 +930,7 @@ function updatePriceDisplay() {
   // 4. Linha adicional do order bump no resumo
   const bumpSummaryRow = document.getElementById('bumpSummaryRow');
   if (bumpSummaryRow) {
-    bumpSummaryRow.style.display = appState.hasBump ? 'flex' : 'none';
+    bumpSummaryRow.style.display = appState.orderBumpSelected ? 'flex' : 'none';
   }
 
   // 5. Botão de checkout com valor dinâmico
@@ -1035,7 +1060,7 @@ async function initInlineMercadoPagoPix() {
         buyerName,
         buyerEmail,
         amount: totalAmount,
-        orderBump: appState.hasBump
+        orderBump: appState.orderBumpSelected
       })
     });
 
@@ -1290,18 +1315,27 @@ function showPaymentSuccessAndUnlock(hasBumpParam) {
 
   // 1. SALVAMENTO IMEDIATO NO LOCALSTORAGE (nunca perde o acesso se o usuário fechar a aba)
   appState.isPaid = true;
-  if (typeof hasBumpParam === 'boolean') {
-    appState.hasBump = hasBumpParam;
-  }
   localStorage.setItem('desmame_is_paid', 'true');
-  localStorage.setItem('desmame_has_bump', String(appState.hasBump));
+
+  // RIGOROSO: Somente libera o bônus diurno se o pagamento confirmado teve has_bump === true!
+  const isBumpPaid = (hasBumpParam === true);
+  appState.hasBump = isBumpPaid;
+
+  if (isBumpPaid) {
+    localStorage.setItem('desmame_bump_paid', 'true');
+    localStorage.setItem('desmame_has_bump', 'true');
+  } else {
+    localStorage.removeItem('desmame_bump_paid');
+    localStorage.removeItem('desmame_has_bump');
+  }
+
   localStorage.removeItem('desmame_pending_pix_id');
   localStorage.removeItem('desmame_pending_pix_code');
 
   playSuccessSound();
 
-  // Dispara e-mail de aprovação com link de acesso permanente e boas-vindas
-  triggerSendAccessEmail(appState.hasBump);
+  // Dispara e-mail de aprovação com link contendo bump=1 se pago, ou bump=0 se não pago
+  triggerSendAccessEmail(isBumpPaid);
 
   // Esconde área de espera e exibe o bloco verde comemorativo diretamente na página
   const inlinePaymentArea = document.getElementById('inlinePaymentArea');
@@ -1342,10 +1376,13 @@ function showPaymentSuccessAndUnlock(hasBumpParam) {
 function getMagicAccessLink(hasBumpParam) {
   const name = appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
   const email = appState.buyerEmail || localStorage.getItem('desmame_buyer_email') || '';
-  const bump = (typeof hasBumpParam === 'boolean') ? hasBumpParam : appState.hasBump;
+  // TRAVA RIGOROSA: o parâmetro bump=1 SÓ É GERADO se hasBumpParam for explicitamente true E confirmado pago!
+  const isBump = (typeof hasBumpParam === 'boolean')
+    ? hasBumpParam
+    : (appState.hasBump === true && localStorage.getItem('desmame_bump_paid') === 'true');
   const origin = window.location.origin;
   const path = window.location.pathname;
-  return `${origin}${path}?access=approved&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&bump=${bump ? '1' : '0'}`;
+  return `${origin}${path}?access=approved&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&bump=${isBump ? '1' : '0'}`;
 }
 
 /**
@@ -1354,8 +1391,10 @@ function getMagicAccessLink(hasBumpParam) {
 async function triggerSendAccessEmail(hasBumpParam) {
   const name = appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
   const email = appState.buyerEmail || localStorage.getItem('desmame_buyer_email');
-  const bump = (typeof hasBumpParam === 'boolean') ? hasBumpParam : appState.hasBump;
-  const magicLink = getMagicAccessLink(bump);
+  const isBump = (typeof hasBumpParam === 'boolean')
+    ? hasBumpParam
+    : (appState.hasBump === true && localStorage.getItem('desmame_bump_paid') === 'true');
+  const magicLink = getMagicAccessLink(isBump);
   const password = localStorage.getItem('desmame_student_password') || appState.masterPassword || 'desmame2026';
 
   if (!email || !email.includes('@')) {
@@ -1370,7 +1409,7 @@ async function triggerSendAccessEmail(hasBumpParam) {
       body: JSON.stringify({
         buyerName: name,
         buyerEmail: email,
-        hasBump: bump,
+        hasBump: isBump,
         accessLink: magicLink,
         loginPassword: password
       })
@@ -1386,7 +1425,8 @@ async function triggerSendAccessEmail(hasBumpParam) {
  * Permite que a aluna copie seu link de acesso permanente diretamente na tela
  */
 function handleCopyAccessMagicLink() {
-  const link = getMagicAccessLink(appState.hasBump);
+  const isBump = (appState.hasBump === true && localStorage.getItem('desmame_bump_paid') === 'true');
+  const link = getMagicAccessLink(isBump);
   const label = document.getElementById('labelCopyMagicLink');
 
   if (navigator.clipboard) {
@@ -1397,6 +1437,27 @@ function handleCopyAccessMagicLink() {
         setTimeout(() => { label.textContent = orig; }, 3000);
       }
     });
+  }
+}
+
+/**
+ * Permite que a aluna salve o link de acesso diretamente no seu WhatsApp
+ */
+function handleSendAccessToWhatsapp() {
+  const name = appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
+  const phone = localStorage.getItem('desmame_buyer_phone') || '';
+  const cleanPhone = phone.replace(/\D/g, '');
+  
+  const isBump = (appState.hasBump === true && localStorage.getItem('desmame_bump_paid') === 'true');
+  const magicLink = getMagicAccessLink(isBump);
+
+  const msg = `Olá, ${name}! 🤍\n\n🎉 Seu acesso ao Método Desmame Noturno está liberado!\n\n👉 Acesse seu material completo aqui:\n${magicLink}\n\nGuarde esta mensagem para acessar sempre pelo celular ou computador!`;
+
+  if (cleanPhone && cleanPhone.length >= 10) {
+    const dddPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+    window.open(`https://wa.me/${dddPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+  } else {
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
   }
 }
 
@@ -1837,13 +1898,13 @@ function checkUnlockStatus() {
 
     updateProgressUI();
 
-    const emailNotice = document.getElementById('accessEmailNoticeText');
-    const savedPassword = localStorage.getItem('desmame_student_password') || appState.masterPassword || 'desmame2026';
-    if (emailNotice) {
-      if (savedEmail) {
-        emailNotice.innerHTML = `✉️ Enviamos seus dados de acesso para: <strong>${savedEmail}</strong> | Senha: <strong>${savedPassword}</strong>`;
+    const whatsNotice = document.getElementById('accessWhatsappNoticeText');
+    const savedPhone = localStorage.getItem('desmame_buyer_phone');
+    if (whatsNotice) {
+      if (savedPhone) {
+        whatsNotice.innerHTML = `📲 <strong>Salve seu link no seu WhatsApp (${savedPhone})</strong> para ter acesso fácil sempre à mão:`;
       } else {
-        emailNotice.innerHTML = `✉️ Guarde seus dados de acesso! Senha da aluna: <strong>${savedPassword}</strong>`;
+        whatsNotice.innerHTML = `📲 <strong>Salve seu link no seu WhatsApp</strong> para ter acesso fácil sempre à mão:`;
       }
     }
   } else {

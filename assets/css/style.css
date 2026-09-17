@@ -1329,27 +1329,51 @@ body {
   opacity: 0.88;
 }
 
-.access-email-notice-card {
+.access-whatsapp-notice-card {
   display: flex;
   margin-top: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #99f6e4;
-  border-radius: 10px;
-  padding: 10px 14px;
+  background: #ffffff;
+  border: 1.5px solid #86efac;
+  border-radius: 12px;
+  padding: 12px 18px;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.12);
 }
 
 .access-notice-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #115e59;
-  font-size: 13px;
+  gap: 10px;
+  color: #166534;
+  font-size: 13.5px;
   font-weight: 600;
+  flex: 1;
+  min-width: 240px;
+}
+
+.btn-send-whatsapp-access {
+  background: #25d366;
+  color: #ffffff;
+  border: none;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(37, 211, 102, 0.28);
+  transition: all 0.2s ease;
+}
+
+.btn-send-whatsapp-access:hover {
+  background: #1eb954;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(37, 211, 102, 0.38);
 }
 
 /* Seção de Vídeo em Destaque */
