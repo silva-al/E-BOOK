@@ -2,7 +2,10 @@
 
 1. **Identidade do Produto & Metodologia**:
    - O nome oficial do produto é **Desmame Noturno** (não utilizar "Desmame Gentil").
-   - Link oficial de produção: **`https://desmame-noturno.vercel.app`**.
+   - Links oficiais de produção:
+     - **Vendas / Divulgação**: `https://desmame-noturno.vercel.app`
+     - **Painel de Testes (Admin)**: `https://desmame-noturno.vercel.app?admin=1`
+     - **Reset de Sessão**: `https://desmame-noturno.vercel.app?reset=1`
    - O método principal de desmame noturno é composto estritamente pelos **5 Módulos de Ouro (1️⃣ a 5️⃣)**:
      - 1️⃣ **Escolha por onde começar**: Uma mudança de cada vez (dia ou noite), hábito vs. fome e sem pressa.
      - 2️⃣ **Quando o bebê acordar, tente outras formas de acalmar**: Aconchego e acolhimento (colo, carinho, balançar no peito, cafuné).
@@ -14,17 +17,13 @@
 2. **Seção Separada do Bônus Especial Diurno (Passos Individuais)**:
    - Apresentado em container próprio e separado (`#bonusAccessBox`), nunca misturado na mesma lista dos módulos noturnos.
    - **Aluna sem adicional**: O container exibe card com selo "🔒 Adicional Bloqueado", lista dos 6 passos práticos e botão de upgrade para modal PIX de R$ 9,90.
-   - **Aluna com adicional**: Exibe selo VIP ("✨ Bônus VIP Liberado") e **6 módulos individuais separados em acordeões (Passos 01 a 06)**, idênticos ao formato do noturno:
-     - 1️⃣ Passo 01: Observação e Desvio de Atenção 👶
-     - 2️⃣ Passo 02: No meu caso vs No seu caso (Estratégia do Sabor Seguro ✅)
-     - 3️⃣ Passo 03: Mantenha o bebê sempre alimentado 🍎💧
-     - 4️⃣ Passo 04: Vá diminuindo as mamadas aos poucos 📉
-     - 5️⃣ Passo 05: Ofereça carinho e acolhimento 🤍
-     - ✨ Passo 06: Mensagem Final 🤍
+   - **Aluna com adicional**: Exibe selo VIP ("✨ Bônus VIP Liberado") e **6 módulos individuais separados em acordeões (Passos 01 a 06)**, idênticos ao formato do noturno.
 
-3. **Ocultação de Painel de Testes / Admin**:
+3. **Ocultação de Painel de Testes & Mecanismo de Reset**:
    - As ferramentas do rodapé (`footer-admin-tools`) ficam **ocultas por padrão** para visitantes e clientes.
    - Só devem ser exibidas se a URL contiver `?admin=1`.
+   - Inclui as ações de alternância rápida (`toggleViewMode`, `toggleBumpMode`, `editPixKeyPrompt`) e o botão `🔄 Resetar para Novo Visitante` (`resetBuyerSession()`).
+   - Acesso via `?reset=1` limpa automaticamente `desmame_is_paid` e `desmame_has_bump`, retornando imediatamente para a tela de vendas.
 
 4. **Invariante de Dados e Fallback (content.json x app.js)**:
    - Os textos oficiais dos módulos residem em `ebook/content.json` (dividido em `modules` para noturno e `bonus_diurno.modules` para diurno).
