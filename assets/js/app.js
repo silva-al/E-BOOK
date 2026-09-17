@@ -6,8 +6,8 @@
 const appState = {
   pixKey: localStorage.getItem('alan_pix_key') || '+5519994744297',
   directPixKey: '5519994744297',
-  pixRecipient: 'ALAN RONALDO',
-  pixCity: 'SAO PAULO',
+  pixRecipient: localStorage.getItem('alan_pix_name') || 'ALAN RONALDO',
+  pixCity: localStorage.getItem('alan_pix_city') || 'SAO PAULO',
   basePrice: 30.00,
   bumpPrice: 9.90,
   hasBump: false,
@@ -383,12 +383,10 @@ function renderInlinePix() {
       name: appState.pixRecipient,
       city: appState.pixCity,
       amount: totalAmount,
-      txId: 'DESMAME' + Math.floor(Math.random() * 89999 + 10000),
-      description: appState.hasBump ? 'Desmame Noturno e Diurno' : 'Ebook Desmame Noturno'
+      txId: '***'
     });
   } catch (e) {
     console.error('Erro gerando payload inline:', e);
-    currentInlinePixPayload = '00020126360014br.gov.bcb.pix0114+55199947442975204000053039865405' + totalAmount.toFixed(2) + '5802BR5912ALAN RONALDO6009SAO PAULO62070503***6304ABCD';
   }
 
   const canvas = document.getElementById('inlinePixQrCanvas');
@@ -507,12 +505,10 @@ function handleOpenPixModal() {
       name: appState.pixRecipient,
       city: appState.pixCity,
       amount: totalAmount,
-      txId: 'DESMAME' + Math.floor(Math.random() * 89999 + 10000),
-      description: appState.hasBump ? 'Desmame Noturno e Diurno' : 'Ebook Desmame Noturno'
+      txId: '***'
     });
   } catch (e) {
     console.error('Erro gerando payload:', e);
-    pixPayload = '00020126360014br.gov.bcb.pix0114+5519994744297520400005303986540530.005802BR5912ALAN RONALDO6009SAO PAULO62070503***6304ABCD';
   }
 
   // 2. Preenche o código copia e cola no modal
@@ -678,12 +674,31 @@ function toggleViewMode() {
 
 function editPixKeyPrompt() {
   const currentKey = appState.pixKey;
-  const newKey = prompt("Digite a sua Chave PIX (E-mail, CPF, Celular ou Aleatória):", currentKey);
+  const currentName = appState.pixRecipient;
+  const currentCity = appState.pixCity;
+
+  const newKey = prompt("1/3: Digite sua Chave PIX (Telefone com DDD, CPF, E-mail ou Aleatória):", currentKey);
+  if (newKey === null) return;
+  const newName = prompt("2/3: Digite o Nome do Titular da Conta no Banco (como aparece no app):", currentName);
+  if (newName === null) return;
+  const newCity = prompt("3/3: Digite a Cidade da sua Conta Bancária (ex: SAO PAULO):", currentCity);
+  if (newCity === null) return;
+
   if (newKey && newKey.trim() !== "") {
     appState.pixKey = newKey.trim();
     localStorage.setItem('alan_pix_key', appState.pixKey);
-    alert("Chave PIX atualizada para: " + appState.pixKey);
   }
+  if (newName && newName.trim() !== "") {
+    appState.pixRecipient = newName.trim().toUpperCase();
+    localStorage.setItem('alan_pix_name', appState.pixRecipient);
+  }
+  if (newCity && newCity.trim() !== "") {
+    appState.pixCity = newCity.trim().toUpperCase();
+    localStorage.setItem('alan_pix_city', appState.pixCity);
+  }
+
+  updatePriceDisplay();
+  alert(`Dados PIX atualizados com sucesso!\n\nChave: ${appState.pixKey}\nTitular: ${appState.pixRecipient}\nCidade: ${appState.pixCity}\n\nO QR Code foi regerado com estes dados.`);
 }
 
 function toggleAdminBar() {

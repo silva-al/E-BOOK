@@ -43,24 +43,44 @@ class PixEngine {
   }
 
   /**
-   * Gera o payload completo do PIX Copia e Cola
+   * Valida e formata a chave PIX no padrão do Banco Central
    */
-  static generatePayload({ key, name, city, amount, txId = '***', description = '' }) {
-    const cleanKey = key.trim();
-    const cleanName = this.sanitizeText(name).substring(0, 25) || 'DESMAME NOTURNO';
+  static sanitizeKey(rawKey) {
+    if (!rawKey) return '+5519994744297';
+    let key = rawKey.trim();
+    if (key.includes('@') || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(key)) {
+      return key;
+    }
+    if (key.startsWith('+')) {
+      return key;
+    }
+    const digits = key.replace(/\D/g, '');
+    if (digits.length === 13 && digits.startsWith('55')) {
+      return `+${digits}`;
+    }
+    if ((digits.length === 10 || digits.length === 11) && !key.includes('.')) {
+      return `+55${digits}`;
+    }
+    return digits || key;
+  }
+
+  /**
+   * Gera o payload completo do PIX Copia e Cola no padrão oficial do Banco Central
+   */
+  static generatePayload({ key, name, city, amount, txId = '***' }) {
+    const cleanKey = this.sanitizeKey(key);
+    const cleanName = this.sanitizeText(name).substring(0, 25) || 'ALAN RONALDO';
     const cleanCity = this.sanitizeText(city).substring(0, 15) || 'SAO PAULO';
     const formattedAmount = Number(amount).toFixed(2);
-    const cleanTxId = this.sanitizeText(txId).replace(/\s/g, '').substring(0, 25) || '***';
+    // Para PIX estático sem conciliação por webhook, o padrão oficial Bacen é '***'
+    const cleanTxId = (txId && txId !== '***') ? this.sanitizeText(txId).replace(/\s/g, '').substring(0, 25) : '***';
 
     // 00 - Payload Format Indicator
     let payload = this.formatField('00', '01');
 
-    // 26 - Merchant Account Information (PIX)
+    // 26 - Merchant Account Information (PIX Estático: Subtag 00 GUI e Subtag 01 Chave APENAS)
     let merchantAccount = this.formatField('00', 'br.gov.bcb.pix');
     merchantAccount += this.formatField('01', cleanKey);
-    if (description) {
-      merchantAccount += this.formatField('02', this.sanitizeText(description).substring(0, 40));
-    }
     payload += this.formatField('26', merchantAccount);
 
     // 52 - Merchant Category Code
@@ -69,19 +89,19 @@ class PixEngine {
     // 53 - Transaction Currency (986 = BRL)
     payload += this.formatField('53', '986');
 
-    // 54 - Transaction Amount
+    // 54 - Transaction Amount (Valor exato da cobrança)
     payload += this.formatField('54', formattedAmount);
 
     // 58 - Country Code
     payload += this.formatField('58', 'BR');
 
-    // 59 - Merchant Name
+    // 59 - Merchant Name (Nome do recebedor)
     payload += this.formatField('59', cleanName);
 
-    // 60 - Merchant City
+    // 60 - Merchant City (Cidade do recebedor)
     payload += this.formatField('60', cleanCity);
 
-    // 62 - Additional Data Field Template (TxID)
+    // 62 - Additional Data Field Template (TxID = ***)
     const additionalData = this.formatField('05', cleanTxId);
     payload += this.formatField('62', additionalData);
 
