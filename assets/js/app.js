@@ -411,7 +411,7 @@ function handleOpenPixModal() {
       city: appState.pixCity,
       amount: totalAmount,
       txId: 'DESMAME' + Math.floor(Math.random() * 89999 + 10000),
-      description: 'Ebook Desmame Noturno'
+      description: appState.hasBump ? 'Desmame Noturno e Diurno' : 'Ebook Desmame Noturno'
     });
   } catch (e) {
     console.error('Erro gerando payload:', e);
