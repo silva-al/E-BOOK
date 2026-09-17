@@ -2067,78 +2067,42 @@ body {
 .module-card-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 14px;
-  padding: 18px 22px;
+  padding: 16px 20px;
   cursor: pointer;
   user-select: none;
+  background: #ffffff;
+  transition: background 0.2s ease;
 }
 
-/* Cápsula Visual com Gradiente 3D */
-.module-card-visual-pill {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease;
+.module-card-header:hover {
+  background: #fff9fb;
 }
 
-.module-card-item:hover .module-card-visual-pill {
-  transform: scale(1.05);
-}
-
-.module-visual-icon {
-  font-size: 22px;
-}
-
-/* Temas Visuais Femininos para Cada Módulo */
-.mod-theme-rose .module-card-visual-pill {
-  background: linear-gradient(135deg, #ffe4e6 0%, #f43f5e 100%);
-  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
-}
-
-.mod-theme-lilac .module-card-visual-pill {
-  background: linear-gradient(135deg, #f3e8ff 0%, #a855f7 100%);
-  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3);
-}
-
-.mod-theme-peach .module-card-visual-pill {
-  background: linear-gradient(135deg, #ffedd5 0%, #fb923c 100%);
-  box-shadow: 0 4px 14px rgba(251, 146, 60, 0.3);
-}
-
-.mod-theme-violet .module-card-visual-pill {
-  background: linear-gradient(135deg, #e0e7ff 0%, #6366f1 100%);
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-}
-
-.mod-theme-berry .module-card-visual-pill {
-  background: linear-gradient(135deg, #fce7f3 0%, #be185d 100%);
-  box-shadow: 0 4px 14px rgba(190, 24, 93, 0.3);
-}
-
-/* Centro do Card */
-.module-card-header-center {
+.module-card-header-left {
   flex: 1;
+  min-width: 0;
 }
 
 .module-badge-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
 }
 
 .module-theme-badge {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 800;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: 6px;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
 }
 
 .mod-theme-rose .module-theme-badge {
@@ -2180,8 +2144,9 @@ body {
 .module-status-tag {
   font-size: 11px;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: 4px;
+  white-space: nowrap;
 }
 
 .module-status-tag.completed {
@@ -2197,77 +2162,51 @@ body {
 }
 
 .module-title-main {
-  font-size: 17.5px;
+  font-size: 16.5px;
   font-weight: 800;
   color: #1e1b4b;
-  margin: 3px 0 4px;
+  margin: 0 0 6px 0;
   line-height: 1.35;
   letter-spacing: -0.2px;
+  word-break: break-word;
 }
 
 .module-meta-info-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: #64748b;
   font-weight: 600;
+  flex-wrap: wrap;
+}
+
+.module-meta-info-row span {
+  white-space: nowrap;
 }
 
 .meta-dot {
   opacity: 0.4;
 }
 
-/* Ações à Direita do Header */
-.module-card-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-module-quick-check {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid #fbcfe8;
-  background: #fff5f7;
-  color: #be185d;
-  font-size: 13px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-module-quick-check:hover {
-  background: #fce7f3;
-  transform: scale(1.08);
-}
-
-.btn-module-quick-check.is-done {
-  background: #e11d48;
-  border-color: #be185d;
-  color: #ffffff;
-}
-
 .module-card-chevron {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: #fff5f7;
   border: 1px solid #fce7f3;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   color: #9d174d;
-  transition: transform 0.25s ease;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, background 0.2s ease;
 }
 
 .module-card-item.active .module-card-chevron {
   transform: rotate(180deg);
+  background: #fce7f3;
 }
 
 /* O que você vai aplicar neste passo */
@@ -3704,23 +3643,28 @@ body {
     gap: 10px;
   }
 
-  .module-card-visual-pill {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-  }
-
-  .module-visual-icon {
-    font-size: 18px;
-  }
-
   .module-title-main {
-    font-size: 15.5px;
+    font-size: 15px;
   }
 
   .module-learn-summary-box {
     margin: 0 16px 12px;
     padding: 10px 14px;
+  }
+
+  .module-actions-bar {
+    padding: 0 16px 14px;
+    gap: 8px;
+  }
+
+  .btn-module-open {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+
+  .btn-module-check {
+    font-size: 11.5px;
+    padding: 7px 12px;
   }
 
   .module-accordion-content {

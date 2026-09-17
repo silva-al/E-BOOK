@@ -601,31 +601,31 @@ function renderEbookModules(modules) {
   const moduleThemes = {
     1: {
       themeClass: 'mod-theme-rose',
-      badge: 'PASSO 01 • TRANSIÇÃO SUAVE',
+      badge: 'PASSO 01',
       icon: '🌙',
       tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Não tente retirar todas as mamadas de uma só vez. Comece escolhendo a mamada que você sente menos necessidade e comemore cada pequena vitória com muito carinho.'
     },
     2: {
       themeClass: 'mod-theme-lilac',
-      badge: 'PASSO 02 • ACOLHIMENTO E COLO',
+      badge: 'PASSO 02',
       icon: '🤍',
       tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Quando o bebê despertar, ofereça o calor do seu peito com cafuné e voz sussurrada. A sensação de segurança é o que ajuda o corpinho dele a voltar ao sono profundo.'
     },
     3: {
       themeClass: 'mod-theme-peach',
-      badge: 'PASSO 03 • RITUAL DO SONO',
+      badge: 'PASSO 03',
       icon: '🛁',
       tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> A previsibilidade acalma o sistema nervoso. Repita sempre a mesma sequência: banho morno + pijama confortável + penumbra e ruído de chuva.'
     },
     4: {
       themeClass: 'mod-theme-violet',
-      badge: 'PASSO 04 • QUEBRA DE ASSOCIAÇÃO',
+      badge: 'PASSO 04',
       icon: '✨',
       tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Espere 30 a 60 segundos antes de oferecer o peito no primeiro despertar. Muitas vezes é só uma troca de ciclo de sono que se resolve com um toque suave nas costas.'
     },
     5: {
       themeClass: 'mod-theme-berry',
-      badge: 'PASSO 05 • CONSISTÊNCIA & PAZ',
+      badge: 'PASSO 05',
       icon: '🌸',
       tip: '💡 <strong>Dica de Ouro da Madrugada:</strong> Consistência amorosa é o segredo! Nunca deixe o bebê chorar desamparado. Em poucos dias, noites inteiras e contínuas de sono serão a nova realidade da sua família!'
     }
@@ -634,7 +634,7 @@ function renderEbookModules(modules) {
   // Renderização Feminina e Criativa dos Módulos Noturnos
   container.innerHTML = nocturnalModules.map((mod, index) => {
     const isCompleted = completed.includes(mod.id);
-    let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Módulo\s+[0-9]+:\s*/i, '');
+    let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Módulo\s+[0-9]+:\s*/i, '').trim();
     const duration = mod.duration || '5 min';
     const summary = mod.summary || 'Aprenda orientações práticas e acolhedoras para este passo do desmame.';
     const theme = moduleThemes[mod.id] || {
@@ -644,14 +644,13 @@ function renderEbookModules(modules) {
       tip: ''
     };
 
+    const displayTitle = cleanTitle.startsWith(theme.icon) ? cleanTitle : `${theme.icon} ${cleanTitle}`;
+
     return `
       <div class="module-card-item ${theme.themeClass} ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
         <!-- Topo Elegante do Card -->
         <div class="module-card-header" onclick="toggleModule(${mod.id})">
-          <div class="module-card-visual-pill">
-            <span class="module-visual-icon">${theme.icon}</span>
-          </div>
-          <div class="module-card-header-center">
+          <div class="module-card-header-left">
             <div class="module-badge-row">
               <span class="module-theme-badge">${theme.badge}</span>
               ${isCompleted 
@@ -659,20 +658,15 @@ function renderEbookModules(modules) {
                 : `<span class="module-status-tag pending">Pendente</span>`
               }
             </div>
-            <h4 class="module-title-main">${cleanTitle}</h4>
+            <h4 class="module-title-main">${displayTitle}</h4>
             <div class="module-meta-info-row">
               <span>⏱️ ${duration} de leitura</span>
               <span class="meta-dot">•</span>
               <span>🌸 Guia Acolhedor</span>
             </div>
           </div>
-          <div class="module-card-header-actions">
-            <button type="button" class="btn-module-quick-check ${isCompleted ? 'is-done' : ''}" onclick="event.stopPropagation(); handleToggleModuleComplete(${mod.id});" title="${isCompleted ? 'Desmarcar' : 'Marcar como concluído'}">
-              <span class="check-icon">${isCompleted ? '✓' : '○'}</span>
-            </button>
-            <div class="module-card-chevron" id="moduleArrow${mod.id}">
-              ${index === 0 ? '▲' : '▼'}
-            </div>
+          <div class="module-card-chevron" id="moduleArrow${mod.id}">
+            ${index === 0 ? '▲' : '▼'}
           </div>
         </div>
 
@@ -812,29 +806,21 @@ function renderBonusSection(dayModules, hasBump) {
           return `
             <div class="module-card-item module-card-bump mod-theme-peach ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
               <div class="module-card-header" onclick="toggleModule(${mod.id})">
-                <div class="module-card-visual-pill">
-                  <span class="module-visual-icon">☀️</span>
-                </div>
-                <div class="module-card-header-center">
+                <div class="module-card-header-left">
                   <div class="module-badge-row">
                     <span class="module-theme-badge vip">${modNumber}</span>
                     <span class="unlocked-badge-pill" style="font-size: 11px;">✨ Bônus VIP</span>
                     ${isCompleted ? '<span class="module-status-tag completed">✓ Concluído</span>' : ''}
                   </div>
-                  <h4 class="module-title-main">${cleanTitle}</h4>
+                  <h4 class="module-title-main">☀️ ${cleanTitle}</h4>
                   <div class="module-meta-info-row">
                     <span>⏱️ ${duration} de leitura</span>
                     <span class="meta-dot">•</span>
                     <span>Conteúdo Diurno</span>
                   </div>
                 </div>
-                <div class="module-card-header-actions">
-                  <button type="button" class="btn-module-quick-check ${isCompleted ? 'is-done' : ''}" onclick="event.stopPropagation(); handleToggleModuleComplete(${mod.id});" title="${isCompleted ? 'Desmarcar' : 'Marcar como concluído'}">
-                    <span class="check-icon">${isCompleted ? '✓' : '○'}</span>
-                  </button>
-                  <div class="module-card-chevron" id="moduleArrow${mod.id}">
-                    ${index === 0 ? '▲' : '▼'}
-                  </div>
+                <div class="module-card-chevron" id="moduleArrow${mod.id}">
+                  ${index === 0 ? '▲' : '▼'}
                 </div>
               </div>
 
