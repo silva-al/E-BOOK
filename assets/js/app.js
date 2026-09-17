@@ -40,6 +40,9 @@ async function loadEbookContent() {
       {
         id: 1,
         title: "Módulo 1: O Momento Certo e os Sinais de Prontidão",
+        duration: "14 min de aula",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoTitle: "Aula 1: Identificando os sinais de prontidão e blindagem emocional",
         chapters: [
           { title: "1.1 A decisão é sua: Libertando-se da culpa e de palpites", content: "A amamentação é uma dança a dois: mãe e bebê. Para que ela continue sendo saudável, precisa ser boa para os dois. Quando a mãe se sente esgotada, sobrecarregada ou simplesmente sente que é a hora de fechar esse ciclo, essa decisão é legítima e merece ser respeitada." },
           { title: "1.2 Sinais de prontidão da mãe e do bebê", content: "Observe se o bebê já come alimentos sólidos com consistência, se já aceita água em copinho e se demonstra curiosidade pelo mundo ao redor. Para a mãe, o sinal principal é a exaustão física e emocional ou o desejo sincero de recuperar a autonomia do próprio corpo." },
@@ -49,6 +52,9 @@ async function loadEbookContent() {
       {
         id: 2,
         title: "Módulo 2: O Método dos 4 Pilares do Desmame Gentil",
+        duration: "18 min de aula",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoTitle: "Aula 2: Aplicando os 4 Pilares na prática diária com carinho e firmeza",
         chapters: [
           { title: "2.1 Pilar 1: Não Oferecer, Não Recusar", content: "A regra de ouro do pediatra e dos especialistas: nunca ofereça o peito por iniciativa própria ou para acalmar um tédio passageiro. Se o bebê pedir com insistência, acolha, mas comece a adiar sutilmente." },
           { title: "2.2 Pilar 2: Substituição de Afeto e Contato Físico", content: "O peito nunca é apenas leite: é colo, cheiro, aconchego e segurança. Ao retirar o peito, dobre a dose de carinho, massagens, beijos e olhares olho no olho." },
@@ -58,7 +64,18 @@ async function loadEbookContent() {
       },
       {
         id: 3,
-        title: "Módulo 3: O Desmame Noturno Passo a Passo",
+        title: "Módulo 3: Método Noite de Paz - Os 6 Passos de Ouro do Desmame Noturno 🌙🤱🏻",
+        duration: "22 min de aula",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoTitle: "Vídeo Oficial: Método Noite de Paz - Os 6 Passos Práticos do Desmame Noturno",
+        goldenTips: [
+          { step: "1️⃣", title: "Escolha por onde começar", desc: "Você pode começar retirando uma mamada de dia ou noturna por vez, em vez de tentar mudar toda a rotina de uma vez." },
+          { step: "2️⃣", title: "Quando o bebê acordar, tente outras formas de acalmar", desc: "Colo, carinho, embalo, cafuné, água ou simplesmente ficar pertinho. 🥹🤍" },
+          { step: "3️⃣", title: "Faça uma rotina antes de dormir", desc: "Banho + pijama + ambiente mais tranquilo + carinho. Repetir a rotina ajuda o bebê a entender que chegou a hora de dormir." },
+          { step: "4️⃣", title: "Não ofereça o peito automaticamente ao primeiro despertar", desc: "Se ele acordar, espere um pouquinho e tente acalmar de outra forma primeiro." },
+          { step: "5️⃣", title: "Seja consistente", desc: "Se decidiu retirar aquela mamada, tente manter a mudança. O bebê pode reclamar nos primeiros dias enquanto se adapta." },
+          { step: "6️⃣", title: "Vá no ritmo de vocês", desc: "Se estiver muito difícil, dê mais tempo antes de retirar outra mamada. Desmame não precisa acontecer de um dia para o outro. 🤍" }
+        ],
         chapters: [
           { title: "3.1 Desassociar o mamar do adormecer", content: "O maior desafio da noite é que a criança só sabe pegar no sono sugando. O segredo é mamar 20 minutos antes de dormir, com luz suave e ainda acordada. Coloque na cama/berço sonolento, com canções de ninar e cafuné." },
           { title: "3.2 Os despertares da madrugada: O que fazer no pico do choro", content: "Quando a criança acordar de madrugada procurando o peito, não acenda luzes nem converse alto. Mantenha o ambiente no escuro, pegue no colo, ofereça um gole de água num copinho e faça o shhh-shhh rítmico." },
@@ -67,18 +84,38 @@ async function loadEbookContent() {
       },
       {
         id: 4,
-        title: "Módulo 4: Cuidados Físicos com o Corpo da Mãe",
+        title: "Módulo 4: O 7º Passo Especial - DESMAME NA PARTE DO DIA ☀️👶",
+        duration: "16 min de aula",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoTitle: "Vídeo Oficial: O 7º Passo - Como Conduzir o Desmame Diurno com Amor e Praticidade",
+        goldenTips: [
+          { step: "7️⃣", title: "Desmame na Parte do Dia (Passo 7 Exclusivo)", desc: "Retire uma mamada diurna por vez a cada 3 a 5 dias. Mantenha garrafinha com água e lanchinhos visíveis, mude o sofá ou ambiente de costume e faça combinados claros e cheios de carinho." }
+        ],
         chapters: [
-          { title: "4.1 Alívio do empedramento e prevenção de mastite", content: "Ao diminuir as mamadas, a mama continuará produzindo leite por alguns dias. Nunca esvazie a mama completamente com bomba. Faça apenas 'ordenha de alívio' manual no chuveiro morno para tirar a pressão." },
-          { title: "4.2 O luto da amamentação e o choque hormonal", content: "Com a redução da prolactina e oxitocina, é comum a mulher sentir melancolia e sensação de perda. Dê espaço para os seus sentimentos e celebre a linda jornada que você concluiu." }
+          { title: "4.1 Passo a passo do desmame diurno gradual", content: "Comece retirando uma mamada do dia a cada 3 a 5 dias. Inicie pelas mamadas intermediárias e deixe a mamada antes da soneca diurna por último." },
+          { title: "4.2 Lidando com a frustração e o apego durante o dia", content: "Substitua o seio por contato olho no olho, abraços apertados, cócegas e massagens. A criança aprende que o colo da mãe continua sendo o lugar mais seguro do mundo." }
         ]
       },
       {
         id: 5,
-        title: "Módulo 5: Materiais Práticos, Tabela de 21 Dias e Bônus",
+        title: "Módulo 5: Cuidados Físicos com o Corpo da Mãe 🤱",
+        duration: "12 min de aula",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoTitle: "Aula 5: Saúde da Mãe - Prevenção de mastite, alívio e autocuidado emocional",
         chapters: [
-          { title: "5.1 O Calendário dos 21 Dias do Desmame Suave", content: "Semana 1: Eliminação das mamadas de distração e tédio. Semana 2: Substituição da mamada antes do sono diurno (sonecas). Semana 3: Desmame noturno e celebração da conquista." },
-          { title: "5.2 Cardápio Noturno de Saciedade", content: "Sugestões de jantares nutritivos ricos em triptofano (aveia, banana, abacate) que mantêm o bebê saciado por mais horas durante a noite sem desconforto digestivo." }
+          { title: "5.1 Alívio do empedramento e prevenção de mastite", content: "Ao diminuir as mamadas, a mama continuará produzindo leite por alguns dias. Nunca esvazie a mama completamente com bomba. Faça apenas 'ordenha de alívio' manual no chuveiro morno para tirar a pressão." },
+          { title: "5.2 O luto da amamentação e o choque hormonal", content: "Com a redução da prolactina e oxitocina, é comum a mulher sentir melancolia e sensação de perda. Dê espaço para os seus sentimentos e celebre a linda jornada que você concluiu." }
+        ]
+      },
+      {
+        id: 6,
+        title: "Módulo 6: Materiais Práticos, Tabela de 21 Dias e Bônus 🎁",
+        duration: "10 min de aula",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoTitle: "Aula 6: Como usar o Calendário dos 21 Dias e Cardápios de Saciedade",
+        chapters: [
+          { title: "6.1 O Calendário dos 21 Dias do Desmame Suave", content: "Semana 1: Eliminação das mamadas de distração e tédio. Semana 2: Substituição da mamada antes do sono diurno (sonecas). Semana 3: Desmame noturno e celebração da conquista." },
+          { title: "6.2 Cardápio Noturno de Saciedade", content: "Sugestões de jantares nutritivos ricos em triptofano (aveia, banana, abacate) que mantêm o bebê saciado por mais horas durante a noite sem desconforto digestivo." }
         ]
       }
     ];
