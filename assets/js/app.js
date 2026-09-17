@@ -219,40 +219,8 @@ function renderEbookModules(modules) {
 
         <div class="module-accordion-content" id="moduleContent${mod.id}">
           
-          <!-- Resumo / Objetivo do Módulo -->
-          ${mod.summary ? `
-            <div class="module-summary-intro">
-              <p><strong>🎯 Objetivo deste módulo:</strong> ${mod.summary}</p>
-            </div>
-          ` : ''}
-
-          <!-- Dicas de Ouro Específicas do Módulo (ex: Desmame Noturno 6 passos) -->
-          ${mod.goldenTips && mod.goldenTips.length ? `
-            <div class="module-golden-tips-box">
-              <div class="golden-tips-header">
-                <span class="golden-tips-icon">✨</span>
-                <div>
-                  <h5>Dicas Rápidas de Aplicação Imediata</h5>
-                  <p>Salva essas orientações para consultar no dia a dia:</p>
-                </div>
-              </div>
-              <div class="golden-tips-list">
-                ${mod.goldenTips.map(tip => `
-                  <div class="golden-tip-item">
-                    <div class="golden-tip-badge">${tip.step}</div>
-                    <div class="golden-tip-body">
-                      <strong>${tip.title}</strong>
-                      <p>${tip.desc}</p>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
           <!-- Capítulos Escritos do E-book -->
           <div class="module-chapters-area">
-            <h5 class="chapters-area-title">Conteúdo Teórico & Aprofundamento Escrito:</h5>
             ${mod.chapters.map(chap => `
               <div class="chapter-block">
                 <h6 class="chapter-title">${chap.title}</h6>
