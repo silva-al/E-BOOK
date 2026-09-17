@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=10.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=11.0">
 </head>
 
 <body>
@@ -404,86 +404,104 @@
 
       <div class="pix-modal-header">
         <button class="pix-modal-close" onclick="handleClosePixModal()">&times;</button>
-        <h3>Pagamento Quase Concluído!</h3>
-        <p>Pague com o PIX para liberar seu acesso imediatamente</p>
-      </div>
+        <h3>Pagament      <div class="pix-modal-body">
 
-      <div class="pix-modal-body">
-
-        <div class="pix-amount-badge">
-          Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 1,00</strong>
-        </div>
-
-        <!-- Chave PIX Direta no Modal -->
-        <div class="direct-pix-box" style="margin: 10px 0 16px 0; background: #f0fdfa;"
-          onclick="handleCopyDirectPixKey()" title="Clique para copiar a chave direta">
-          <div class="direct-pix-info">
-            <div class="direct-pix-icon">
-              <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z"
-                  fill="#ffffff" />
-              </svg>
-            </div>
-            <div style="text-align: left;">
-              <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
-                <span>Chave PIX (Telefone)</span>
-                <span class="whatsapp-inline-badge">
-                  <svg viewBox="0 0 24 24">
-                    <path
-                      d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z" />
-                  </svg>
-                  WhatsApp
-                </span>
-              </div>
-              <div class="direct-pix-number" style="font-size: 16px;">5519994744297</div>
-            </div>
+        <!-- Conteúdo enquanto aguarda o pagamento -->
+        <div id="pixPendingContent">
+          <div class="pix-amount-badge">
+            Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 1,00</strong>
           </div>
-          <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixModal">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span id="labelDirectCopyModal">Copiar Chave</span>
+
+          <!-- Chave PIX Direta no Modal -->
+          <div class="direct-pix-box" style="margin: 10px 0 16px 0; background: #f0fdfa;"
+            onclick="handleCopyDirectPixKey()" title="Clique para copiar a chave direta">
+            <div class="direct-pix-info">
+              <div class="direct-pix-icon">
+                <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z"
+                    fill="#ffffff" />
+                </svg>
+              </div>
+              <div style="text-align: left;">
+                <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
+                  <span>Chave PIX (Telefone)</span>
+                  <span class="whatsapp-inline-badge">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z" />
+                    </svg>
+                    WhatsApp
+                  </span>
+                </div>
+                <div class="direct-pix-number" style="font-size: 16px;">5519994744297</div>
+              </div>
+            </div>
+            <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixModal">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="labelDirectCopyModal">Copiar Chave</span>
+            </button>
+          </div>
+
+          <div class="pix-qrcode-container">
+            <!-- Imagem oficial retornado pelo Mercado Pago ou Canvas gerado localmente -->
+            <img id="pixQrImage" style="display: none; width: 220px; height: 220px; margin: 0 auto;" alt="QR Code PIX Mercado Pago">
+            <canvas id="pixQrCanvas" width="220" height="220"></canvas>
+          </div>
+
+          <div class="pix-copy-box">
+            <div class="pix-copy-code" id="pixCopyCodeText">Carregando código PIX...</div>
+            <button type="button" class="btn-pix-copy" onclick="handleCopyPixCode()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="copyPixBtnLabel">Copiar Código PIX (Copia e Cola)</span>
+            </button>
+          </div>
+
+          <div class="pix-instructions">
+            <strong>Como pagar:</strong>
+            <ol>
+              <li>Abra o aplicativo do seu banco no celular;</li>
+              <li>Escolha a opção <strong>Pagar com PIX</strong> (QR Code ou Copia e Cola);</li>
+              <li>Cole o código copiado ou aponte a câmera para o QR Code acima;</li>
+              <li>Confirme o pagamento. O curso será liberado em segundos nesta tela.</li>
+            </ol>
+          </div>
+
+          <div class="pix-status-check">
+            <div class="pulse-spinner"></div>
+            <span id="pixStatusDetectorText">Aguardando confirmação do banco...</span>
+          </div>
+
+          <!-- Botão de Aprovação Imediata -->
+          <button type="button" class="btn-simulate-pix" onclick="showPaymentSuccessAndUnlock()">
+            ⚡ Já realizei o pagamento no banco (Liberar Curso Imediatamente)
           </button>
         </div>
 
-        <div class="pix-qrcode-container">
-          <!-- Imagem oficial retornado pelo Mercado Pago ou Canvas gerado localmente -->
-          <img id="pixQrImage" style="display: none; width: 220px; height: 220px; margin: 0 auto;" alt="QR Code PIX Mercado Pago">
-          <canvas id="pixQrCanvas" width="220" height="220"></canvas>
-        </div>
-
-        <div class="pix-copy-box">
-          <div class="pix-copy-code" id="pixCopyCodeText">Carregando código PIX...</div>
-          <button type="button" class="btn-pix-copy" onclick="handleCopyPixCode()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        <!-- TELA DE SUCESSO: NOTIFICAÇÃO IMEDIATA DE PAGAMENTO APROVADO -->
+        <div id="pixPaidNotification" style="display: none; text-align: center; padding: 25px 15px;">
+          <div style="width: 80px; height: 80px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            <span id="copyPixBtnLabel">Copiar Código PIX (Copia e Cola)</span>
-          </button>
+          </div>
+          <h2 style="color: #065f46; font-size: 24px; font-weight: 800; margin-bottom: 8px;">PAGAMENTO CONFIRMADO!</h2>
+          <p style="color: #047857; font-size: 16px; font-weight: 600; margin-bottom: 16px;">
+            Seu PIX foi identificado com sucesso!
+          </p>
+          <div style="background: #10b981; color: #ffffff; padding: 10px 22px; border-radius: 8px; font-size: 15px; font-weight: 800; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
+            ✅ STATUS: PAGO (R$ 1,00)
+          </div>
+          <p style="color: #4b5563; font-size: 14px; margin-top: 20px;">
+            Liberando seu curso completo em <span id="redirectCountdown" style="font-weight: 800; color: #10b981; font-size: 20px;">3</span> segundos...
+          </p>
         </div>
-
-        <div class="pix-instructions">
-          <strong>Como pagar:</strong>
-          <ol>
-            <li>Abra o aplicativo do seu banco no celular;</li>
-            <li>Escolha a opção <strong>Pagar com PIX</strong> (QR Code ou Copia e Cola);</li>
-            <li>Cole o código copiado ou aponte a câmera para o QR Code acima;</li>
-            <li>Confirme o pagamento. O curso será liberado em segundos nesta tela.</li>
-          </ol>
-        </div>
-
-        <div class="pix-status-check">
-          <div class="pulse-spinner"></div>
-          <span id="pixStatusDetectorText">Aguardando confirmação do banco...</span>
-        </div>
-
-        <!-- Botão de Aprovação Imediata -->
-        <button type="button" class="btn-simulate-pix" onclick="handleConfirmPixPayment()">
-          ⚡ Já realizei o pagamento no banco (Liberar Curso Imediatamente)
-        </button>
 
       </div>
     </div>
@@ -644,8 +662,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=10.0"></script>
-  <script src="assets/js/app.js?v=10.0"></script>
+  <script src="assets/js/pix-engine.js?v=11.0"></script>
+  <script src="assets/js/app.js?v=11.0"></script>
 </body>
 
 </html>

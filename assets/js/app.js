@@ -593,6 +593,11 @@ async function handleOpenPixModal() {
   const modal = document.getElementById('pixModal');
   if (modal) modal.classList.add('active');
 
+  const pendingContent = document.getElementById('pixPendingContent');
+  const successNotification = document.getElementById('pixPaidNotification');
+  if (pendingContent) pendingContent.style.display = 'block';
+  if (successNotification) successNotification.style.display = 'none';
+
   const codeBox = document.getElementById('pixCopyCodeText');
   const statusEl = document.getElementById('pixStatusDetectorText') || document.querySelector('.pix-status-check span');
   const qrImage = document.getElementById('pixQrImage');
@@ -697,17 +702,60 @@ function startMercadoPagoPolling(paymentId) {
 
       if (data.status === 'approved') {
         stopPaymentPolling();
-        if (statusEl) {
-          statusEl.innerHTML = `🎉 <strong>PAGAMENTO APROVADO! Liberando seu curso...</strong>`;
-        }
-        setTimeout(() => {
-          handleConfirmPixPayment();
-        }, 800);
+        showPaymentSuccessAndUnlock();
       }
     } catch (e) {
       console.error('Erro no polling do Mercado Pago:', e);
     }
   }, 2500);
+}
+
+function playSuccessSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Ré
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.14); // Lá
+    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.55);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.55);
+  } catch (e) {
+    // áudio opcional
+  }
+}
+
+let unlockCountdownInterval = null;
+
+function showPaymentSuccessAndUnlock() {
+  stopPaymentPolling();
+  playSuccessSound();
+
+  const pendingContent = document.getElementById('pixPendingContent');
+  const successNotification = document.getElementById('pixPaidNotification');
+  const countdownEl = document.getElementById('redirectCountdown');
+
+  if (pendingContent) pendingContent.style.display = 'none';
+  if (successNotification) successNotification.style.display = 'block';
+
+  let seconds = 3;
+  if (countdownEl) countdownEl.textContent = seconds;
+
+  if (unlockCountdownInterval) clearInterval(unlockCountdownInterval);
+
+  unlockCountdownInterval = setInterval(() => {
+    seconds--;
+    if (countdownEl) countdownEl.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(unlockCountdownInterval);
+      unlockCountdownInterval = null;
+      handleConfirmPixPayment();
+    }
+  }, 1000);
 }
 
 function stopPaymentPolling() {
@@ -718,6 +766,10 @@ function stopPaymentPolling() {
   if (autoCheckTimer) {
     clearInterval(autoCheckTimer);
     autoCheckTimer = null;
+  }
+  if (unlockCountdownInterval) {
+    clearInterval(unlockCountdownInterval);
+    unlockCountdownInterval = null;
   }
 }
 
@@ -735,11 +787,7 @@ function startAutoPaymentDetector() {
       if (secondsLeft > 0) {
         statusEl.textContent = `Aguardando confirmação do banco... (${secondsLeft}s)`;
       } else {
-        statusEl.innerHTML = `✅ <strong>Pagamento confirmado! Liberando acesso...</strong>`;
-        stopPaymentPolling();
-        setTimeout(() => {
-          handleConfirmPixPayment();
-        }, 1000);
+        showPaymentSuccessAndUnlock();
       }
     }
   }, 1000);
@@ -758,7 +806,9 @@ function handleDirectUnlockCheck() {
   if (buyerEmail) localStorage.setItem('desmame_buyer_email', buyerEmail);
   if (buyerPhone) localStorage.setItem('desmame_buyer_phone', buyerPhone);
 
-  handleConfirmPixPayment();
+  const modal = document.getElementById('pixModal');
+  if (modal) modal.classList.add('active');
+  showPaymentSuccessAndUnlock();
 }
 
 function handleClosePixModal() {
