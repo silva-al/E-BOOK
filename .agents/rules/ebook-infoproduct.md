@@ -10,6 +10,12 @@
      - 5️⃣ Seja consistente
      - 6️⃣ Vá no ritmo de vocês
    - O **Desmame Durante o Dia ☀️👶** é tratado como um módulo/passo complementar independente (**7º Passo Especial** e opção de Order Bump adicional por + R$ 9,90), nunca misturado com as regras noturnas.
+   - **Controle de Acesso ao Conteúdo Adicional (Módulo 7)**:
+     - O Módulo 7 é estritamente restrito a alunas que adquiriram o adicional (`desmame_has_bump === 'true'`).
+     - **Aluna sem adicional**: O módulo é renderizado bloqueado (`module-bump-locked`) com selo "🔒 Adicional Bloqueado", sem expor o texto no DOM. Ao expandir, exibe o card de oferta de upgrade com botão para abrir o modal PIX de R$ 9,90.
+     - **Aluna com adicional**: O módulo exibe o selo VIP ("✨ Bônus VIP Liberado"), banner comemorativo e os capítulos detalhados com as dicas diurnas.
+     - **Modal de Upgrade R$ 9,90**: Permite que alunas que não compraram no checkout possam adquirir o bônus a qualquer momento dentro da área de membros.
+     - **Painel de Testes**: Manter botões no rodapé para alternar modo Visitante/Aluna (`toggleViewMode`) e Adicional Pago/Bloqueado (`toggleBumpMode`).
 
 2. **Estrutura da Área de Membros (Alunas)**:
    - A área da aluna é 100% focada em leitura e texto (sem players ou dependência de vídeos).
