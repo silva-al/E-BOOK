@@ -269,60 +269,75 @@ async function loadEbookContent() {
     const fallbackModules = [
       {
         id: 1,
-        title: "1️⃣ Módulo 01: Escolha por onde começar",
-        duration: "5 min de leitura",
+        number: "MÓDULO 01",
+        title: "Escolha por onde começar",
+        icon: "🌙",
+        duration: "5 minutos",
+        summary: "Como escolher a primeira mamada a ser retirada sem fazer mudanças bruscas ou gerar ansiedade no bebê.",
         chapters: [
           {
             title: "Uma Mudança de Cada Vez",
-            content: "Não tente retirar todas as mamadas de uma vez. Comece escolhendo uma mamada que você considera mais fácil de retirar, seja durante o dia ou à noite.\n\nObserve a rotina do seu bebê e escolha um momento em que ele costuma mamar mais por hábito do que por fome. Depois, mantenha essa mudança por alguns dias para que ele tenha tempo de se adaptar antes de retirar outra mamada.\n\nO segredo para mim foi fazer uma mudança de cada vez, sem pressa. 🤍"
+            content: "Não tente retirar todas as mamadas de uma vez. Comece escolhendo uma mamada que você considera mais fácil de retirar, seja durante o dia ou à noite.\n\nObserve a rotina do seu bebê e escolha um momento em que ele costuma mamar mais por hábito do que por fome. Depois, mantenha essa mudança por alguns dias para que ele tenha tempo de se adaptar antes de retirar outra mamada.\n\nO segredo para mim foi fazer uma mudança de cada vez, com paciência e sem pressa. 🤍"
           }
         ]
       },
       {
         id: 2,
-        title: "2️⃣ Módulo 02: Quando o bebê acordar, tente outras formas de acalmar",
-        duration: "5 min de leitura",
+        number: "MÓDULO 02",
+        title: "Quando o bebê acordar, tente outras formas de acalmar",
+        icon: "🤍",
+        duration: "5 minutos",
+        summary: "Como acolher o bebê na madrugada com colo, cafuné e presença, sem depender exclusivamente do peito para ele voltar a dormir.",
         chapters: [
           {
             title: "Outras Formas de Aconchego",
-            content: "Quando meu filho acordava, eu não queria que o peito fosse a única forma de fazê-lo voltar a dormir.\n\nEntão eu tentava outras maneiras de acalmá-lo, como colo, carinho, balançando no meu peito, Cafuné ou simplesmente ficar pertinho dele. 🥹🤍\n\nNem sempre ele se acalmava imediatamente. Eu precisava ter paciência e repetir o processo até ele entender que também conseguia voltar a dormir de outras formas.\n\nE quando ele acordava eu já levantava e colocava ele pra dormir."
+            content: "Quando meu filho acordava, eu não queria que o peito fosse a única forma de fazê-lo voltar a dormir.\n\nEntão eu tentava outras maneiras de acalmá-lo, como colo, carinho, balançando no meu peito, cafuné ou simplesmente ficando bem pertinho dele. 🥹🤍\n\nNem sempre ele se acalmava de imediato. Eu precisava ter calma e repetir o processo até ele entender que também conseguia voltar a dormir seguro de outras formas.\n\nE quando ele acordava, eu levantava com carinho e ajudava ele a relaxar novamente."
           }
         ]
       },
       {
         id: 3,
-        title: "3️⃣ Módulo 03: Crie uma rotina antes de dormir 🛁🌙",
-        duration: "6 min de leitura",
+        number: "MÓDULO 03",
+        title: "Crie uma rotina antes de dormir",
+        icon: "🛁",
+        duration: "6 minutos",
+        summary: "A sequência previsível de relaxamento (banho quentinho, pijama e ambiente calmo) para sinalizar a hora do sono profundo.",
         chapters: [
           {
-            title: "Crie uma rotina antes de dormir 🛁🌙",
-            content: "Uma rotina previsível pode ajudar o bebê a entender que está chegando a hora de dormir.\n\nNo meu caso, eu fazia algo simples: banho + pijama + ambiente mais tranquilo + carinho.\nO mais importante é tentar repetir a sequência todos os dias. Com o tempo, esses pequenos sinais passam a fazer parte da preparação para o sono.\n\n(Eu peguei o costume de desligar todas as luzes, colocar uma música de chuva para nenhum barulho acordar ele.)"
+            title: "Preparação e Sinais de Sono",
+            content: "Uma rotina previsível ajuda o bebê a entender e antecipar que está chegando a hora de descansar.\n\nNo meu caso, eu fazia uma sequência simples e prazerosa: banho morno + pijama confortável + ambiente com luz bem baixa + muito carinho.\n\nO mais importante é manter a repetição diária dessa sequência. Com o passar dos dias, esses pequenos estímulos viram gatilhos naturais de relaxamento.\n\n(Eu peguei o costume de reduzir as luzes da casa e colocar um ruído suave de chuva para amenizar ruídos externos e manter o sono contínuo)."
           }
         ]
       },
       {
         id: 4,
-        title: "4️⃣ Módulo 04: Não ofereça o peito automaticamente ao primeiro despertar",
-        duration: "6 min de leitura",
+        number: "MÓDULO 04",
+        title: "Não ofereça o peito automaticamente ao primeiro despertar",
+        icon: "✨",
+        duration: "6 minutos",
+        summary: "Como romper a associação imediata de despertar com mamada, observando as reais necessidades da criança com sensibilidade.",
         chapters: [
           {
-            title: "Não ofereça o peito automaticamente ao primeiro despertar",
-            content: "Quando o bebê acordar, antes de oferecer o peito imediatamente, espere um pouquinho e observe.\nTente primeiro acalmá-lo de outra maneira: pegue no colo, dê carinho e aconchego.\n\nA intenção é começar a quebrar a associação de que todo despertar precisa terminar em uma mamada.\nSe o bebê demonstrar fome ou houver alguma necessidade específica, respeite isso. O desmame precisa considerar a idade, alimentação e necessidades individuais da criança.\n\nSe ele chorar ofereça água ou uma mamadeira com leite ( o meu filho aceitou a mamadeira com 5 dias depois do desmame)"
+            title: "Observar Antes de Agir",
+            content: "Quando o bebê despertar à noite, antes de oferecer o peito imediatamente, respire fundo, espere alguns segundos e observe com carinho.\n\nTente primeiro acalmá-lo com toque, voz suave, colo e aconchego.\n\nA intenção principal é quebrar gradualmente a associação automática de que todo e qualquer despertar noturno precisa terminar em mamada.\n\nSe o bebê demonstrar fome real ou houver qualquer desconforto, atenda prontamente. O desmame respeita sempre a idade, alimentação complementar e necessidades de cada criança.\n\nSe ele chorar e precisar, ofereça água ou um complemento orientado pelo seu pediatra."
           }
         ]
       },
       {
         id: 5,
-        title: "5️⃣ Módulo 05: Seja consistente 🤍",
-        duration: "7 min de leitura",
+        number: "MÓDULO 05",
+        title: "Seja consistente e acolhedora",
+        icon: "🌙",
+        duration: "7 minutos",
+        summary: "A consistência amorosa e a paciência necessárias para consolidar noites inteiras de sono tranquilo para toda a família.",
         chapters: [
           {
-            title: "Seja consistente 🤍",
-            content: "Depois de escolher retirar uma determinada mamada, procure manter a decisão e a nova rotina.\nNos primeiros dias, o bebê pode reclamar ou estranhar porque está acostumado com aquela forma de dormir. Isso faz parte da adaptação à mudança.\n\nQuando ele se acostumar, ele vai dormir a noite inteira e vai mudar muito a sua vida, seu humor, sua rotina.\n\nTenha paciência, ofereça muito carinho e tente manter a mesma abordagem. Consistência não significa deixar o bebê sozinho ou ignorar o choro; significa continuar oferecendo acolhimento enquanto ele aprende uma nova forma de adormecer. 🌙🤍\n\n✨ Esses foram os métodos que funcionaram comigo durante o desmame do meu filho. Cada bebê é único, então adapte o processo à realidade e às necessidades do seu pequeno."
+            title: "Consistência com Amor",
+            content: "Depois de escolher retirar uma determinada mamada noturna, procure manter a decisão com segurança e tranquilidade.\n\nNos primeiros dias, o bebê pode estranhar ou protestar um pouco, pois está adaptado ao padrão anterior. Isso é natural na mudança de qualquer hábito.\n\nQuando o bebê assimilar o novo ritmo, ele passará a dormir com mais tranquilidade e noites inteiras se tornarão realidade — transformando sua energia, seu humor e sua rotina.\n\nTenha paciência e ofereça muito afeto. Consistência nunca significa deixar o bebê desamparado ou chorando sozinho; significa dar apoio contínuo enquanto ele descobre uma nova forma de adormecer seguro. 🌙🤍\n\n✨ Esses foram os passos essenciais que funcionaram com sucesso na nossa jornada. Cada bebê é único, por isso respeite sempre o tempo e as respostas do seu filho."
           },
           {
-            title: "☀️ Desmame Durante o Dia (Guia Completo)",
-            content: "Se quiser saber mais sobre como eu fiz pra ele desmamar na parte do dia, é só liberar o acesso que vai ter o guia completo de dia e noite."
+            title: "☀️ Desmame Durante o Dia (Guia Prático Adicional)",
+            content: "Se você também deseja estender o método para a rotina diurna, conheça o bônus especial com o passo a passo completo para o dia logo abaixo."
           }
         ]
       }
@@ -331,8 +346,10 @@ async function loadEbookContent() {
     const fallbackBonusModules = [
       {
         id: 101,
-        title: "1️⃣ Passo 01: Observação e Desvio de Atenção",
-        duration: "3 min de leitura",
+        number: "PASSO 01",
+        title: "Observação e desvio de atenção",
+        duration: "3 minutos",
+        summary: "Como identificar se o pedido de peito é fome ou costume, aplicando brincadeiras e conexão.",
         chapters: [
           {
             title: "Observação e Desvio de Atenção",
@@ -340,25 +357,29 @@ async function loadEbookContent() {
           },
           {
             title: "⚠️ Alerta Importante",
-            content: "Lembrando: é muito importante que o bebê esteja se alimentando bem! 🤍"
+            content: "Lembrando: é fundamental que o bebê esteja se alimentando bem com as refeições do dia! 🤍"
           }
         ]
       },
       {
         id: 102,
-        title: "2️⃣ Passo 02: No meu caso vs No seu caso",
-        duration: "3 min de leitura",
+        number: "PASSO 02",
+        title: "A estratégia prática do sabor seguro",
+        duration: "3 minutos",
+        summary: "Uma técnica inofensiva e segura para ajudar a criança a perder o interesse pelo peito durante o dia.",
         chapters: [
           {
-            title: "Estratégia do Sabor Seguro ✅",
-            content: "No meu caso:\nQuando ele lembrava do peito, eu usava o sulfato ferroso, que ele não gostava do sabor. Ele sentia o gosto e acabava não querendo mais o peito.\n\nNo seu caso:\nUse algo que seu bebê não goste! ✅"
+            title: "Estratégia do Sabor Seguro",
+            content: "No meu caso:\nQuando ele lembrava do peito, eu usava o sulfato ferroso (já prescrito pelo pediatra), que ele não gostava do sabor. Ele sentia o gosto e acabava não querendo mais o peito.\n\nNo seu caso:\nUtilize algo seguro, indicado ou aprovado pelo pediatra do seu bebê, que não seja agressivo! ✅"
           }
         ]
       },
       {
         id: 103,
-        title: "3️⃣ Passo 03: Mantenha o bebê sempre alimentado 🍎💧",
-        duration: "2 min de leitura",
+        number: "PASSO 03",
+        title: "Mantenha o bebê sempre alimentado e hidratado",
+        duration: "2 minutos",
+        summary: "Oferecer alternativas nutritivas e água para saciar a necessidade física da criança.",
         chapters: [
           {
             title: "Alimentação e Hidratação",
@@ -368,8 +389,10 @@ async function loadEbookContent() {
       },
       {
         id: 104,
-        title: "4️⃣ Passo 04: Vá diminuindo as mamadas aos poucos",
-        duration: "2 min de leitura",
+        number: "PASSO 04",
+        title: "Redução gradual das mamadas diurnas",
+        duration: "2 minutos",
+        summary: "Como retirar as mamadas mais fáceis primeiro e construir uma nova rotina suave.",
         chapters: [
           {
             title: "Transição Gradual Diurna",
@@ -379,8 +402,10 @@ async function loadEbookContent() {
       },
       {
         id: 105,
-        title: "5️⃣ Passo 05: Ofereça carinho e acolhimento 🤍",
-        duration: "3 min de leitura",
+        number: "PASSO 05",
+        title: "Acolhimento, carinho e segurança emocional",
+        duration: "3 minutos",
+        summary: "Reforçar que o amor e a presença materna continuam intensos e constantes mesmo sem o peito.",
         chapters: [
           {
             title: "Aconchego e Segurança",
@@ -390,12 +415,14 @@ async function loadEbookContent() {
       },
       {
         id: 106,
-        title: "✨ Passo 06: Mensagem Final",
-        duration: "2 min de leitura",
+        number: "PASSO 06",
+        title: "Mensagem final e respeito ao ritmo do bebê",
+        duration: "2 minutos",
+        summary: "Celebre cada conquista da sua família e respeite o tempo do seu pequeno.",
         chapters: [
           {
-            title: "Respeitando o Tempo do Bebê 🤍",
-            "content": "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
+            title: "Respeitando o Tempo do Bebê",
+            content: "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
           }
         ]
       }
@@ -409,6 +436,67 @@ async function loadEbookContent() {
   }
 }
 
+function getCompletedModules() {
+  try {
+    const saved = localStorage.getItem('desmame_completed_modules');
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function handleToggleModuleComplete(moduleId) {
+  let completed = getCompletedModules();
+  if (completed.includes(moduleId)) {
+    completed = completed.filter(id => id !== moduleId);
+  } else {
+    completed.push(moduleId);
+  }
+  localStorage.setItem('desmame_completed_modules', JSON.stringify(completed));
+
+  if (appState.ebookData && appState.ebookData.modules) {
+    renderEbookModules(appState.ebookData.modules);
+  }
+  updateProgressUI();
+}
+
+function updateProgressUI() {
+  const completed = getCompletedModules();
+  const total = 5;
+  const completedCount = completed.filter(id => id <= 5).length;
+  const percent = Math.min(100, Math.round((completedCount / total) * 100));
+
+  const fill = document.getElementById('progressBarFill');
+  const text = document.getElementById('progressPercentageText');
+  const pillsContainer = document.getElementById('progressModulesPills');
+
+  if (fill) fill.style.width = `${percent}%`;
+  if (text) text.textContent = `${percent}% concluído`;
+
+  if (pillsContainer) {
+    pillsContainer.innerHTML = [1, 2, 3, 4, 5].map(num => {
+      const isDone = completed.includes(num);
+      return `<span class="progress-pill-item ${isDone ? 'done' : ''}">${isDone ? '✓' : '•'} Módulo 0${num}</span>`;
+    }).join('');
+  }
+}
+
+function handleStartMethod() {
+  const firstModule = document.getElementById('moduleItem1');
+  if (firstModule) {
+    firstModule.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const content = document.getElementById('moduleContent1');
+    const arrow = document.getElementById('moduleArrow1');
+    const btnText = document.getElementById('btnAccessText1');
+    if (content && content.style.display === 'none') {
+      content.style.display = 'block';
+      firstModule.classList.add('active');
+      if (arrow) arrow.textContent = '▲';
+      if (btnText) btnText.textContent = 'Recolher Conteúdo ▲';
+    }
+  }
+}
+
 function renderEbookModules(modules) {
   const container = document.getElementById('modulesContainer');
   if (!container) return;
@@ -417,41 +505,92 @@ function renderEbookModules(modules) {
   const nocturnalModules = (modules || []).filter(m => !m.isBumpBonus);
   const bonusData = (appState.ebookData && appState.ebookData.bonus_diurno) || null;
   const dayModules = (bonusData && bonusData.modules) || [];
+  const completed = getCompletedModules();
 
-  // 1. Módulos Noturnos (1 a 5)
+  // 1. Módulos Noturnos (1 a 5) com visual refinado de Área de Curso
   container.innerHTML = nocturnalModules.map((mod, index) => {
+    const isCompleted = completed.includes(mod.id);
+    const modNumber = mod.number || `MÓDULO 0${mod.id}`;
+    let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Módulo\s+[0-9]+:\s*/i, '');
+    const icon = mod.icon || (mod.id === 1 ? '🌙' : mod.id === 2 ? '🤍' : mod.id === 3 ? '🛁' : mod.id === 4 ? '✨' : '🌙');
+    const duration = mod.duration || '5 minutos';
+    const summary = mod.summary || 'Aprenda orientações práticas e acolhedoras para este passo do desmame.';
+
     return `
-      <div class="module-accordion-item ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
-        <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
-          <div class="module-trigger-info">
-            <div class="module-title-row">
-              <span class="module-title-text">${mod.title}</span>
+      <div class="module-card-item ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+        <!-- Topo do Card com Número e Status -->
+        <div class="module-card-header" onclick="toggleModule(${mod.id})">
+          <div class="module-card-header-left">
+            <div class="module-number-row">
+              <span class="module-number-pill">${modNumber}</span>
+              ${isCompleted 
+                ? `<span class="module-status-tag completed">✓ Concluído</span>` 
+                : `<span class="module-status-tag pending">Pendente</span>`
+              }
             </div>
-            <div class="module-badges-row">
-              ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration.replace('de aula', 'de leitura')}</span>` : ''}
-              <span class="module-text-badge">📝 Conteúdo Noturno</span>
+            <h4 class="module-title-main">${icon} ${cleanTitle}</h4>
+            <div class="module-meta-info-row">
+              <span class="module-meta-time">⏱️ ${duration}</span>
+              <span class="module-meta-dot">•</span>
+              <span class="module-meta-type">Método Noturno</span>
             </div>
           </div>
-          <span class="module-arrow-icon" id="moduleArrow${mod.id}">${index === 0 ? '▲' : '▼'}</span>
-        </button>
+          <button type="button" class="module-card-chevron" id="moduleArrow${mod.id}" aria-label="Expandir módulo">
+            ${index === 0 ? '▲' : '▼'}
+          </button>
+        </div>
 
-        <div class="module-accordion-content" id="moduleContent${mod.id}">
+        <!-- O que você vai aprender -->
+        <div class="module-learn-summary-box">
+          <div class="learn-summary-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>O que você vai aprender:</span>
+          </div>
+          <p class="learn-summary-desc">${summary}</p>
+        </div>
+
+        <!-- Ações do Módulo -->
+        <div class="module-actions-bar">
+          <button type="button" class="btn-module-open" onclick="toggleModule(${mod.id})">
+            <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
+          </button>
+          <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+            ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
+          </button>
+        </div>
+
+        <!-- Conteúdo Expandido do Módulo -->
+        <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
           <div class="module-chapters-area">
             ${mod.chapters.map(chap => {
               const isDayHook = chap.title && (chap.title.includes('Desmame Durante o Dia') || (chap.content && chap.content.includes('desmamar na parte do dia')));
               return `
-              <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''} ${isDayHook ? 'chapter-day-hook' : ''}">
-                ${chap.title ? `<h6 class="chapter-title">${chap.title}</h6>` : ''}
-                <p class="chapter-text">${chap.content}</p>
-                ${isDayHook && !hasBump ? `
-                  <div style="margin-top: 14px;">
-                    <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 10px 18px;" onclick="handleOpenBumpUpgradeModal()">
-                      🔓 Liberar Acesso ao Guia Completo Dia & Noite (R$ 9,90)
-                    </button>
-                  </div>
-                ` : ''}
-              </div>
-            `;}).join('')}
+                <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''} ${isDayHook ? 'chapter-day-hook' : ''}">
+                  ${chap.title ? `<h5 class="chapter-title">${chap.title}</h5>` : ''}
+                  <p class="chapter-text">${chap.content}</p>
+                  ${isDayHook && !hasBump ? `
+                    <div style="margin-top: 14px;">
+                      <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 10px 18px;" onclick="handleOpenBumpUpgradeModal()">
+                        ☀️ Conhecer Bônus Opcional: Desmame Durante o Dia (R$ 9,90)
+                      </button>
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Rodapé do Módulo com Conclusão de Leitura -->
+          <div class="module-bottom-status-bar">
+            <div class="module-bottom-text">
+              <span>${isCompleted ? '🎉 Parabéns! Você concluiu este módulo.' : 'Leu todo o conteúdo? Marque para avançar seu progresso:'}</span>
+            </div>
+            <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+              ${isCompleted ? '✓ Módulo Concluído' : '✓ Concluir Este Módulo'}
+            </button>
           </div>
         </div>
       </div>
@@ -460,6 +599,9 @@ function renderEbookModules(modules) {
 
   // 2. Renderiza Seção Separada do Bônus Especial Diurno
   renderBonusSection(dayModules, hasBump);
+
+  // 3. Atualiza Barra de Progresso
+  updateProgressUI();
 }
 
 function renderBonusSection(dayModules, hasBump) {
@@ -467,40 +609,37 @@ function renderBonusSection(dayModules, hasBump) {
   const bonusBadge = document.getElementById('bonusHeaderBadge');
   const bonusContainer = document.getElementById('bonusContainer');
   if (!bonusContainer) return;
+  const completed = getCompletedModules();
 
   if (!hasBump) {
     if (bonusBox) bonusBox.classList.remove('bonus-unlocked');
     if (bonusBadge) {
       bonusBadge.className = 'locked-badge-pill';
-      bonusBadge.innerHTML = '🔒 Adicional Bloqueado';
+      bonusBadge.innerHTML = '🔒 Bônus Opcional';
     }
     bonusContainer.innerHTML = `
       <div class="bump-locked-box" style="margin-top: 0;">
-        <div class="bump-locked-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
+        <div class="bump-locked-header-tag">
+          ☀️ BÔNUS OPCIONAL — NÃO FAZ PARTE DO MÉTODO NOTURNO PRINCIPAL
         </div>
-        <h5 class="bump-locked-heading">Conteúdo Exclusivo do Pacote Adicional</h5>
+        <h4 class="bump-locked-heading">Quer aprender o Desmame Durante o Dia?</h4>
         <p class="bump-locked-text">
-          Você adquiriu o e-book principal de <strong>Desmame Noturno</strong>. Este bônus especial contém o passo a passo prático com todas as <strong>Dicas Especiais para o Desmame Durante o Dia</strong>, dividido em passos práticos.
+          Você já tem acesso garantido ao método de <strong>Desmame Noturno</strong>. Este conteúdo adicional ensina estratégias práticas e específicas para reduzir as mamadas durante o dia de forma gradual e amorosa.
         </p>
         <div class="bump-locked-perks">
-          <div class="bump-perk-item">✓ 1️⃣ Passo 01: Observação e Desvio de Atenção</div>
-          <div class="bump-perk-item">✓ 2️⃣ Passo 02: A estratégia prática do sabor seguro e eficaz</div>
-          <div class="bump-perk-item">✓ 3️⃣ Passo 03: Rotina de alimentação alternativa 🍎💧</div>
-          <div class="bump-perk-item">✓ 4️⃣ Passo 04: Redução gradual das mamadas diurnas</div>
-          <div class="bump-perk-item">✓ 5️⃣ Passo 05: Acolhimento e carinho para manter a segurança emocional</div>
-          <div class="bump-perk-item">✓ ✨ Passo 06: Mensagem final e acolhimento com amor 🤍</div>
+          <div class="bump-perk-item">✓ <strong>Passo 01:</strong> Observação e desvio de atenção</div>
+          <div class="bump-perk-item">✓ <strong>Passo 02:</strong> Estratégia do sabor</div>
+          <div class="bump-perk-item">✓ <strong>Passo 03:</strong> Rotina alimentar alternativa</div>
+          <div class="bump-perk-item">✓ <strong>Passo 04:</strong> Redução gradual</div>
+          <div class="bump-perk-item">✓ <strong>Passo 05:</strong> Acolhimento e carinho</div>
         </div>
         <div class="bump-locked-cta-box">
           <div class="bump-cta-price-info">
-            <span class="bump-cta-sub">Acesso vitalício imediato:</span>
-            <span class="bump-cta-val">Apenas R$ 9,90 no PIX</span>
+            <span class="bump-cta-sub">Apenas:</span>
+            <span class="bump-cta-val">R$ 9,90 no PIX</span>
           </div>
           <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
-            🔓 Liberar Este Bônus Agora por R$ 9,90
+            QUERO ADICIONAR O BÔNUS
           </button>
         </div>
       </div>
@@ -515,40 +654,82 @@ function renderBonusSection(dayModules, hasBump) {
       <div class="bump-unlocked-banner">
         <div class="bump-banner-icon">☀️</div>
         <div>
-          <strong>Bônus Especial Adicional Desbloqueado!</strong>
+          <strong>Bônus Especial: Desmame Durante o Dia Desbloqueado!</strong>
           <p>Aqui está o seu método prático com todas as dicas especiais para o desmame com carinho durante o dia, separado passo a passo.</p>
         </div>
       </div>
       
       <div class="modules-accordion-list">
-        ${dayModules.map((mod, index) => `
-          <div class="module-accordion-item module-bump-unlocked ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
-            <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
-              <div class="module-trigger-info">
-                <div class="module-title-row">
-                  <span class="module-title-text">${mod.title}</span>
-                  <span class="unlocked-badge-pill">✨ Bônus VIP</span>
-                </div>
-                <div class="module-badges-row">
-                  ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration}</span>` : ''}
-                  <span class="module-text-badge">⭐ Conteúdo Diurno</span>
-                </div>
-              </div>
-              <span class="module-arrow-icon" id="moduleArrow${mod.id}">${index === 0 ? '▲' : '▼'}</span>
-            </button>
+        ${dayModules.map((mod, index) => {
+          const isCompleted = completed.includes(mod.id);
+          const modNumber = mod.number || `PASSO 0${index + 1}`;
+          let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Passo\s+[0-9]+:\s*/i, '');
+          const duration = mod.duration || '3 minutos';
+          const summary = mod.summary || 'Orientações práticas para o desmame durante o dia.';
 
-            <div class="module-accordion-content" id="moduleContent${mod.id}">
-              <div class="module-chapters-area">
-                ${mod.chapters.map(chap => `
-                  <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
-                    ${chap.title ? `<h6 class="chapter-title">${chap.title}</h6>` : ''}
-                    <p class="chapter-text">${chap.content}</p>
+          return `
+            <div class="module-card-item module-card-bump ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+              <div class="module-card-header" onclick="toggleModule(${mod.id})">
+                <div class="module-card-header-left">
+                  <div class="module-number-row">
+                    <span class="module-number-pill vip">${modNumber}</span>
+                    <span class="unlocked-badge-pill" style="font-size: 11px;">✨ Bônus VIP</span>
+                    ${isCompleted ? '<span class="module-status-tag completed">✓ Concluído</span>' : ''}
                   </div>
-                `).join('')}
+                  <h4 class="module-title-main">☀️ ${cleanTitle}</h4>
+                  <div class="module-meta-info-row">
+                    <span class="module-meta-time">⏱️ ${duration}</span>
+                    <span class="module-meta-dot">•</span>
+                    <span class="module-meta-type">Conteúdo Diurno</span>
+                  </div>
+                </div>
+                <button type="button" class="module-card-chevron" id="moduleArrow${mod.id}">
+                  ${index === 0 ? '▲' : '▼'}
+                </button>
+              </div>
+
+              <div class="module-learn-summary-box">
+                <div class="learn-summary-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  <span>O que você vai aprender:</span>
+                </div>
+                <p class="learn-summary-desc">${summary}</p>
+              </div>
+
+              <div class="module-actions-bar">
+                <button type="button" class="btn-module-open" onclick="toggleModule(${mod.id})">
+                  <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
+                </button>
+                <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+                  ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
+                </button>
+              </div>
+
+              <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+                <div class="module-chapters-area">
+                  ${mod.chapters.map(chap => `
+                    <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
+                      ${chap.title ? `<h5 class="chapter-title">${chap.title}</h5>` : ''}
+                      <p class="chapter-text">${chap.content}</p>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <div class="module-bottom-status-bar">
+                  <div class="module-bottom-text">
+                    <span>${isCompleted ? 'Passo concluído com sucesso!' : 'Leu o passo? Marque para avançar:'}</span>
+                  </div>
+                  <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+                    ${isCompleted ? '✓ Passo Concluído' : '✓ Concluir Este Passo'}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     `;
   }
@@ -581,13 +762,22 @@ function handleEditModuleVideo(moduleId, moduleTitle) {
 
 function toggleModule(id) {
   const item = document.getElementById(`moduleItem${id}`);
+  const content = document.getElementById(`moduleContent${id}`);
   const arrow = document.getElementById(`moduleArrow${id}`);
-  if (!item) return;
+  const btnText = document.getElementById(`btnAccessText${id}`);
+  if (!item || !content) return;
 
-  const isActive = item.classList.contains('active');
-  item.classList.toggle('active');
-  if (arrow) {
-    arrow.textContent = isActive ? '▼' : '▲';
+  const isCurrentlyOpen = item.classList.contains('active') && content.style.display !== 'none';
+  if (isCurrentlyOpen) {
+    item.classList.remove('active');
+    content.style.display = 'none';
+    if (arrow) arrow.textContent = '▼';
+    if (btnText) btnText.textContent = 'Acessar Módulo →';
+  } else {
+    item.classList.add('active');
+    content.style.display = 'block';
+    if (arrow) arrow.textContent = '▲';
+    if (btnText) btnText.textContent = 'Recolher Conteúdo ▲';
   }
 }
 
@@ -1639,11 +1829,13 @@ function checkUnlockStatus() {
     const welcomeDesc = document.getElementById('unlockedWelcomeDesc');
     if (welcomeDesc) {
       if (savedName) {
-        welcomeDesc.innerHTML = `Olá, <strong>${savedName}</strong>! Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Noturno</strong>.`;
+        welcomeDesc.innerHTML = `Olá, <strong>${savedName}</strong>! Seu pagamento foi confirmado com sucesso. Agora você já pode começar o <strong>Método Desmame Noturno</strong>.`;
       } else {
-        welcomeDesc.innerHTML = `Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Noturno</strong>.`;
+        welcomeDesc.innerHTML = `Seu pagamento foi confirmado com sucesso. Agora você já pode começar o <strong>Método Desmame Noturno</strong>.`;
       }
     }
+
+    updateProgressUI();
 
     const emailNotice = document.getElementById('accessEmailNoticeText');
     const savedPassword = localStorage.getItem('desmame_student_password') || appState.masterPassword || 'desmame2026';

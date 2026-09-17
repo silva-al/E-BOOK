@@ -595,35 +595,35 @@ body {
   background: #27968a;
 }
 
-/* Botão Flutuante e Ícone de WhatsApp (Posicionado à DIREITA) */
+/* Botão Flutuante e Ícone de WhatsApp (Discreto, Posicionado à DIREITA) */
 .floating-whatsapp-btn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 16px;
+  right: 16px;
   left: auto;
   z-index: 999;
   background-color: #25d366;
   color: #ffffff;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: var(--transition);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
 }
 
 .floating-whatsapp-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 22px rgba(37, 211, 102, 0.6);
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
 }
 
 .floating-whatsapp-btn svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   fill: #ffffff;
 }
 
@@ -1210,38 +1210,146 @@ body {
 }
 
 .unlocked-header-banner {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
   color: #ffffff;
-  border-radius: var(--radius-md);
-  padding: 20px 24px;
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.unlocked-header-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.unlocked-badge-access {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ccfbf1;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.unlocked-badge-access .pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  display: inline-block;
+}
+
+.unlocked-header-info h2,
+.unlocked-header-main h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.unlocked-header-info p,
+.unlocked-header-main p {
+  font-size: 14.5px;
+  color: #e6fffa;
+  margin-top: 6px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.unlocked-main-cta-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-md);
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
 }
 
-.unlocked-header-info h2 {
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.unlocked-header-info p {
+.btn-start-method-hero {
+  background: #ffffff;
+  color: #0f766e;
   font-size: 14px;
-  opacity: 0.95;
-  margin-top: 4px;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transition: all 0.2s ease;
 }
 
-.btn-view-receipt {
-  background: rgba(255, 255, 255, 0.2);
+.btn-start-method-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  background: #f0fdfa;
+}
+
+.btn-secondary-access {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.btn-secondary-access:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-secondary-access.logout {
+  opacity: 0.88;
+}
+
+.access-email-notice-card {
+  display: flex;
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #99f6e4;
+  border-radius: 10px;
+  padding: 10px 14px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.access-notice-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #115e59;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
 }
 
 /* Seção de Vídeo em Destaque */
@@ -1533,48 +1641,398 @@ body {
   background: #e2e8f0;
 }
 
-/* Accordions dos Módulos do E-book */
-.modules-accordion-list {
+/* ==========================================================================
+   GUIA RÁPIDO: COMECE POR AQUI
+   ========================================================================== */
+.quick-start-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.quick-start-header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.quick-start-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fef3c7;
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.quick-start-header h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.quick-start-header p {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+.quick-start-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 12px;
 }
 
-.module-accordion-item {
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: #ffffff;
+.quick-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  padding: 12px 14px;
+  border-radius: 10px;
 }
 
-.module-accordion-trigger {
-  width: 100%;
-  padding: 14px 18px;
-  background: #f8fafc;
-  border: none;
+.quick-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  text-align: left;
-  font-size: 14px;
-  font-weight: 700;
-  color: #1e293b;
-  transition: var(--transition);
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.module-accordion-trigger:hover {
+.quick-step-item strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.quick-step-item p {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ==========================================================================
+   BARRA DE PROGRESSO DA ALUNA NO MÉTODO
+   ========================================================================== */
+.student-progress-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.student-progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.progress-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f766e;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.progress-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 2px 0 0;
+}
+
+.progress-status-badge {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d9488 0%, #10b981 100%);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+.progress-modules-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.progress-pill-item {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
   background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.progress-pill-item.done {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+/* ==========================================================================
+   CARDS DE MÓDULOS ESTILO ÁREA DE CURSO
+   ========================================================================== */
+.modules-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.module-card-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.module-card-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.module-card-item.module-is-completed {
+  border-color: #a7f3d0;
+  background: #fcfffd;
+}
+
+.module-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.module-card-header-left {
+  flex: 1;
+}
+
+.module-number-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.module-number-pill {
+  font-size: 11px;
+  font-weight: 800;
+  background: #f0fdfa;
+  color: #0f766e;
+  border: 1px solid #ccfbf1;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.module-number-pill.vip {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.module-status-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.module-status-tag.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.module-status-tag.pending {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.module-title-main {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  line-height: 1.35;
+}
+
+.module-meta-info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.module-meta-dot {
+  opacity: 0.5;
+}
+
+.module-card-chevron {
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #475569;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 12px;
+  transition: all 0.2s ease;
+}
+
+.module-card-item:hover .module-card-chevron {
+  background: #e2e8f0;
+}
+
+/* O que você vai aprender */
+.module-learn-summary-box {
+  background: #f8fafc;
+  border-left: 3.5px solid #0d9488;
+  padding: 10px 14px;
+  margin: 0 20px 12px;
+  border-radius: 0 8px 8px 0;
+}
+
+.module-card-bump .module-learn-summary-box {
+  border-left-color: #d97706;
+  background: #fffdf8;
+}
+
+.learn-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #0f766e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.module-card-bump .learn-summary-title {
+  color: #b45309;
+}
+
+.learn-summary-desc {
+  font-size: 13px;
+  color: #334155;
+  margin: 0;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* Ações Rápidas do Módulo */
+.module-actions-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 20px 14px;
+  flex-wrap: wrap;
+}
+
+.btn-module-open {
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 15px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-module-open:hover {
+  background: #0d9488;
+  transform: translateY(-1px);
+}
+
+.btn-module-check {
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 13px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-module-check.is-done {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.btn-module-check:hover {
+  filter: brightness(0.97);
 }
 
 .module-accordion-content {
   display: none;
-  padding: 18px;
-  background: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  padding: 20px;
+  background: #fafbfc;
+  border-top: 1px solid #f1f5f9;
 }
 
-.module-accordion-item.active .module-accordion-content {
+.module-card-item.active .module-accordion-content {
   display: block;
 }
 
@@ -1600,7 +2058,7 @@ body {
 .chapter-text {
   font-size: 14.5px;
   color: #334155;
-  line-height: 1.65;
+  line-height: 1.7;
   font-weight: 500;
   white-space: pre-line;
 }
@@ -1631,88 +2089,253 @@ body {
   margin-bottom: 6px;
 }
 
-/* ==========================================================================
-   VÍDEO E DICAS POR MÓDULO (ÁREA DA ALUNA)
-   ========================================================================== */
-.module-trigger-info {
+.module-bottom-status-bar {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.module-bottom-text {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.btn-bottom-complete {
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-bottom-complete.done {
+  background: #166534;
+}
+
+/* ==========================================================================
+   SEÇÃO QUEM CRIOU ESTE MÉTODO (HUMANIZADA E CONFIÁVEL)
+   ========================================================================== */
+.author-story-card {
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+  border: 1px solid #e9d5ff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.04);
+}
+
+.author-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.author-avatar-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #d8b4fe;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+}
+
+.author-info-content {
   flex: 1;
 }
 
-.module-title-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+.author-kicker {
+  font-size: 12px;
+  font-weight: 800;
+  color: #7c3aed;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.module-title-text {
-  font-size: 15px;
+.author-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 4px 0 8px;
+}
+
+.author-text {
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.author-signature-tag {
+  display: inline-block;
+  background: #f5f3ff;
+  color: #6b21a8;
+  font-size: 12px;
   font-weight: 700;
-  color: #1e293b;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-top: 10px;
+  border: 1px solid #ddd6fe;
 }
 
-.locked-badge-pill {
+/* ==========================================================================
+   BÔNUS ADICIONAL: DESMAME DURANTE O DIA (TRANSPARENTE E CONVIDATIVO)
+   ========================================================================== */
+.bonus-highlight-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.bump-locked-box {
+  background: #fffdfa;
+  border: 1.5px solid #fed7aa;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.05);
+}
+
+.bump-locked-header-tag {
+  display: inline-block;
   background: #fef3c7;
   color: #b45309;
-  border: 1px solid #fde68a;
   font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
-  display: inline-flex;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.bump-locked-heading {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.bump-locked-text {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.bump-locked-perks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.bump-perk-item {
+  font-size: 13px;
+  color: #334155;
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #fed7aa;
+}
+
+.bump-locked-cta-box {
+  display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #fed7aa;
+  padding: 14px 18px;
+  border-radius: 10px;
 }
 
-.unlocked-badge-pill {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.bump-cta-price-info {
+  display: flex;
+  flex-direction: column;
 }
 
-.module-locked-tag {
-  background: #fff7ed;
-  color: #c2410c;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
-  border: 1px dashed #fdba74;
+.bump-cta-sub {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
 }
 
-/* Módulo Especial: Estado Bloqueado */
-.module-accordion-item.module-bump-locked {
-  border: 1.5px dashed #f59e0b;
-  background: #fffdfa;
+.bump-cta-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: #d97706;
 }
 
-.module-accordion-item.module-bump-locked .module-accordion-trigger {
-  background: #fffbeb;
+.btn-unlock-bump-now {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 800;
+  padding: 11px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+  transition: all 0.2s ease;
 }
 
-.module-accordion-item.module-bump-locked .module-accordion-trigger:hover {
-  background: #fef3c7;
+.btn-unlock-bump-now:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
 }
 
-/* Módulo Especial: Estado Liberado / VIP */
-.module-accordion-item.module-bump-unlocked {
-  border: 2px solid #10b981;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
+.btn-unlock-bump-now:active {
+  transform: translateY(0);
 }
 
-.module-accordion-item.module-bump-unlocked .module-accordion-trigger {
-  background: #f0fdf4;
+/* ==========================================================================
+   AVISO ÉTICO DE ORIENTAÇÃO MÉDICA / SAÚDE
+   ========================================================================== */
+.medical-disclaimer-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #64748b;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.medical-disclaimer-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.medical-disclaimer-body h5 {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #334155;
+  margin: 0 0 4px;
+}
+
+.medical-disclaimer-body p {
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
 }
 
 /* Banner de Bônus Liberado */
@@ -1745,114 +2368,38 @@ body {
   color: #047857;
 }
 
-/* Card de Conteúdo Bloqueado (Upsell na Área da Aluna) */
-.bump-locked-box {
-  background: #ffffff;
-  border: 1px solid #fed7aa;
-  border-radius: 12px;
-  padding: 24px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
-}
-
-.bump-locked-icon-wrap {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 14px auto;
+.locked-badge-pill {
   background: #fef3c7;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.bump-locked-heading {
-  font-size: 17px;
-  font-weight: 800;
-  color: #9a3412;
-  margin-bottom: 8px;
-}
-
-.bump-locked-text {
-  font-size: 14px;
-  color: #475569;
-  line-height: 1.6;
-  max-width: 520px;
-  margin: 0 auto 18px auto;
-}
-
-.bump-locked-perks {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: #fff7ed;
-  border: 1px solid #ffedd5;
-  border-radius: 8px;
-  padding: 14px 16px;
-  max-width: 480px;
-  margin: 0 auto 20px auto;
-  text-align: left;
-}
-
-.bump-perk-item {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #7c2d12;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bump-locked-cta-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.bump-cta-price-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.bump-cta-sub {
-  font-size: 12px;
-  color: #64748b;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.bump-cta-val {
-  font-size: 19px;
-  font-weight: 800;
-  color: #047857;
-}
-
-.btn-unlock-bump-now {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
-  border: none;
-  padding: 14px 24px;
-  font-size: 15px;
-  font-weight: 800;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
-.btn-unlock-bump-now:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+.unlocked-badge-pill {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.btn-unlock-bump-now:active {
-  transform: translateY(0);
+.module-card-bump {
+  border-color: #fed7aa;
+}
+
+.module-card-bump:hover {
+  border-color: #fdba74;
 }
 
 .module-badges-row {
@@ -2571,4 +3118,72 @@ body {
   background: #fef2f2;
   border-color: #fca5a5;
   color: #b91c1c;
+}
+
+/* ==========================================================================
+   AJUSTES RESPONSIVOS PARA DISPOSITIVOS MÓVEIS (ÁREA DA ALUNA & WHATSAPP)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .unlocked-header-banner {
+    padding: 20px 16px;
+  }
+
+  .unlocked-header-main h2 {
+    font-size: 20px;
+  }
+
+  .unlocked-main-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-start-method-hero {
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-secondary-access {
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .author-story-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 14px;
+  }
+
+  .author-avatar-img {
+    width: 84px;
+    height: 84px;
+  }
+
+  .quick-start-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bump-locked-perks {
+    grid-template-columns: 1fr;
+  }
+
+  .bump-locked-cta-box {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .floating-whatsapp-btn {
+    bottom: 12px !important;
+    right: 12px !important;
+    width: 40px !important;
+    height: 40px !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .floating-whatsapp-btn svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
 }

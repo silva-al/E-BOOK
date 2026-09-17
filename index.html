@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=24.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=27.0">
 </head>
 
 <body>
@@ -534,46 +534,110 @@
   </div>
 
   <!-- =========================================================================
-       ÁREA LIBERADA DO CURSO / E-BOOK (EXIBIDA APÓS O PAGAMENTO)
+       ÁREA DE MEMBROS: MÉTODO DESMAME NOTURNO (LIBERADA APÓS O PAGAMENTO)
        ========================================================================= -->
   <section class="unlocked-portal-wrapper" id="unlockedPortal">
 
-    <!-- Banner de Confirmação -->
+    <!-- Banner de Boas-Vindas & Acesso Liberado -->
     <div class="unlocked-header-banner">
-      <div class="unlocked-header-info">
-        <h2>🎉 Acesso Liberado com Sucesso!</h2>
-        <p id="unlockedWelcomeDesc">Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame
-            Noturno</strong>.</p>
+      <div class="unlocked-header-main">
+        <div class="unlocked-badge-access">
+          <span class="pulse-dot"></span> Acesso Imediato e Vitalício
+        </div>
+        <h2>🎉 Seu acesso está liberado!</h2>
+        <p id="unlockedWelcomeDesc">Seu pagamento foi confirmado com sucesso. Agora você já pode começar o <strong>Método Desmame Noturno</strong>.</p>
+        
+        <!-- Botão Principal em Destaque & Ação Secundária -->
+        <div class="unlocked-main-cta-row">
+          <button type="button" class="btn-start-method-hero" id="btnStartMethod" onclick="handleStartMethod()">
+            ▶ COMEÇAR O MÉTODO
+          </button>
+          <button type="button" id="btnCopyMagicLink" class="btn-secondary-access" onclick="handleCopyAccessMagicLink()">
+            📋 <span id="labelCopyMagicLink">Copiar Meu Link de Acesso</span>
+          </button>
+          <button type="button" class="btn-secondary-access" onclick="window.print()">
+            🖨️ Salvar em PDF
+          </button>
+          <button type="button" class="btn-secondary-access logout" onclick="handleStudentLogout()" title="Sair da área da aluna">
+            🚪 Sair
+          </button>
+        </div>
 
-        <!-- Reafirmação de e-mail enviado & Botão de Salvar Link Permanente -->
-        <div class="access-email-notice-card" id="accessEmailNoticeCard" style="display: flex; margin-top: 12px; background: rgba(255,255,255,0.92); border: 1px solid #a7f3d0; border-radius: 8px; padding: 10px 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-          <div style="display: flex; align-items: center; gap: 8px; color: #065f46; font-size: 13px; font-weight: 600;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Credenciais & Notificação de E-mail -->
+        <div class="access-email-notice-card" id="accessEmailNoticeCard">
+          <div class="access-notice-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
-            <span id="accessEmailNoticeText">✉️ E-mail com o link de acesso vitalício enviado para você!</span>
+            <span id="accessEmailNoticeText">✉️ Dados de acesso vitalício enviados para o seu e-mail!</span>
           </div>
-          <button type="button" id="btnCopyMagicLink" onclick="handleCopyAccessMagicLink()" style="background: #059669; border: none; color: #ffffff; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
-            <span id="labelCopyMagicLink">📋 Copiar Meu Link de Acesso</span>
-          </button>
         </div>
       </div>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-        <button class="btn-view-receipt" onclick="window.print()">🖨️ Salvar PDF</button>
-        <button class="btn-student-logout" onclick="handleStudentLogout()" title="Sair da área da aluna">🚪 Sair</button>
+    </div>
+
+    <!-- Guia Rápido: Comece por aqui -->
+    <div class="quick-start-card">
+      <div class="quick-start-header">
+        <div class="quick-start-icon-wrap">💡</div>
+        <div>
+          <h4>Comece por aqui: Orientações fundamentais</h4>
+          <p>3 princípios para conduzir o desmame com tranquilidade e apego seguro</p>
+        </div>
+      </div>
+      <div class="quick-start-grid">
+        <div class="quick-step-item">
+          <span class="quick-step-num">1</span>
+          <div>
+            <strong>Siga a sequência dos 5 módulos</strong>
+            <p>Cada etapa prepara o bebê para a próxima sem rupturas bruscas ou frustração.</p>
+          </div>
+        </div>
+        <div class="quick-step-item">
+          <span class="quick-step-num">2</span>
+          <div>
+            <strong>Uma mudança de cada vez com afeto</strong>
+            <p>Consistência com carinho. Nunca deixe o bebê chorar sozinho ou desamparado.</p>
+          </div>
+        </div>
+        <div class="quick-step-item">
+          <span class="quick-step-num">3</span>
+          <div>
+            <strong>Acompanhe o seu progresso</strong>
+            <p>Ao concluir a leitura de cada módulo, marque como concluído para acompanhar sua evolução.</p>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- ACESSO AOS MÓDULOS DO E-BOOK & PDF -->
-    <div class="ebook-access-box">
+
+    <!-- Barra de Progresso da Aluna -->
+    <div class="student-progress-card" id="studentProgressCard">
+      <div class="student-progress-top">
+        <div>
+          <span class="progress-kicker">SUA JORNADA NO MÉTODO</span>
+          <h4 class="progress-title">Progresso do Curso</h4>
+        </div>
+        <div class="progress-status-badge" id="progressPercentageText">0% concluído</div>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+      </div>
+      <div class="progress-modules-pills" id="progressModulesPills">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- Módulos do Método Noturno (Estilo Curso Premium) -->
+    <div class="ebook-access-box" id="modulesMainBox">
       <div class="ebook-access-top">
         <div>
-          <h3>DESMAME NOTURNO 🌙🤱🏻</h3>
-          <p style="font-size: 13.5px; color: #64748b; font-weight: 600;">Salva essas dicas! 🤍</p>
+          <span class="section-tag-sub">MÉTODO PRINCIPAL</span>
+          <h3>Método Desmame Noturno Passo a Passo 🌙</h3>
+          <p style="font-size: 13.5px; color: #64748b; font-weight: 600; margin-top: 4px;">Orientações práticas para guiar você rumo a noites inteiras de sono tranquilo</p>
         </div>
         <div class="ebook-actions-group">
           <button class="btn-action-ebook secondary" onclick="window.print()">
-            📄 Salvar E-book em PDF
+            📄 Salvar Método em PDF
           </button>
         </div>
       </div>
@@ -584,21 +648,55 @@
       </div>
     </div>
 
-    <!-- SEÇÃO SEPARADA: BÔNUS ESPECIAL DESMAME DURANTE O DIA -->
+    <!-- Seção Quem Criou Este Conteúdo -->
+    <div class="author-story-card">
+      <div class="author-avatar-wrap">
+        <img src="assets/images/author_mother.jpg" alt="Quem criou o método" class="author-avatar-img">
+      </div>
+      <div class="author-info-content">
+        <span class="author-kicker">💜 Conexão materna</span>
+        <h3 class="author-title">Quem criou este método?</h3>
+        <p class="author-text">
+          Eu vivi na pele a exaustão física e emocional das madrugadas acordando várias vezes, o cansaço acumulado e a sensação de que o peito era o único recurso para acalmar meu bebê. Criei este material compartilhando a experiência real e prática que transformou as noites da nossa família.
+        </p>
+        <p class="author-text" style="margin-top: 10px;">
+          O coração deste método é o <strong>acolhimento com consistência</strong>: oferecer colo, cafuné e presença, sem deixar o bebê chorando sozinho e sem mudanças bruscas que causem insegurança. Minha missão é ajudar você a reconquistar suas noites de sono com segurança, paciência e leveza no coração.
+        </p>
+        <div class="author-signature-tag">
+          <span>🤍 Passo a passo prático feito com muito carinho</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção Bônus Opcional: Desmame Durante o Dia (Transparente e Claro) -->
     <div class="ebook-access-box bonus-access-box" id="bonusAccessBox">
       <div class="ebook-access-top">
         <div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <h3>☀️ BÔNUS ESPECIAL: DESMAME DURANTE O DIA 👶</h3>
-            <span id="bonusHeaderBadge" class="locked-badge-pill">🔒 Adicional Bloqueado</span>
+            <span class="bonus-highlight-tag">☀️ CONTEÚDO ADICIONAL</span>
+            <span id="bonusHeaderBadge" class="locked-badge-pill">🔒 Bônus Opcional</span>
           </div>
-          <p style="font-size: 13.5px; color: #64748b; font-weight: 600;">Como fiz meu filho desmamar na parte do dia! 🤍</p>
+          <h3 style="margin-top: 6px;">Quer aprender o Desmame Durante o Dia?</h3>
+          <p style="font-size: 13.5px; color: #64748b; font-weight: 600; margin-top: 2px;">
+            Bônus opcional — não faz parte do método noturno principal
+          </p>
         </div>
       </div>
 
-      <!-- Container do Bônus: Módulos Diurnos Separados (se liberado) ou Card de Oferta (se bloqueado) -->
+      <!-- Container do Bônus: Card Transparente (se bloqueado) ou Aulas Diurnas (se liberado) -->
       <div id="bonusContainer">
         <!-- Renderizado dinamicamente pelo app.js -->
+      </div>
+    </div>
+
+    <!-- Box de Aviso de Orientação Profissional de Saúde -->
+    <div class="medical-disclaimer-card">
+      <div class="medical-disclaimer-icon">⚠️</div>
+      <div class="medical-disclaimer-body">
+        <h5>Aviso importante sobre orientação profissional</h5>
+        <p>
+          Este material possui caráter educativo e compartilha experiências práticas de rotina e acolhimento familiar. Ele não substitui o acompanhamento individualizado de pediatra, consultora de amamentação ou outro profissional de saúde. Cada bebê possui ritmo, saúde e necessidades específicas que devem ser sempre priorizadas com carinho e respeito.
+        </p>
       </div>
     </div>
 
@@ -739,8 +837,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=26.0"></script>
-  <script src="assets/js/app.js?v=26.0"></script>
+  <script src="assets/js/pix-engine.js?v=27.0"></script>
+  <script src="assets/js/app.js?v=27.0"></script>
 </body>
 
 </html>
