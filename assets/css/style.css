@@ -2308,6 +2308,69 @@ body {
   font-weight: 500;
 }
 
+/* Ações Rápidas do Módulo (Botão de Abrir / Recolher) */
+.module-actions-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 0 22px 16px;
+  flex-wrap: wrap;
+}
+
+.btn-module-open {
+  background: linear-gradient(135deg, #e11d48 0%, #be185d 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 9px 20px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-module-open:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(225, 29, 72, 0.35);
+}
+
+.btn-module-open.is-open {
+  background: #fdf2f8;
+  color: #be185d;
+  border: 1.5px solid #fbcfe8;
+  box-shadow: none;
+}
+
+.btn-module-check {
+  background: #ffffff;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1.5px solid #f1f5f9;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-module-check:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.btn-module-check.is-done {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
 /* Conteúdo Expandido do Módulo */
 .module-accordion-content {
   display: none;

@@ -567,14 +567,19 @@ function updateProgressUI() {
 
 function jumpToModule(num) {
   const item = document.getElementById(`moduleItem${num}`);
+  const content = document.getElementById(`moduleContent${num}`);
+  const arrow = document.getElementById(`moduleArrow${num}`);
+  const btnText = document.getElementById(`btnAccessText${num}`);
+  const btnOpen = document.getElementById(`btnModuleOpen${num}`);
   if (item) {
     item.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const content = document.getElementById(`moduleContent${num}`);
-    const arrow = document.getElementById(`moduleArrow${num}`);
-    if (content && content.style.display === 'none') {
-      content.style.display = 'block';
+    const isClosed = !item.classList.contains('active') || (content && content.style.display === 'none');
+    if (isClosed) {
       item.classList.add('active');
+      if (content) content.style.display = 'block';
       if (arrow) arrow.textContent = '▲';
+      if (btnText) btnText.textContent = 'Recolher Conteúdo ▲';
+      if (btnOpen) btnOpen.classList.add('is-open');
     }
   }
 }
@@ -681,6 +686,16 @@ function renderEbookModules(modules) {
             <span>O que você vai aplicar:</span>
           </div>
           <p class="learn-summary-desc">${summary}</p>
+        </div>
+
+        <!-- Ações do Módulo: Botão de Abrir e Recolher -->
+        <div class="module-actions-bar">
+          <button type="button" class="btn-module-open ${index === 0 ? 'is-open' : ''}" id="btnModuleOpen${mod.id}" onclick="toggleModule(${mod.id})">
+            <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
+          </button>
+          <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+            ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
+          </button>
         </div>
 
         <!-- Conteúdo Expandido do Módulo -->
@@ -832,6 +847,16 @@ function renderBonusSection(dayModules, hasBump) {
                   <span>O que você vai aplicar:</span>
                 </div>
                 <p class="learn-summary-desc">${summary}</p>
+              </div>
+
+              <!-- Ações do Módulo: Botão de Abrir e Recolher -->
+              <div class="module-actions-bar">
+                <button type="button" class="btn-module-open ${index === 0 ? 'is-open' : ''}" id="btnModuleOpen${mod.id}" onclick="toggleModule(${mod.id})">
+                  <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
+                </button>
+                <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+                  ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
+                </button>
               </div>
 
               <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
@@ -1029,6 +1054,7 @@ function toggleModule(id) {
   const content = document.getElementById(`moduleContent${id}`);
   const arrow = document.getElementById(`moduleArrow${id}`);
   const btnText = document.getElementById(`btnAccessText${id}`);
+  const btnOpen = document.getElementById(`btnModuleOpen${id}`);
   if (!item || !content) return;
 
   const isCurrentlyOpen = item.classList.contains('active') && content.style.display !== 'none';
@@ -1037,11 +1063,13 @@ function toggleModule(id) {
     content.style.display = 'none';
     if (arrow) arrow.textContent = '▼';
     if (btnText) btnText.textContent = 'Acessar Módulo →';
+    if (btnOpen) btnOpen.classList.remove('is-open');
   } else {
     item.classList.add('active');
     content.style.display = 'block';
     if (arrow) arrow.textContent = '▲';
     if (btnText) btnText.textContent = 'Recolher Conteúdo ▲';
+    if (btnOpen) btnOpen.classList.add('is-open');
   }
 }
 
