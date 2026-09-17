@@ -853,6 +853,97 @@ function startAmbientNoise() {
     const sr  = ctx.sampleRate;
     const now = ctx.currentTime;
 
+    // ── Gain master com fade-in suave ────────────────────────────────────────
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.001, now);
+    masterGain.gain.linearRampToValueAtTime(0.55, now + 2.5);
+    masterGain.connect(ctx.destination);
+
+    // ════════════════════════════════════════════════════════════════════════
+    // Chuva real = ruído branco filtrado.
+    // Gotas individuais NÃO soam como sinos — soam como "tssh" de ruído curto.
+    // A textura de chuva vem de variações na amplitude do ruído, não de tons.
+    // ════════════════════════════════════════════════════════════════════════
+
+    // Buffer de ruído branco puro (6 segundos em loop)
+    const bufLen = sr * 6;
+    const noiseBuf = ctx.createBuffer(2, bufLen, sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = noiseBuf.getChannelData(ch);
+      for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const noiseSrc = ctx.createBufferSource();
+    noiseSrc.buffer = noiseBuf;
+    noiseSrc.loop = true;
+
+    // Filtro 1 — Highpass 400 Hz: remove grave pesado/efeito de ventilador
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 400;
+    hp.Q.value = 0.6;
+
+    // Filtro 2 — Peaking boost suave em 3 kHz: traz a presença das gotas
+    // Sem este boost os agudos das gotas somem e fica abafado
+    const peak = ctx.createBiquadFilter();
+    peak.type = 'peaking';
+    peak.frequency.value = 3000;
+    peak.Q.value = 0.8;
+    peak.gain.value = 6; // +6 dB em 3kHz — abre o "tss" das gotas
+
+    // Filtro 3 — Lowshelf -4 dB em 800 Hz: reduz "corpo" do ruído sem cortar
+    // Deixa o som leve, não pesado
+    const shelf = ctx.createBiquadFilter();
+    shelf.type = 'lowshelf';
+    shelf.frequency.value = 800;
+    shelf.gain.value = -4;
+
+    // Ganho do ruído (levemente abaixo do master)
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.value = 0.85;
+
+    noiseSrc.connect(hp);
+    hp.connect(shelf);
+    shelf.connect(peak);
+    peak.connect(noiseGain);
+    noiseGain.connect(masterGain);
+
+    // ── Modulação de amplitude: simula o "patter" das gotas caindo ──────────
+    // Um LFO lento e irregular que faz o volume variar naturalmente
+    // Frequência muito baixa (~0.8 Hz) — não é tremolo, é variação natural
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.8;
+
+    const lfo2 = ctx.createOscillator();
+    lfo2.type = 'sine';
+    lfo2.frequency.value = 1.3; // segundo LFO em fase diferente
+
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 0.06; // modulação de ±6% — sutil, não óbvio
+
+    const lfoGain2 = ctx.createGain();
+    lfoGain2.gain.value = 0.04;
+
+    lfo.connect(lfoGain);
+    lfo2.connect(lfoGain2);
+    lfoGain.connect(noiseGain.gain);
+    lfoGain2.connect(noiseGain.gain);
+
+    lfo.start();
+    lfo2.start();
+    noiseSrc.start();
+
+    ambientNoiseNode = noiseSrc;
+    ambientGainNode  = masterGain;
+    ctx._lfo1 = lfo;
+    ctx._lfo2 = lfo2;
+
+  } catch (err) {
+    console.warn('Web Audio indisponível:', err);
+  }
+}
+
+
     // ── Mixer final — sem filtros no master (som aberto, não abafado) ────────
     const masterGain = ctx.createGain();
     masterGain.gain.setValueAtTime(0.001, now);
@@ -935,12 +1026,19 @@ function stopAmbientNoise() {
         try { ambientNoiseNode.stop(); } catch (e) {}
         ambientNoiseNode = null;
       }
+      ['_lfo1', '_lfo2'].forEach(k => {
+        if (ambientAudioCtx && ambientAudioCtx[k]) {
+          try { ambientAudioCtx[k].stop(); } catch (e) {}
+          ambientAudioCtx[k] = null;
+        }
+      });
     }, 900);
   } else if (ambientNoiseNode) {
     try { ambientNoiseNode.stop(); } catch (e) {}
     ambientNoiseNode = null;
   }
 }
+
 
 function initNightModeState() {
 
