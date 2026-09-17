@@ -127,12 +127,12 @@ async function loadEbookContent() {
       },
       {
         id: 4,
-        title: "Módulo 4: O 7º Passo Especial - DESMAME NA PARTE DO DIA ☀️👶",
+        title: "Módulo 4: O 7º Passo Especial - DESMAME DURANTE O DIA ☀️👶",
         duration: "16 min de aula",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         videoTitle: "Vídeo Oficial: O 7º Passo - Como Conduzir o Desmame Diurno com Amor e Praticidade",
         goldenTips: [
-          { step: "7️⃣", title: "Desmame na Parte do Dia (Passo 7 Exclusivo)", desc: "Retire uma mamada diurna por vez a cada 3 a 5 dias. Mantenha garrafinha com água e lanchinhos visíveis, mude o sofá ou ambiente de costume e faça combinados claros e cheios de carinho." }
+          { step: "7️⃣", title: "Desmame Durante o Dia (Passo 7 Exclusivo)", desc: "Retire uma mamada diurna por vez a cada 3 a 5 dias. Mantenha garrafinha com água e lanchinhos visíveis, mude o sofá ou ambiente de costume e faça combinados claros e cheios de carinho." }
         ],
         chapters: [
           { title: "4.1 Passo a passo do desmame diurno gradual", content: "Comece retirando uma mamada do dia a cada 3 a 5 dias. Inicie pelas mamadas intermediárias e deixe a mamada antes da soneca diurna por último." },
