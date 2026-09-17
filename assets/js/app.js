@@ -282,7 +282,7 @@ function renderCurrentModules() {
    ========================================================================== */
 async function loadEbookContent() {
   try {
-    const response = await fetch('ebook/content.json');
+    const response = await fetch('ebook/content.json?v=' + Date.now(), { cache: 'no-store' });
     if (!response.ok) throw new Error('Falha ao ler ebook/content.json');
     const data = await response.json();
     appState.ebookData = data;
