@@ -557,6 +557,7 @@ function handleCopyInlinePixCode() {
         label.textContent = "✅ Código PIX Copiado com Sucesso!";
         setTimeout(() => { label.textContent = orig; }, 3000);
       }
+    });
   }
 }
 
