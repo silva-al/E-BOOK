@@ -1,0 +1,1542 @@
+/* ==========================================================================
+   ESTILOS GERAIS & DESIGN SYSTEM (INSPIRADO NA KIWIFY + MATERNIDADE)
+   ========================================================================== */
+
+:root {
+  --primary-color: #28b463; /* Verde Kiwify de Conversão */
+  --primary-hover: #229954;
+  --pix-teal: #32bcad; /* Cor Oficial PIX */
+  --pix-teal-dark: #27968a;
+  --maternal-pink: #f06292;
+  --maternal-rose: #fce4ec;
+  --maternal-dark: #2c3e50;
+  --bg-page: #eff1f3; /* Fundo característico Kiwify */
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-focus: #247ef3;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --danger: #e53e3e;
+  --warning: #f59e0b;
+  --font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: all 0.2s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   TOPO DE URGÊNCIA & GARANTIA (ESTILO KIWIFY)
+   ========================================================================== */
+.top-notice-bar {
+  background: linear-gradient(90deg, #e53e3e 0%, #dd6b20 100%);
+  color: #ffffff;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.countdown-box {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+/* Badges Superiores */
+.top-badges-container {
+  max-width: 1060px;
+  margin: 16px auto 0;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.top-badge-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.top-badge-card.highlight {
+  border: 1.5px solid #247ef3;
+}
+
+.top-badge-card svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.badge-text-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.badge-text-sub {
+  font-size: 11px;
+  color: #247ef3;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   LAYOUT PRINCIPAL DO CHECKOUT
+   ========================================================================== */
+.main-checkout-wrapper {
+  max-width: 1060px;
+  margin: 16px auto 40px;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .top-badges-container {
+    grid-template-columns: 1fr;
+  }
+  .main-checkout-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   COLUNA ESQUERDA: FORMULÁRIO E PIX CHECKOUT
+   ========================================================================== */
+.checkout-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+}
+
+.product-compact-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.product-thumbnail-img {
+  width: 76px;
+  height: 105px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+.product-info-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.product-info-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.product-price-tag {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+.price-current {
+  color: var(--primary-color);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+/* Seção de Campos do Cliente */
+.form-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kiwi-input-group {
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.kiwi-input-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.kiwi-input-field {
+  width: 100%;
+  height: 46px;
+  padding: 10px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  color: #1e293b;
+  background-color: #ffffff;
+  outline: none;
+  transition: var(--transition);
+}
+
+.kiwi-input-field:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(36, 126, 243, 0.15);
+}
+
+.form-row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 540px) {
+  .form-row-two {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pagamento Exclusivo via PIX */
+.payment-exclusive-pix {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 2px solid var(--pix-teal);
+  border-radius: var(--radius-sm);
+  background: #f0fdfa;
+  color: var(--pix-teal-dark);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.payment-exclusive-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.payment-exclusive-badge {
+  background: #10b981;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payment-tab-btn img,
+.payment-tab-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pix-instant-notice {
+  background: #f0fdfa;
+  border-left: 4px solid var(--pix-teal);
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #0f766e;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* Box Chave PIX Direta com Símbolo */
+.direct-pix-box {
+  background: #f0fdfa;
+  border: 2px solid #32bcad;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.direct-pix-box:hover {
+  background: #e6fffa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(50, 188, 173, 0.2);
+}
+
+.direct-pix-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.direct-pix-icon {
+  width: 38px;
+  height: 38px;
+  background: #32bcad;
+  color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.direct-pix-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0d9488;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.direct-pix-number {
+  font-size: 18px;
+  font-weight: 800;
+  color: #134e4a;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-copy-direct-pix {
+  background: #32bcad;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.btn-copy-direct-pix:hover {
+  background: #27968a;
+}
+
+/* Botão Flutuante e Ícone de WhatsApp */
+.floating-whatsapp-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 999;
+  background-color: #25d366;
+  color: #ffffff;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.45);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.floating-whatsapp-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+.floating-whatsapp-btn svg {
+  width: 30px;
+  height: 30px;
+  fill: #ffffff;
+}
+
+.whatsapp-inline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e7fce9;
+  color: #128c7e;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.whatsapp-inline-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: #25d366;
+}
+
+/* Order Bump / Oferta Especial */
+.order-bump-box {
+  background: #fffbeb;
+  border: 2px dashed #f59e0b;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.order-bump-box:hover {
+  background: #fef3c7;
+}
+
+.bump-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #d97706;
+  cursor: pointer;
+}
+
+.bump-content h4 {
+  font-size: 13px;
+  font-weight: 800;
+  color: #b45309;
+}
+
+.bump-content p {
+  font-size: 12px;
+  color: #78350f;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.bump-price {
+  font-weight: 700;
+  color: #d97706;
+}
+
+/* Botão de Compra Principal */
+.btn-pay-now {
+  width: 100%;
+  padding: 16px 20px;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(40, 180, 99, 0.35);
+  transition: var(--transition);
+}
+
+.btn-pay-now:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(40, 180, 99, 0.45);
+}
+
+.btn-pay-now:active {
+  transform: translateY(0);
+}
+
+/* Segurança do Rodapé do Formulário */
+.checkout-security-notice {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.checkout-security-notice svg {
+  width: 16px;
+  height: 16px;
+  fill: #10b981;
+}
+
+/* ==========================================================================
+   COLUNA DIREITA: RESUMO, ITENS INCLUSOS & PROVA SOCIAL
+   ========================================================================== */
+.sidebar-summary-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.sidebar-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.included-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.included-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.included-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #10b981;
+  margin-top: 2px;
+}
+
+.included-item strong {
+  color: #0f172a;
+}
+
+/* Box dos Bônus */
+.bonus-highlight-box {
+  background: #fdf2f8;
+  border: 1.5px solid #fbcfe8;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.bonus-highlight-title {
+  color: #be185d;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bonus-mini-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #f472b6;
+}
+
+.bonus-mini-img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.bonus-mini-text h5 {
+  font-size: 12px;
+  font-weight: 700;
+  color: #831843;
+}
+
+.bonus-mini-text p {
+  font-size: 11px;
+  color: #9d174d;
+}
+
+/* Depoimentos Rápidos */
+.testimonial-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+
+.testimonial-stars {
+  color: #f59e0b;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.testimonial-text {
+  font-size: 12px;
+  color: #475569;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.testimonial-author {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 6px;
+  text-align: right;
+}
+
+/* ==========================================================================
+   MODAL DE CHECKOUT PIX (FLUXO KIWIFY REAL)
+   ========================================================================== */
+.pix-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+  animation: fadeIn 0.25s ease;
+}
+
+.pix-modal-overlay.active {
+  display: flex;
+}
+
+.pix-modal-box {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+.pix-modal-header {
+  background: #00bdae;
+  color: #ffffff;
+  padding: 18px 24px;
+  text-align: center;
+  position: relative;
+}
+
+.pix-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.pix-modal-close:hover {
+  opacity: 1;
+}
+
+.pix-modal-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.pix-modal-header p {
+  font-size: 13px;
+  opacity: 0.95;
+  margin-top: 4px;
+}
+
+.pix-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.pix-amount-badge {
+  display: inline-block;
+  background: #f1f5f9;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.pix-qrcode-container {
+  background: #ffffff;
+  padding: 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  display: inline-block;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+}
+
+#pixQrCanvas {
+  display: block;
+  margin: 0 auto;
+}
+
+.pix-copy-box {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 16px;
+}
+
+.pix-copy-code {
+  font-family: monospace;
+  font-size: 11px;
+  word-break: break-all;
+  color: #334155;
+  max-height: 52px;
+  overflow-y: auto;
+  text-align: left;
+  user-select: all;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 8px;
+}
+
+.btn-pix-copy {
+  width: 100%;
+  padding: 12px;
+  background: #00bdae;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.btn-pix-copy:hover {
+  background: #00a497;
+}
+
+.pix-instructions {
+  text-align: left;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 14px;
+  line-height: 1.5;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+}
+
+.pix-instructions ol {
+  padding-left: 18px;
+}
+
+/* Status de Pagamento / Aprovador */
+.pix-status-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0284c7;
+  margin-top: 16px;
+}
+
+.pulse-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #0284c7;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-simulate-pix {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-simulate-pix:hover {
+  background: #059669;
+}
+
+/* ==========================================================================
+   PORTAL DO CURSO / ÁREA LIBERADA APÓS O PAGAMENTO
+   ========================================================================== */
+.unlocked-portal-wrapper {
+  display: none;
+  max-width: 1060px;
+  margin: 20px auto 50px;
+  padding: 0 16px;
+}
+
+.unlocked-portal-wrapper.active {
+  display: block;
+}
+
+.unlocked-header-banner {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.unlocked-header-info h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.unlocked-header-info p {
+  font-size: 14px;
+  opacity: 0.95;
+  margin-top: 4px;
+}
+
+.btn-view-receipt {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+/* Seção de Vídeo em Destaque */
+.video-section-container {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.video-section-header {
+  margin-bottom: 18px;
+}
+
+.video-badge {
+  display: inline-block;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.video-section-header h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.video-section-header p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Mockup / Player do Vídeo Profissional */
+.custom-video-player-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 480px;
+  background: #000000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-video-player-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-poster-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('../images/ebook_cover.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.video-play-btn {
+  width: 72px;
+  height: 72px;
+  background: #e11d48;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(225, 29, 72, 0.7);
+  transition: var(--transition);
+}
+
+.video-play-btn svg {
+  width: 30px;
+  height: 30px;
+  fill: #ffffff;
+  margin-left: 4px;
+}
+
+.video-poster-overlay:hover .video-play-btn {
+  transform: scale(1.1);
+  background: #be123c;
+}
+
+.video-poster-text {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 16px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+/* ==========================================================================
+   DICAS OBJETIVAS ESCRITAS LOGO ABAIXO DO VÍDEO
+   ========================================================================== */
+.tips-below-video-box {
+  margin-top: 24px;
+  border-top: 1.5px solid #f1f5f9;
+  padding-top: 24px;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.tips-header-icon {
+  width: 32px;
+  height: 32px;
+  background: #fef2f2;
+  color: #e11d48;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tips-header h4 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.tip-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  border-left: 4px solid #28b463;
+}
+
+.tip-card.alert {
+  border-left-color: #ef4444;
+}
+
+.tip-card.night {
+  border-left-color: #6366f1;
+}
+
+.tip-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tip-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tip-card li {
+  font-size: 12.5px;
+  color: #334155;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.tip-card li svg {
+  width: 14px;
+  height: 14px;
+  color: #10b981;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   ÁREA DO E-BOOK COMPLETO (LEITOR + DOWNLOAD PDF)
+   ========================================================================== */
+.ebook-access-box {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.ebook-access-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ebook-access-top h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ebook-actions-group {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-action-ebook {
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.btn-action-ebook.primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-action-ebook.primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-action-ebook.secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-action-ebook.secondary:hover {
+  background: #e2e8f0;
+}
+
+/* Accordions dos Módulos do E-book */
+.modules-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module-accordion-item {
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.module-accordion-trigger {
+  width: 100%;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  transition: var(--transition);
+}
+
+.module-accordion-trigger:hover {
+  background: #f1f5f9;
+}
+
+.module-accordion-content {
+  display: none;
+  padding: 18px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.module-accordion-item.active .module-accordion-content {
+  display: block;
+}
+
+.chapter-block {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.chapter-block:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.chapter-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.chapter-text {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   VÍDEO E DICAS POR MÓDULO (ÁREA DA ALUNA)
+   ========================================================================== */
+.module-trigger-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.module-title-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.module-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.module-time-badge {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.module-video-badge {
+  background: #fee2e2;
+  color: #e11d48;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.module-arrow-icon {
+  font-size: 15px;
+  color: #64748b;
+}
+
+/* Bloco de Vídeo do Módulo */
+.module-video-block {
+  background: #0f172a;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+}
+
+.module-video-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.module-video-tag {
+  display: inline-block;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+}
+
+.module-video-headline {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-top: 4px;
+}
+
+.btn-edit-module-video {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.btn-edit-module-video:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.module-player-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.module-player-wrapper iframe,
+.module-player-wrapper video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.video-helper-tip {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Dicas de Ouro dos Módulos (Desmame Noturno / Diurno) */
+.module-golden-tips-box {
+  background: #fdf4ff;
+  border: 1.5px solid #f0abfc;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.golden-tips-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #f0abfc;
+}
+
+.golden-tips-icon {
+  font-size: 22px;
+}
+
+.golden-tips-header h5 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #86198f;
+}
+
+.golden-tips-header p {
+  font-size: 12px;
+  color: #701a75;
+}
+
+.golden-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.golden-tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #f5d0fe;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.golden-tip-badge {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.golden-tip-body strong {
+  display: block;
+  font-size: 13px;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.golden-tip-body p {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+/* Área de Capítulos Escritos */
+.module-chapters-area {
+  margin-top: 16px;
+}
+
+.chapters-area-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* ==========================================================================
+   RODAPÉ KIWIFY OFICIAL
+   ========================================================================== */
+.kiwi-checkout-footer {
+  max-width: 1060px;
+  margin: 30px auto;
+  padding: 0 16px;
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.kiwi-checkout-footer a {
+  color: #64748b;
+  text-decoration: underline;
+}
+
+/* Floating Toolbar para Alan (Alternar Modo / Chave Pix) */
+.alan-admin-bar {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 30px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.alan-admin-btn {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.alan-admin-btn:hover {
+  background: #2563eb;
+}
+
+/* ==========================================================================
+   ESTILOS DE IMPRESSÃO (PDF)
+   ========================================================================== */
+@media print {
+  .top-notice-bar,
+  .top-badges-container,
+  .checkout-card,
+  .sidebar-summary-card,
+  .alan-admin-bar,
+  .kiwi-checkout-footer,
+  .btn-action-ebook,
+  .video-poster-overlay {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .unlocked-portal-wrapper {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .module-accordion-content {
+    display: block !important;
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

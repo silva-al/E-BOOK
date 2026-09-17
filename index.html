@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desmame Gentil - O Guia Definitivo e Acolhedor | Checkout Seguro</title>
+  <meta name="description" content="Aprenda o passo a passo completo e prático para desmamar seu bebê com amor, respeito e sem traumas. Acesso imediato após o pagamento via PIX.">
+  
+  <!-- Fontes Google estilo Kiwify / Moderno -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Barra de Aviso e Urgência Superior (Estilo Kiwify) -->
+  <div class="top-notice-bar" id="topNoticeBar">
+    <span>🔥 OFERTA EXCLUSIVA COM DESCONTO DE LANÇAMENTO</span>
+    <div class="countdown-box">
+      <span id="countdownTimer">14:59</span>
+    </div>
+    <span>RESTANTES</span>
+  </div>
+
+  <!-- Selos de Credibilidade Superiores -->
+  <div class="top-badges-container" id="topBadges">
+    <div class="top-badge-card highlight">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#247ef3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+      <div>
+        <div class="badge-text-title">Compra 100% Segura</div>
+        <div class="badge-text-sub">Criptografia bancária de ponta</div>
+      </div>
+    </div>
+
+    <div class="top-badge-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <path d="M7 15h0M2 9.5h20"/>
+      </svg>
+      <div>
+        <div class="badge-text-title">Acesso Imediato no PIX</div>
+        <div class="badge-text-sub" style="color: #10b981;">Liberação automática na hora</div>
+      </div>
+    </div>
+
+    <div class="top-badge-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <div>
+        <div class="badge-text-title">Garantia de 7 Dias</div>
+        <div class="badge-text-sub" style="color: #d97706;">Risco zero para você testar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       TELA DE CHECKOUT (VISÍVEL ANTES DO PAGAMENTO)
+       ========================================================================= -->
+  <main class="main-checkout-wrapper" id="checkoutSection">
+    
+    <!-- Coluna Esquerda: Formulário de Checkout Kiwify -->
+    <div class="checkout-card">
+      
+      <!-- Cabeçalho do Produto -->
+      <div class="product-compact-header">
+        <img src="assets/images/ebook_cover.jpg" alt="Capa Desmame Gentil" class="product-thumbnail-img">
+        <div>
+          <h1 class="product-info-title" id="productTitle">Desmame Gentil: Como Desmamar com Amor e Sem Traumas</h1>
+          <p class="product-info-subtitle" id="productSubtitle">Vídeo prático passo a passo + Dicas objetivas + E-book completo oficial</p>
+          <div class="product-price-tag">
+            <span class="price-old">R$ 97,00</span>
+            <span class="price-current" id="displayPrice">R$ 30,00</span>
+            <span style="font-size: 11px; color: #10b981; font-weight: 700; background: #e6f9f0; padding: 2px 6px; border-radius: 4px;">À VISTA NO PIX</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário de Dados da Aluna -->
+      <form id="checkoutForm" onsubmit="event.preventDefault(); handleOpenPixModal();">
+        
+        <div class="form-section-title">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          1. Seus Dados para Liberação do Curso
+        </div>
+
+        <div class="kiwi-input-group">
+          <label for="buyerName">Nome Completo</label>
+          <input type="text" id="buyerName" class="kiwi-input-field" placeholder="Digite seu nome completo" required value="Camila Silva Martins">
+        </div>
+
+        <div class="form-row-two">
+          <div class="kiwi-input-group">
+            <label for="buyerEmail">Seu Melhor E-mail</label>
+            <input type="email" id="buyerEmail" class="kiwi-input-field" placeholder="exemplo@email.com" required value="camila.materno@gmail.com">
+          </div>
+          <div class="kiwi-input-group">
+            <label for="buyerPhone" style="display: flex; align-items: center; gap: 5px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/></svg>
+              WhatsApp com DDD
+            </label>
+            <input type="tel" id="buyerPhone" class="kiwi-input-field" placeholder="(11) 99999-9999" required value="(19) 99474-4297">
+          </div>
+        </div>
+
+        <!-- Seleção de Forma de Pagamento (Exclusivo PIX) -->
+        <div class="form-section-title" style="margin-top: 16px;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          2. Pagamento Exclusivo via PIX
+        </div>
+
+        <div class="payment-exclusive-pix">
+          <div class="payment-exclusive-left">
+            <!-- Símbolo Oficial PIX -->
+            <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z" fill="#32BCAD"/>
+            </svg>
+            <span>PIX (Pagamento Direto & Instantâneo)</span>
+          </div>
+          <span class="payment-exclusive-badge">Liberação Imediata</span>
+        </div>
+
+        <div class="pix-instant-notice">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+            <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm1 14.5h-2v-2h2zm0-4h-2V7h2z"/>
+          </svg>
+          <div>
+            <strong>Aprovação em segundos:</strong> Ao pagar com PIX, o sistema reconhece seu pagamento e libera seu vídeo e e-book imediatamente nesta mesma tela.
+          </div>
+        </div>
+
+        <!-- Chave PIX Direta Clicável com Símbolos do PIX e do WhatsApp -->
+        <div class="direct-pix-box" onclick="handleCopyDirectPixKey()" title="Clique para copiar a Chave PIX ou falar no WhatsApp">
+          <div class="direct-pix-info">
+            <div class="direct-pix-icon">
+              <!-- Símbolo Oficial PIX -->
+              <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z" fill="#ffffff"/>
+              </svg>
+            </div>
+            <div>
+              <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
+                <span>Chave PIX Oficial</span>
+                <!-- Símbolo Oficial WhatsApp -->
+                <span class="whatsapp-inline-badge">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/></svg>
+                  WhatsApp
+                </span>
+              </div>
+              <div class="direct-pix-number" id="directPixNumberDisplay">
+                5519994744297
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixForm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="labelDirectCopyForm">Copiar Chave</span>
+          </button>
+        </div>
+
+        <!-- Order Bump / Bônus Especial Opcional -->
+        <label class="order-bump-box" for="orderBumpCheck">
+          <input type="checkbox" id="orderBumpCheck" class="bump-checkbox" onchange="handleToggleBump(this)">
+          <div class="bump-content">
+            <h4>Adicionar Pacote VIP com Bônus Sono Tranquilo?</h4>
+            <p>Leve também o <strong>Guia de Rotina Noturna</strong> + <strong>Diário de Transição para Imprimir</strong> por apenas <span class="bump-price">+ R$ 9,90</span>.</p>
+          </div>
+        </label>
+
+        <!-- Botão Principal de Conversão Kiwify -->
+        <button type="submit" class="btn-pay-now" id="btnSubmitCheckout">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          PAGAR COM PIX E LIBERAR O CURSO AGORA
+        </button>
+
+        <div class="checkout-security-notice">
+          <svg viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+          </svg>
+          Ambiente criptografado. Seus dados estão 100% protegidos.
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Coluna Direita: O Que Acompanha & Prova Social -->
+    <div>
+      <div class="sidebar-summary-card">
+        <h3 class="sidebar-title">O Que Você Recebe Imediatamente</h3>
+        
+        <ul class="included-list">
+          <li class="included-item">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            <div><strong>Vídeo Prático Passo a Passo:</strong> Explicando exatamente como fazer o desmame sem choro e com apego seguro.</div>
+          </li>
+          <li class="included-item">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            <div><strong>Dicas Objetivas Escritas:</strong> Resumo mastigado logo abaixo do vídeo para você consultar sempre que tiver dúvidas na hora.</div>
+          </li>
+          <li class="included-item">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            <div><strong>E-book Completo (5 Módulos):</strong> Guia aprofundado com 94 páginas, pronto para ler online ou imprimir em PDF.</div>
+          </li>
+          <li class="included-item">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            <div><strong>Técnica dos 7 Dias:</strong> Como conduzir o desmame noturno para voltar a dormir a noite toda.</div>
+          </li>
+          <li class="included-item">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            <div><strong>Acesso Vitalício:</strong> Assista e leia no seu ritmo pelo celular ou computador.</div>
+          </li>
+        </ul>
+
+        <!-- Caixa de Bônus Inclusos -->
+        <div class="bonus-highlight-box">
+          <div class="bonus-highlight-title">
+            🎁 Bônus Especiais Inclusos
+          </div>
+          <div class="bonus-mini-item">
+            <img src="assets/images/bonus_sono.jpg" alt="Bônus Sono" class="bonus-mini-img">
+            <div class="bonus-mini-text">
+              <h5>Guia Sono Tranquilo</h5>
+              <p>Rotinas para o bebê dormir profundamente sem precisar do seio.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Depoimentos Reais -->
+        <div style="margin-top: 20px;">
+          <h4 style="font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">O Que Dizem as Mães:</h4>
+          
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"Eu achava impossível desmamar meu filho de 1 ano e 8 meses sem ele chorar a noite toda. Com o vídeo passo a passo e a técnica de 7 dias, no quarto dia ele dormiu a noite inteira!"</p>
+            <div class="testimonial-author">— Mariana R., São Paulo</div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"As dicas escritas direto ao ponto são maravilhosas! Salvei no celular e consultava de madrugada. Foi muito respeitoso e acolhedor."</p>
+            <div class="testimonial-author">— Fernanda L., Belo Horizonte</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       MODAL PIX (FLUXO KIWIFY NATIVO COM QR CODE E COPIA E COLA)
+       ========================================================================= -->
+  <div class="pix-modal-overlay" id="pixModal">
+    <div class="pix-modal-box">
+      
+      <div class="pix-modal-header">
+        <button class="pix-modal-close" onclick="handleClosePixModal()">&times;</button>
+        <h3>Pagamento Quase Concluído!</h3>
+        <p>Pague com o PIX para liberar seu acesso imediatamente</p>
+      </div>
+
+      <div class="pix-modal-body">
+        
+        <div class="pix-amount-badge">
+          Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 30,00</strong>
+        </div>
+
+        <!-- Chave PIX Direta no Modal -->
+        <div class="direct-pix-box" style="margin: 10px 0 16px 0; background: #f0fdfa;" onclick="handleCopyDirectPixKey()" title="Clique para copiar a chave direta">
+          <div class="direct-pix-info">
+            <div class="direct-pix-icon">
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z" fill="#ffffff"/>
+              </svg>
+            </div>
+            <div style="text-align: left;">
+              <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
+                <span>Chave PIX (Telefone)</span>
+                <span class="whatsapp-inline-badge">
+                  <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/></svg>
+                  WhatsApp
+                </span>
+              </div>
+              <div class="direct-pix-number" style="font-size: 16px;">5519994744297</div>
+            </div>
+          </div>
+          <button type="button" class="btn-copy-direct-pix" id="btnCopyDirectPixModal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="labelDirectCopyModal">Copiar Chave</span>
+          </button>
+        </div>
+
+        <div class="pix-qrcode-container">
+          <!-- Canvas gerado pelo pix-engine.js -->
+          <canvas id="pixQrCanvas" width="220" height="220"></canvas>
+        </div>
+
+        <div class="pix-copy-box">
+          <div class="pix-copy-code" id="pixCopyCodeText">Carregando código PIX...</div>
+          <button type="button" class="btn-pix-copy" onclick="handleCopyPixCode()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copyPixBtnLabel">Copiar Código PIX (Copia e Cola)</span>
+          </button>
+        </div>
+
+        <div class="pix-instructions">
+          <strong>Como pagar:</strong>
+          <ol>
+            <li>Abra o aplicativo do seu banco no celular;</li>
+            <li>Escolha a opção <strong>Pagar com PIX</strong> (QR Code ou Copia e Cola);</li>
+            <li>Cole o código copiado ou aponte a câmera para o QR Code acima;</li>
+            <li>Confirme o pagamento. O curso será liberado em segundos nesta tela.</li>
+          </ol>
+        </div>
+
+        <div class="pix-status-check">
+          <div class="pulse-spinner"></div>
+          <span>Aguardando identificação do pagamento...</span>
+        </div>
+
+        <!-- Botão de Demonstração / Aprovação Imediata -->
+        <button type="button" class="btn-simulate-pix" onclick="handleConfirmPixPayment()">
+          ⚡ Já realizei o pagamento (Liberar Curso Agora)
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ÁREA LIBERADA DO CURSO / E-BOOK (EXIBIDA APÓS O PAGAMENTO)
+       ========================================================================= -->
+  <section class="unlocked-portal-wrapper" id="unlockedPortal">
+    
+    <!-- Banner de Confirmação -->
+    <div class="unlocked-header-banner">
+      <div class="unlocked-header-info">
+        <h2>🎉 Acesso Liberado com Sucesso!</h2>
+        <p>Seu pagamento via PIX foi confirmado. Bem-vinda ao método <strong>Desmame Gentil</strong>.</p>
+      </div>
+      <div>
+        <button class="btn-view-receipt" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+      </div>
+    </div>
+
+    <!-- 1. VÍDEO PASSO A PASSO EM DESTAQUE -->
+    <div class="video-section-container">
+      <div class="video-section-header">
+        <span class="video-badge">Vídeo Aula Prática Exclusiva</span>
+        <h3>Passo a Passo Completo: Como Desmamar com Amor e Sem Traumas</h3>
+        <p>Assista com calma a esta aula prática. Aplique exatamente os passos demonstrados para uma transição suave.</p>
+      </div>
+
+      <div class="custom-video-player-box" id="videoPlayerBox">
+        <!-- Player de Vídeo HTML5 com controles nativos -->
+        <video id="courseMainVideo" controls poster="assets/images/ebook_cover.jpg">
+          <!-- O Alan pode colocar o arquivo de vídeo dele diretamente aqui ou via YouTube/Vimeo -->
+          <source src="" type="video/mp4">
+          Seu navegador não suporta a reprodução de vídeo.
+        </video>
+
+        <!-- Overlay de Apresentação antes do primeiro Play -->
+        <div class="video-poster-overlay" id="videoOverlay" onclick="handlePlayVideo()">
+          <div class="video-play-btn">
+            <svg viewBox="0 0 24 24">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <div class="video-poster-text">Clique para Iniciar o Vídeo Passo a Passo</div>
+        </div>
+      </div>
+
+      <!-- 2. DICAS OBJETIVAS ESCRITAS LOGO ABAIXO DO VÍDEO (SOLICITADO POR ALAN) -->
+      <div class="tips-below-video-box">
+        <div class="tips-header">
+          <div class="tips-header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div>
+            <h4>Resumo das Dicas Faladas no Vídeo (Passo a Passo Objetivo)</h4>
+            <p style="font-size: 12.5px; color: #64748b;">Consulte estes tópicos sempre que precisar de uma resposta rápida e sem rodeios:</p>
+          </div>
+        </div>
+
+        <div class="tips-grid">
+          
+          <!-- Card 1 -->
+          <div class="tip-card">
+            <div class="tip-card-title">
+              <span>🌟</span> Regra de Ouro: "Não Oferecer, Não Recusar"
+            </div>
+            <ul>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Nunca ofereça o seio para acalmar um momento de birra ou tédio passageiro.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Se a criança pedir com muita insistência, não brigue: acolha, mas comece a adiar sutilmente ("A mamãe já vai te dar um abraço gostoso, vamos ver aquele livrinho primeiro?").
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Dobre a dose de carinho, beijos e contato físico para a criança não sentir rejeição.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="tip-card">
+            <div class="tip-card-title">
+              <span>☀️</span> Passo a Passo Diurno (Semana 1 e 2)
+            </div>
+            <ul>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Comece eliminando as mamadas fora de hora (de pé na sala, passeios, etc.).
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Mantenha garrafinha com água sempre ao alcance visual da criança.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Mude o ambiente habitual: se costumava mamar na poltrona da sala, evite sentar nela nos horários críticos.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="tip-card night">
+            <div class="tip-card-title">
+              <span>🌙</span> O Desmame Noturno (Técnica dos 7 Dias)
+            </div>
+            <ul>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <strong>Desassocie o mamar do adormecer:</strong> amamente 20 minutos antes de dormir, com luz baixa, ainda acordado.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Coloque na cama/berço sonolento, mas acordado, usando cafuné, canção suave e ruído branco.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <strong>Nos despertares da madrugada:</strong> Não acenda a luz. Dê um gole de água no copinho, faça o "shhh-shhh" rítmico no bumbum ou nas costas. Se houver parceiro(a), peça que ele(a) atenda os 3 primeiros dias.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="tip-card alert">
+            <div class="tip-card-title">
+              <span>⚠️</span> O que NUNCA Fazer (Erros Graves)
+            </div>
+            <ul>
+              <li>
+                <svg viewBox="0 0 20 20" fill="#ef4444"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                <strong>Não passe substâncias amargas:</strong> (babosa, pimenta, café) — isso gera sentimento de traição e medo do corpo da mãe.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="#ef4444"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                <strong>Não suma de casa sem avisar:</strong> Viajar de repente rompe a confiança e o apego seguro.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="#ef4444"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                <strong>Não resista 40 minutos e no fim ceda:</strong> Isso ensina a criança que chorar 40 minutos é o segredo para conseguir o peito. Seja calma e consistente.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="tip-card">
+            <div class="tip-card-title">
+              <span>🥣</span> Ceia Noturna de Saciedade
+            </div>
+            <ul>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Alimentos ricos em triptofano 1 hora antes de dormir: banana amassadinha com aveia e canela, abacate ou mingau leve.
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Mantém a glicemia estável na madrugada e evita que o bebê acorde faminto.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="tip-card">
+            <div class="tip-card-title">
+              <span>🤱</span> Alívio para a Mãe (Sem Mastite)
+            </div>
+            <ul>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Nunca esvazie a mama com bomba elétrica (isso manda sinal para produzir mais leite).
+              </li>
+              <li>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Faça apenas a ordenha manual de alívio no banho morno para tirar a pressão dolorosa.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. ACESSO AOS MÓDULOS DO E-BOOK & PDF -->
+    <div class="ebook-access-box">
+      <div class="ebook-access-top">
+        <div>
+          <h3>E-book Completo (Conteúdo Oficial em 5 Módulos)</h3>
+          <p style="font-size: 13px; color: #64748b;">Leia os capítulos na íntegra abaixo ou imprima sua versão física:</p>
+        </div>
+        <div class="ebook-actions-group">
+          <button class="btn-action-ebook secondary" onclick="window.print()">
+            📄 Salvar E-book em PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista Dinâmica de Módulos Carregada do content.json -->
+      <div class="modules-accordion-list" id="modulesContainer">
+        <!-- Renderizado dinamicamente pelo app.js -->
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Rodapé Institucional Kiwify -->
+  <footer class="kiwi-checkout-footer">
+    <p>Este produto não substitui o parecer médico profissional. Sempre consulte um pediatra para questões de saúde infantil.</p>
+    <p style="margin-top: 6px;">Pagamentos processados com segurança de acordo com as normas do Banco Central do Brasil.</p>
+    <p style="margin-top: 6px;">&copy; 2026 Desmame Gentil. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Barra de Configuração e Testes Rápida do Alan (Para você testar e editar) -->
+  <div class="alan-admin-bar">
+    <span>⚙️ Painel Alan:</span>
+    <button class="alan-admin-btn" onclick="toggleViewMode()">Alternar Tela (Visitante / Aluna)</button>
+    <button class="alan-admin-btn" onclick="editPixKeyPrompt()">Chave PIX</button>
+  </div>
+
+  <!-- Botão Flutuante Oficial do WhatsApp -->
+  <a href="https://wa.me/5519994744297?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20o%20e-book%20Desmame%20Gentil" target="_blank" class="floating-whatsapp-btn" title="Falar no WhatsApp com o Suporte">
+    <svg viewBox="0 0 24 24">
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/>
+    </svg>
+  </a>
+
+  <!-- Scripts -->
+  <script src="assets/js/pix-engine.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
