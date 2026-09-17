@@ -37,7 +37,7 @@
    - **Integração Mercado Pago (API de Orders)**:
      - `api/create-pix.js`: gera cobrança PIX oficial via `POST /v1/orders` no Mercado Pago.
      - `api/check-payment.js`: consulta status da ordem via `GET /v1/orders/{id}`.
-     - **Liberação 100% Automática**: Frontend realiza polling a cada 2.5s e desbloqueia o portal instantaneamente ao detectar aprovação bancária.
+     - **UX de Notificação Obrigatória**: Ao aprovar o pagamento, o sistema DEVE exibir a tela de notificação com sinal sonoro, badge verde "STATUS: PAGO" e contagem regressiva de 3 segundos antes de fechar o modal e liberar o curso.
      - **Mecanismo de Contingência**: fallback seguro com gerador local e liberação direta para garantir disponibilidade.
 
 7. **Publicação, Deploy e Cache-Busting**:
