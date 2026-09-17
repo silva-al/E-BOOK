@@ -32,6 +32,10 @@ async function loadEbookContent() {
     if (!response.ok) throw new Error('Falha ao ler ebook/content.json');
     const data = await response.json();
     appState.ebookData = data;
+    if (data.product && data.product.title) {
+      const titleEl = document.getElementById('productTitle');
+      if (titleEl) titleEl.innerText = data.product.title;
+    }
     renderEbookModules(data.modules);
   } catch (error) {
     console.warn('Carregamento via fetch local (modo direto arquivo): usando fallback estruturado', error);
@@ -524,3 +528,11 @@ function editPixKeyPrompt() {
     alert("Chave PIX atualizada para: " + appState.pixKey);
   }
 }
+
+function toggleAdminBar() {
+  const bar = document.getElementById('alanAdminBar');
+  if (bar) {
+    bar.classList.toggle('expanded');
+  }
+}
+
