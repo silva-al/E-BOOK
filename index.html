@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=13.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=14.0">
 </head>
 
 <body>
@@ -318,85 +318,6 @@
   </main>
 
   <!-- =========================================================================
-       MODAL PIX (FLUXO KIWIFY NATIVO COM QR CODE E COPIA E COLA)
-       ========================================================================= -->
-  <div class="pix-modal-overlay" id="pixModal">
-    <div class="pix-modal-box">
-
-      <div class="pix-modal-header">
-        <button class="pix-modal-close" onclick="handleClosePixModal()">&times;</button>
-        <h3>Pagament      <div class="pix-modal-body">
-
-        <!-- Conteúdo enquanto aguarda o pagamento -->
-        <div id="pixPendingContent">
-          <div class="pix-amount-badge">
-            Total a Pagar: <strong id="pixModalAmount" style="color: #00897b; font-size: 16px;">R$ 1,00</strong>
-          </div>
-
-
-
-          <div class="pix-qrcode-container">
-            <!-- Imagem oficial retornado pelo Mercado Pago ou Canvas gerado localmente -->
-            <img id="pixQrImage" style="display: none; width: 220px; height: 220px; margin: 0 auto;" alt="QR Code PIX Mercado Pago">
-            <canvas id="pixQrCanvas" width="220" height="220"></canvas>
-          </div>
-
-          <div class="pix-copy-box">
-            <div class="pix-copy-code" id="pixCopyCodeText">Carregando código PIX...</div>
-            <button type="button" class="btn-pix-copy" onclick="handleCopyPixCode()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              <span id="copyPixBtnLabel">Copiar Código PIX (Copia e Cola)</span>
-            </button>
-          </div>
-
-          <div class="pix-instructions">
-            <strong>Como pagar:</strong>
-            <ol>
-              <li>Abra o aplicativo do seu banco no celular;</li>
-              <li>Escolha a opção <strong>Pagar com PIX</strong> (QR Code ou Copia e Cola);</li>
-              <li>Cole o código copiado ou aponte a câmera para o QR Code acima;</li>
-              <li>Confirme o pagamento. O curso será liberado em segundos nesta tela.</li>
-            </ol>
-          </div>
-
-          <div class="pix-status-check">
-            <div class="pulse-spinner"></div>
-            <span id="pixStatusDetectorText">Aguardando confirmação do banco...</span>
-          </div>
-
-          <!-- Botão de Aprovação Imediata -->
-          <button type="button" class="btn-simulate-pix" onclick="showPaymentSuccessAndUnlock()">
-            ⚡ Já realizei o pagamento no banco (Liberar Curso Imediatamente)
-          </button>
-        </div>
-
-        <!-- TELA DE SUCESSO: NOTIFICAÇÃO IMEDIATA DE PAGAMENTO APROVADO -->
-        <div id="pixPaidNotification" style="display: none; text-align: center; padding: 25px 15px;">
-          <div style="width: 80px; height: 80px; background: #ecfdf5; border: 3px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </div>
-          <h2 style="color: #065f46; font-size: 24px; font-weight: 800; margin-bottom: 8px;">PAGAMENTO CONFIRMADO!</h2>
-          <p style="color: #047857; font-size: 16px; font-weight: 600; margin-bottom: 16px;">
-            Seu PIX foi identificado com sucesso!
-          </p>
-          <div style="background: #10b981; color: #ffffff; padding: 10px 22px; border-radius: 8px; font-size: 15px; font-weight: 800; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
-            ✅ STATUS: PAGO (R$ 1,00)
-          </div>
-          <p style="color: #4b5563; font-size: 14px; margin-top: 20px;">
-            Liberando seu curso completo em <span id="redirectCountdown" style="font-weight: 800; color: #10b981; font-size: 20px;">3</span> segundos...
-          </p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- =========================================================================
        MODAL DE UPGRADE / LIBERAÇÃO DO ADICIONAL DIURNO (R$ 9,90)
        ========================================================================= -->
   <div class="pix-modal-overlay" id="bumpUpgradeModal">
@@ -412,30 +333,6 @@
 
         <div class="pix-amount-badge">
           Valor do Adicional: <strong style="color: #047857; font-size: 16px;">R$ 9,90 no PIX</strong>
-        </div>
-
-        <!-- Chave PIX Direta no Modal -->
-        <div class="direct-pix-box" style="margin: 10px 0 16px 0; background: #f0fdfa;"
-          onclick="handleCopyDirectPixKey()" title="Clique para copiar a chave direta">
-          <div class="direct-pix-info">
-            <div class="direct-pix-icon">
-              <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M11.642 12.358a5.5 5.5 0 0 1 7.778 0L24 16.938l4.58-4.58a5.5 5.5 0 0 1 7.778 0l4 4a5.5 5.5 0 0 1 0 7.778L35.778 28.716l-3.8-3.8 4.2-4.2a1.5 1.5 0 0 0 0-2.122l-3.8-3.8a1.5 1.5 0 0 0-2.122 0L25.06 19.988a1.5 1.5 0 0 1-2.122 0l-5.196-5.196a1.5 1.5 0 0 0-2.122 0l-3.8 3.8a1.5 1.5 0 0 0 0 2.122l4.2 4.2-3.8 3.8-4.578-4.58a5.5 5.5 0 0 1 0-7.778l4-4zm24.716 23.284a5.5 5.5 0 0 1-7.778 0L24 31.062l-4.58 4.58a5.5 5.5 0 0 1-7.778 0l-4-4a5.5 5.5 0 0 1 0-7.778l4.58-4.58 3.8 3.8-4.2 4.2a1.5 1.5 0 0 0 0 2.122l3.8 3.8a1.5 1.5 0 0 0 2.122 0l5.196-5.196a1.5 1.5 0 0 1 2.122 0l5.196 5.196a1.5 1.5 0 0 0 2.122 0l3.8-3.8a1.5 1.5 0 0 0 0-2.122l-4.2-4.2 3.8-3.8 4.578 4.58a5.5 5.5 0 0 1 0 7.778l-4 4z"
-                  fill="#ffffff" />
-              </svg>
-            </div>
-            <div style="text-align: left;">
-              <div class="direct-pix-label" style="display:flex; align-items:center; gap:6px;">
-                <span>Chave PIX (Telefone)</span>
-                <span class="whatsapp-inline-badge">WhatsApp</span>
-              </div>
-              <div class="direct-pix-number" style="font-size: 16px;">5519994744297</div>
-            </div>
-          </div>
-          <button type="button" class="btn-copy-direct-pix">
-            <span>Copiar Chave</span>
-          </button>
         </div>
 
         <div class="pix-qrcode-container">
@@ -551,8 +448,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=13.0"></script>
-  <script src="assets/js/app.js?v=13.0"></script>
+  <script src="assets/js/pix-engine.js?v=14.0"></script>
+  <script src="assets/js/app.js?v=14.0"></script>
 </body>
 
 </html>
