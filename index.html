@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="assets/css/style.css?v=2.1">
+  <link rel="stylesheet" href="assets/css/style.css?v=3.0">
 </head>
 <body>
 
@@ -37,7 +37,7 @@
       
       <!-- Cabeçalho do Produto -->
       <div class="product-compact-header">
-        <img src="assets/images/ebook_cover.jpg" alt="Capa Desmame Noturno" class="product-thumbnail-img">
+        <img src="assets/images/ebook_cover.jpg?v=3.0" alt="Capa Desmame Noturno" class="product-thumbnail-img">
         <div>
           <h1 class="product-info-title" id="productTitle">DESMAME NOTURNO: Como Desmamar com Amor, Respeito e Sem Traumas</h1>
           <p class="product-info-subtitle" id="productSubtitle">Vídeo prático passo a passo + Dicas de ouro + E-book completo oficial</p>
@@ -556,30 +556,22 @@
   <footer class="kiwi-checkout-footer">
     <p>Este produto não substitui o parecer médico profissional. Sempre consulte um pediatra para questões de saúde infantil.</p>
     <p style="margin-top: 6px;">Pagamentos processados com segurança de acordo com as normas do Banco Central do Brasil.</p>
-    <p style="margin-top: 6px;">&copy; 2026 Desmame Gentil. Todos os direitos reservados.</p>
+    <p style="margin-top: 6px;">&copy; 2026 Desmame Noturno. Todos os direitos reservados.</p>
+    <div class="footer-admin-tools">
+      <button type="button" class="alan-admin-btn" onclick="toggleViewMode()">⚙️ Painel: Alternar (Visitante / Aluna)</button>
+      <button type="button" class="alan-admin-btn" onclick="editPixKeyPrompt()">Chave PIX</button>
+    </div>
   </footer>
 
-  <!-- Painel de Testes do Alan (Discreto e Retrátil para não cobrir a tela no celular) -->
-  <div class="alan-admin-bar" id="alanAdminBar">
-    <button type="button" class="alan-admin-toggle" onclick="toggleAdminBar()" title="Abrir/Fechar Painel Alan">
-      ⚙️
-    </button>
-    <div class="alan-admin-content" id="alanAdminContent">
-      <span style="font-weight: 700;">Painel:</span>
-      <button class="alan-admin-btn" onclick="toggleViewMode()">Alternar (Visitante / Aluna)</button>
-      <button class="alan-admin-btn" onclick="editPixKeyPrompt()">Chave PIX</button>
-    </div>
-  </div>
-
-  <!-- Botão Flutuante Oficial do WhatsApp -->
-  <a href="https://wa.me/5519994744297?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20o%20e-book%20Desmame%20Gentil" target="_blank" class="floating-whatsapp-btn" title="Falar no WhatsApp com o Suporte">
+  <!-- Botão Flutuante Oficial do WhatsApp (À Direita) -->
+  <a href="https://wa.me/5519994744297?text=Olá!%20Tenho%20uma%20dúvida%20sobre%20o%20e-book%20Desmame%20Noturno" target="_blank" class="floating-whatsapp-btn" title="Falar no WhatsApp com o Suporte">
     <svg viewBox="0 0 24 24">
       <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.79 14.07c-.24.68-1.4 1.3-1.95 1.38-.5.08-1.15.11-3.71-.95-2.73-1.13-4.5-3.89-4.63-4.07-.14-.18-1.11-1.48-1.11-2.82 0-1.34.7-2 1-2.26.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.59.45.24.57.81 1.98.88 2.12.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.18.3.78 1.29 1.67 2.08 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.66-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.15.28.11 1.79.84 2.1 1 .31.15.52.23.59.36.08.13.08.77-.16 1.45z"/>
     </svg>
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=2.1"></script>
-  <script src="assets/js/app.js?v=2.1"></script>
+  <script src="assets/js/pix-engine.js?v=3.0"></script>
+  <script src="assets/js/app.js?v=3.0"></script>
 </body>
 </html>
