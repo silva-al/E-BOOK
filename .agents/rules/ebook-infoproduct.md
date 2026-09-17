@@ -71,3 +71,24 @@
 12. **Restrições de Ferramental**:
    - **JAMAIS utilizar `browser_subagent` ou abrir janelas de navegador**: O usuário realiza todos os testes diretamente no próprio smartphone. Validações externas devem usar `read_url_content` silencioso.
 
+13. **Módulo Desmame Diurno — Sempre Liberado e em Primeiro Lugar**:
+   - O módulo **Desmame Durante o Dia ☀️👶** é um módulo **especial desbloqueado universalmente** (`appState.hasBump = true` por padrão).
+   - Ele deve aparecer **ACIMA** do módulo Desmame Noturno na área de membros (`#unlockedPortal`), ou seja: Diurno → Noturno (nessa ordem).
+   - No `app.js`, a função de renderização dos módulos deve garantir que os passos diurnos (Passos 01–06) sejam renderizados primeiro, seguidos dos 5 passos noturnos (1️⃣–5️⃣).
+   - A identidade visual do título deve refletir **"Desmame Diurno e Noturno"** em todos os cabeçalhos (checkout, portal, meta tags, `content.json`).
+
+14. **Áudio Ambiente — Chuva Suave (Web Audio API)**:
+   - O som de chuva suave é sintetizado puramente via `AudioContext` (sem arquivos externos) em `assets/js/app.js`.
+   - **Parâmetros corretos**: Pink noise (técnica de integração browniana) com filtro passa-banda entre **160 Hz e 2200 Hz** para permitir o "repique" das gotas (não apenas ruído abafado).
+   - Adicionar um **segundo oscilador de tremolo** (LFO a ~8 Hz, profundidade ~20%) para criar variação rítmica natural.
+   - O volume deve ser perceptível porém suave: `gainNode.gain.value = 0.28` (não abaixar de 0.20 — causará som inaudível).
+   - A síntese anterior com `biquadFilter.type = 'lowpass'` em 650 Hz estava "muito fechada" — não regredir para esse modelo.
+
+15. **Pagamento via Cartão de Crédito — Campos Antifraude Obrigatórios**:
+   - Em `api/create-card-payment.js`, o payload enviado ao Mercado Pago **deve sempre incluir**:
+     - `payer.phone` (área + número, extraído do campo WhatsApp do formulário).
+     - `additional_info.items` (array com `id`, `title`, `description`, `quantity`, `unit_price`).
+     - `additional_info.payer` com `first_name`, `last_name`, `phone` e `registration_date`.
+   - Esses campos reduzem a probabilidade de rejeição `cc_rejected_high_risk` pelo motor antifraude do Mercado Pago.
+   - Sempre exibir botão de **fallback imediato para PIX** quando o cartão for recusado (classe `.card-fallback-pix`), sem recarregar a página.
+
