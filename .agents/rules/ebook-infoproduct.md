@@ -33,10 +33,13 @@
    - Campos (Nome, E-mail, WhatsApp) iniciam sempre 100% zerados e limpos, com `autocomplete="off"`.
 
 6. **Exibição Dinâmica de Preços e Pagamento via PIX**:
-   - Preço base R$ 30,00 ou R$ 39,90 com adicional de dia.
-   - QR Code em canvas e chave PIX direta com cópia em 1 clique.
-   - Liberação instantânea na tela após confirmação do PIX.
+   - Preço base R$ 30,00 ou R$ 39,90 com adicional de dia (R$ 1,00 durante homologação/testes).
+   - **Integração Mercado Pago (API de Orders)**:
+     - `api/create-pix.js`: gera cobrança PIX oficial via `POST /v1/orders` no Mercado Pago.
+     - `api/check-payment.js`: consulta status da ordem via `GET /v1/orders/{id}`.
+     - **Liberação 100% Automática**: Frontend realiza polling a cada 2.5s e desbloqueia o portal instantaneamente ao detectar aprovação bancária.
+     - **Mecanismo de Contingência**: fallback seguro com gerador local e liberação direta para garantir disponibilidade.
 
 7. **Publicação, Deploy e Cache-Busting**:
    - Incrementar versão (`?v=X.X`) em `index.html` a cada atualização de CSS ou JS.
-   - Sempre sincronizar via `git push origin main` para deploy automático imediato na Vercel.
+   - **REGRA OBRIGATÓRIA**: Sempre que qualquer alteração for realizada em qualquer arquivo do projeto, ela deve ser IMEDIATAMENTE commitada e enviada via `git push origin main` para que a Vercel atualize o site no ar sem intervenção manual do usuário.
