@@ -67,42 +67,82 @@
           "content": "Se quiser saber mais sobre como eu fiz pra ele desmamar na parte do dia, é só liberar o acesso que vai ter o guia completo de dia e noite."
         }
       ]
-    },
-    {
-      "id": 7,
-      "title": "☀️ Bônus Especial: Como fiz o desmame durante o dia!",
-      "duration": "7 min de leitura",
-      "isBumpBonus": true,
-      "chapters": [
-        {
-          "title": "Observação e Desvio de Atenção",
-          "content": "O primeiro passo foi observar os momentos em que meu filho procurava o peito e tentar entender se era fome ou apenas costume.\n\nQuando ele lembrava do peito, eu desviava a atenção com brincadeiras, colo e carinho."
-        },
-        {
-          "title": "⚠️ Alerta Importante",
-          "content": "Lembrando: é muito importante que o bebê esteja se alimentando bem! 🤍"
-        },
-        {
-          "title": "1️⃣ No meu caso vs No seu caso",
-          "content": "No meu caso:\nQuando ele lembrava do peito, eu usava o sulfato ferroso, que ele não gostava do sabor. Ele sentia o gosto e acabava não querendo mais o peito.\n\nNo seu caso:\nUse algo que seu bebê não goste! ✅"
-        },
-        {
-          "title": "2️⃣ Mantenha o bebê sempre alimentado 🍎💧",
-          "content": "Ofereça comidinhas, frutas e água ao longo do dia, de acordo com a rotina e idade do bebê. Assim, ele passa a ter outras opções além do peito."
-        },
-        {
-          "title": "3️⃣ Vá diminuindo as mamadas aos poucos",
-          "content": "Comece retirando as mamadas diurnas que forem mais fáceis de substituir. Com o tempo, ele vai se acostumando com a nova rotina."
-        },
-        {
-          "title": "4️⃣ Ofereça carinho e acolhimento 🤍",
-          "content": "Quando ele procurar o peito, ofereça colo, carinho e atenção. O objetivo é mostrar que ele continua recebendo conforto e segurança mesmo sem mamar."
-        },
-        {
-          "title": "✨ Mensagem Final",
-          "content": "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
-        }
-      ]
     }
-  ]
+  ],
+  "bonus_diurno": {
+    "title": "☀️ BÔNUS ESPECIAL: DESMAME DURANTE O DIA 👶",
+    "subtitle": "Como fiz meu filho desmamar na parte do dia! 🤍",
+    "modules": [
+      {
+        "id": 101,
+        "title": "1️⃣ Passo 01: Observação e Desvio de Atenção",
+        "duration": "3 min de leitura",
+        "chapters": [
+          {
+            "title": "Observação e Desvio de Atenção",
+            "content": "O primeiro passo foi observar os momentos em que meu filho procurava o peito e tentar entender se era fome ou apenas costume.\n\nQuando ele lembrava do peito, eu desviava a atenção com brincadeiras, colo e carinho."
+          },
+          {
+            "title": "⚠️ Alerta Importante",
+            "content": "Lembrando: é muito importante que o bebê esteja se alimentando bem! 🤍"
+          }
+        ]
+      },
+      {
+        "id": 102,
+        "title": "2️⃣ Passo 02: No meu caso vs No seu caso",
+        "duration": "3 min de leitura",
+        "chapters": [
+          {
+            "title": "Estratégia do Sabor Seguro ✅",
+            "content": "No meu caso:\nQuando ele lembrava do peito, eu usava o sulfato ferroso, que ele não gostava do sabor. Ele sentia o gosto e acabava não querendo mais o peito.\n\nNo seu caso:\nUse algo que seu bebê não goste! ✅"
+          }
+        ]
+      },
+      {
+        "id": 103,
+        "title": "3️⃣ Passo 03: Mantenha o bebê sempre alimentado 🍎💧",
+        "duration": "2 min de leitura",
+        "chapters": [
+          {
+            "title": "Alimentação e Hidratação",
+            "content": "Ofereça comidinhas, frutas e água ao longo do dia, de acordo com a rotina e idade do bebê. Assim, ele passa a ter outras opções além do peito."
+          }
+        ]
+      },
+      {
+        "id": 104,
+        "title": "4️⃣ Passo 04: Vá diminuindo as mamadas aos poucos",
+        "duration": "2 min de leitura",
+        "chapters": [
+          {
+            "title": "Transição Gradual Diurna",
+            "content": "Comece retirando as mamadas diurnas que forem mais fáceis de substituir. Com o tempo, ele vai se acostumando com a nova rotina."
+          }
+        ]
+      },
+      {
+        "id": 105,
+        "title": "5️⃣ Passo 05: Ofereça carinho e acolhimento 🤍",
+        "duration": "3 min de leitura",
+        "chapters": [
+          {
+            "title": "Aconchego e Segurança",
+            "content": "Quando ele procurar o peito, ofereça colo, carinho e atenção. O objetivo é mostrar que ele continua recebendo conforto e segurança mesmo sem mamar."
+          }
+        ]
+      },
+      {
+        "id": 106,
+        "title": "✨ Passo 06: Mensagem Final",
+        "duration": "2 min de leitura",
+        "chapters": [
+          {
+            "title": "Respeitando o Tempo do Bebê 🤍",
+            "content": "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
+          }
+        ]
+      }
+    ]
+  }
 }

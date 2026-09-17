@@ -1362,6 +1362,17 @@ body {
   margin-bottom: 30px;
 }
 
+.bonus-access-box {
+  border: 1.5px solid #fed7aa;
+  background: #fffdfa;
+}
+
+.bonus-access-box.bonus-unlocked {
+  border: 2px solid #10b981;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.12);
+}
+
 .ebook-access-top {
   display: flex;
   align-items: center;

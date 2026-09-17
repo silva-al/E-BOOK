@@ -13,12 +13,12 @@
      - Se a aluna não adquiriu o adicional, deve ser exibido um botão direto de desbloqueio (`handleOpenBumpUpgradeModal()`) para o adicional de R$ 9,90.
    - O **Desmame Durante o Dia ☀️👶** é um **Bônus Especial Adicional (Módulo 7)** (Order Bump por + R$ 9,90), nunca misturado na contagem dos módulos noturnos.
 
-2. **Controle de Acesso ao Conteúdo Adicional (Módulo 7)**:
-   - Restrito a alunas com adicional (`desmame_has_bump === 'true'`).
-   - **Aluna sem adicional**: Módulo bloqueado (`module-bump-locked`) com selo "🔒 Adicional Bloqueado", sem expor os capítulos no DOM. Ao abrir, exibe o card de oferta com botão para o modal PIX de R$ 9,90.
-   - **Aluna com adicional**: Exibe o selo VIP ("✨ Bônus VIP Liberado"), banner comemorativo e o passo a passo diurno completo.
+2. **Controle de Acesso ao Bônus Especial Diurno (Seção Separada)**:
+   - Apresentado em seu próprio container independente (`#bonusAccessBox`), visualmente separado dos 5 Módulos Noturnos.
+   - **Aluna sem adicional**: Exibe o card de oferta com selo "🔒 Adicional Bloqueado", resumo dos benefícios dos passos diurnos e botão para abrir o modal PIX de R$ 9,90.
+   - **Aluna com adicional**: Exibe o selo VIP ("✨ Bônus VIP Liberado"), banner e todos os passos diurnos **separados em módulos/acordeões individuais (Passos 01 a 06)**, idênticos à experiência do noturno.
    - **Modal de Upgrade R$ 9,90**: Permite comprar o bônus tanto no checkout quanto após o login na área de membros.
-   - **Painel de Testes no Rodapé**: Manter botões de alternância rápida (`toggleViewMode`, `toggleBumpMode` e edição de chave PIX).
+   - **Painel de Testes no Rodapé**: Manter botões de alternância rápida (`toggleViewMode`, `toggleBumpMode` e edição de chave PIX), visíveis exclusivamente com `?admin=1`.
 
 3. **Invariante de Dados e Fallback (content.json x app.js)**:
    - Os textos oficiais dos módulos residem em `ebook/content.json`.

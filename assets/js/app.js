@@ -155,12 +155,14 @@ async function loadEbookContent() {
             content: "Se quiser saber mais sobre como eu fiz pra ele desmamar na parte do dia, é só liberar o acesso que vai ter o guia completo de dia e noite."
           }
         ]
-      },
+      }
+    ];
+
+    const fallbackBonusModules = [
       {
-        id: 7,
-        title: "☀️ Bônus Especial: Como fiz o desmame durante o dia!",
-        duration: "7 min de leitura",
-        isBumpBonus: true,
+        id: 101,
+        title: "1️⃣ Passo 01: Observação e Desvio de Atenção",
+        duration: "3 min de leitura",
         chapters: [
           {
             title: "Observação e Desvio de Atenção",
@@ -169,31 +171,70 @@ async function loadEbookContent() {
           {
             title: "⚠️ Alerta Importante",
             content: "Lembrando: é muito importante que o bebê esteja se alimentando bem! 🤍"
-          },
+          }
+        ]
+      },
+      {
+        id: 102,
+        title: "2️⃣ Passo 02: No meu caso vs No seu caso",
+        duration: "3 min de leitura",
+        chapters: [
           {
-            title: "1️⃣ No meu caso vs No seu caso",
+            title: "Estratégia do Sabor Seguro ✅",
             content: "No meu caso:\nQuando ele lembrava do peito, eu usava o sulfato ferroso, que ele não gostava do sabor. Ele sentia o gosto e acabava não querendo mais o peito.\n\nNo seu caso:\nUse algo que seu bebê não goste! ✅"
-          },
+          }
+        ]
+      },
+      {
+        id: 103,
+        title: "3️⃣ Passo 03: Mantenha o bebê sempre alimentado 🍎💧",
+        duration: "2 min de leitura",
+        chapters: [
           {
-            title: "2️⃣ Mantenha o bebê sempre alimentado 🍎💧",
+            title: "Alimentação e Hidratação",
             content: "Ofereça comidinhas, frutas e água ao longo do dia, de acordo com a rotina e idade do bebê. Assim, ele passa a ter outras opções além do peito."
-          },
+          }
+        ]
+      },
+      {
+        id: 104,
+        title: "4️⃣ Passo 04: Vá diminuindo as mamadas aos poucos",
+        duration: "2 min de leitura",
+        chapters: [
           {
-            title: "3️⃣ Vá diminuindo as mamadas aos poucos",
+            title: "Transição Gradual Diurna",
             content: "Comece retirando as mamadas diurnas que forem mais fáceis de substituir. Com o tempo, ele vai se acostumando com a nova rotina."
-          },
+          }
+        ]
+      },
+      {
+        id: 105,
+        title: "5️⃣ Passo 05: Ofereça carinho e acolhimento 🤍",
+        duration: "3 min de leitura",
+        chapters: [
           {
-            title: "4️⃣ Ofereça carinho e acolhimento 🤍",
+            title: "Aconchego e Segurança",
             content: "Quando ele procurar o peito, ofereça colo, carinho e atenção. O objetivo é mostrar que ele continua recebendo conforto e segurança mesmo sem mamar."
-          },
+          }
+        ]
+      },
+      {
+        id: 106,
+        title: "✨ Passo 06: Mensagem Final",
+        duration: "2 min de leitura",
+        chapters: [
           {
-            title: "✨ Mensagem Final",
-            content: "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
+            title: "Respeitando o Tempo do Bebê 🤍",
+            "content": "Esses foram os métodos que funcionaram comigo e me ajudaram no desmame durante o dia. Cada bebê tem seu próprio ritmo, então tenha paciência e respeite o tempo do seu pequeno. 🤍"
           }
         ]
       }
     ];
-    appState.ebookData = { modules: fallbackModules };
+
+    appState.ebookData = {
+      modules: fallbackModules,
+      bonus_diurno: { modules: fallbackBonusModules }
+    };
     renderEbookModules(fallbackModules);
   }
 }
@@ -203,90 +244,28 @@ function renderEbookModules(modules) {
   if (!container) return;
 
   const hasBump = appState.hasBump;
+  const nocturnalModules = (modules || []).filter(m => !m.isBumpBonus);
+  const bonusData = (appState.ebookData && appState.ebookData.bonus_diurno) || null;
+  const dayModules = (bonusData && bonusData.modules) || [];
 
-  container.innerHTML = modules.map((mod, index) => {
-    // Caso 1: É o módulo adicional/order bump e a aluna NÃO comprou o adicional
-    if (mod.isBumpBonus && !hasBump) {
-      return `
-        <div class="module-accordion-item module-bump-locked" id="moduleItem${mod.id}">
-          <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
-            <div class="module-trigger-info">
-              <div class="module-title-row">
-                <span class="module-title-text">${mod.title}</span>
-                <span class="locked-badge-pill">🔒 Adicional Bloqueado</span>
-              </div>
-              <div class="module-badges-row">
-                <span class="module-time-badge">⏱️ ${mod.duration || '7 min de leitura'}</span>
-                <span class="module-locked-tag">Disponível por R$ 9,90</span>
-              </div>
-            </div>
-            <span class="module-arrow-icon" id="moduleArrow${mod.id}">▼</span>
-          </button>
-
-          <div class="module-accordion-content" id="moduleContent${mod.id}">
-            <div class="bump-locked-box">
-              <div class="bump-locked-icon-wrap">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-              </div>
-              <h5 class="bump-locked-heading">Conteúdo Exclusivo do Pacote Adicional</h5>
-              <p class="bump-locked-text">
-                Você adquiriu o e-book principal de <strong>Desmame Noturno</strong>. Este módulo especial contém o passo a passo prático com todas as <strong>Dicas Especiais para o Desmame Durante o Dia</strong>.
-              </p>
-              <div class="bump-locked-perks">
-                <div class="bump-perk-item">✓ O que fazer quando ele lembrar do peito de dia (desvio de atenção)</div>
-                <div class="bump-perk-item">✓ A estratégia prática do sabor seguro e eficaz</div>
-                <div class="bump-perk-item">✓ Rotina de alimentação alternativa 🍎💧 e redução gradual</div>
-                <div class="bump-perk-item">✓ Acolhimento e carinho para manter a segurança emocional</div>
-              </div>
-              <div class="bump-locked-cta-box">
-                <div class="bump-cta-price-info">
-                  <span class="bump-cta-sub">Acesso vitalício imediato:</span>
-                  <span class="bump-cta-val">Apenas R$ 9,90 no PIX</span>
-                </div>
-                <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
-                  🔓 Liberar Este Bônus Agora por R$ 9,90
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Caso 2: Módulo normal ou módulo bônus com adicional PAGO
-    const isBumpUnlocked = mod.isBumpBonus && hasBump;
-
+  // 1. Módulos Noturnos (1 a 5)
+  container.innerHTML = nocturnalModules.map((mod, index) => {
     return `
-      <div class="module-accordion-item ${isBumpUnlocked ? 'module-bump-unlocked' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+      <div class="module-accordion-item ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
         <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
           <div class="module-trigger-info">
             <div class="module-title-row">
               <span class="module-title-text">${mod.title}</span>
-              ${isBumpUnlocked ? `<span class="unlocked-badge-pill">✨ Bônus VIP Liberado</span>` : ''}
             </div>
             <div class="module-badges-row">
               ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration.replace('de aula', 'de leitura')}</span>` : ''}
-              <span class="module-text-badge">${isBumpUnlocked ? '⭐ Conteúdo Adicional Incluso' : '📝 Conteúdo Completo'}</span>
+              <span class="module-text-badge">📝 Conteúdo Noturno</span>
             </div>
           </div>
           <span class="module-arrow-icon" id="moduleArrow${mod.id}">${index === 0 ? '▲' : '▼'}</span>
         </button>
 
         <div class="module-accordion-content" id="moduleContent${mod.id}">
-          ${isBumpUnlocked ? `
-            <div class="bump-unlocked-banner">
-              <div class="bump-banner-icon">☀️</div>
-              <div>
-                <strong>Bônus Especial Adicional Desbloqueado!</strong>
-                <p>Aqui está o seu método prático com todas as dicas especiais para o desmame com carinho durante o dia.</p>
-              </div>
-            </div>
-          ` : ''}
-          
-          <!-- Capítulos Escritos do E-book -->
           <div class="module-chapters-area">
             ${mod.chapters.map(chap => {
               const isDayHook = chap.title && (chap.title.includes('Desmame Durante o Dia') || (chap.content && chap.content.includes('desmamar na parte do dia')));
@@ -304,11 +283,105 @@ function renderEbookModules(modules) {
               </div>
             `;}).join('')}
           </div>
-
         </div>
       </div>
     `;
   }).join('');
+
+  // 2. Renderiza Seção Separada do Bônus Especial Diurno
+  renderBonusSection(dayModules, hasBump);
+}
+
+function renderBonusSection(dayModules, hasBump) {
+  const bonusBox = document.getElementById('bonusAccessBox');
+  const bonusBadge = document.getElementById('bonusHeaderBadge');
+  const bonusContainer = document.getElementById('bonusContainer');
+  if (!bonusContainer) return;
+
+  if (!hasBump) {
+    if (bonusBox) bonusBox.classList.remove('bonus-unlocked');
+    if (bonusBadge) {
+      bonusBadge.className = 'locked-badge-pill';
+      bonusBadge.innerHTML = '🔒 Adicional Bloqueado';
+    }
+    bonusContainer.innerHTML = `
+      <div class="bump-locked-box" style="margin-top: 0;">
+        <div class="bump-locked-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h5 class="bump-locked-heading">Conteúdo Exclusivo do Pacote Adicional</h5>
+        <p class="bump-locked-text">
+          Você adquiriu o e-book principal de <strong>Desmame Noturno</strong>. Este bônus especial contém o passo a passo prático com todas as <strong>Dicas Especiais para o Desmame Durante o Dia</strong>, dividido em passos práticos.
+        </p>
+        <div class="bump-locked-perks">
+          <div class="bump-perk-item">✓ 1️⃣ Passo 01: Observação e Desvio de Atenção</div>
+          <div class="bump-perk-item">✓ 2️⃣ Passo 02: A estratégia prática do sabor seguro e eficaz</div>
+          <div class="bump-perk-item">✓ 3️⃣ Passo 03: Rotina de alimentação alternativa 🍎💧</div>
+          <div class="bump-perk-item">✓ 4️⃣ Passo 04: Redução gradual das mamadas diurnas</div>
+          <div class="bump-perk-item">✓ 5️⃣ Passo 05: Acolhimento e carinho para manter a segurança emocional</div>
+          <div class="bump-perk-item">✓ ✨ Passo 06: Mensagem final e acolhimento com amor 🤍</div>
+        </div>
+        <div class="bump-locked-cta-box">
+          <div class="bump-cta-price-info">
+            <span class="bump-cta-sub">Acesso vitalício imediato:</span>
+            <span class="bump-cta-val">Apenas R$ 9,90 no PIX</span>
+          </div>
+          <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
+            🔓 Liberar Este Bônus Agora por R$ 9,90
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    if (bonusBox) bonusBox.classList.add('bonus-unlocked');
+    if (bonusBadge) {
+      bonusBadge.className = 'unlocked-badge-pill';
+      bonusBadge.innerHTML = '✨ Bônus VIP Liberado';
+    }
+    bonusContainer.innerHTML = `
+      <div class="bump-unlocked-banner">
+        <div class="bump-banner-icon">☀️</div>
+        <div>
+          <strong>Bônus Especial Adicional Desbloqueado!</strong>
+          <p>Aqui está o seu método prático com todas as dicas especiais para o desmame com carinho durante o dia, separado passo a passo.</p>
+        </div>
+      </div>
+      
+      <div class="modules-accordion-list">
+        ${dayModules.map((mod, index) => `
+          <div class="module-accordion-item module-bump-unlocked ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+            <button class="module-accordion-trigger" type="button" onclick="toggleModule(${mod.id})">
+              <div class="module-trigger-info">
+                <div class="module-title-row">
+                  <span class="module-title-text">${mod.title}</span>
+                  <span class="unlocked-badge-pill">✨ Bônus VIP</span>
+                </div>
+                <div class="module-badges-row">
+                  ${mod.duration ? `<span class="module-time-badge">⏱️ ${mod.duration}</span>` : ''}
+                  <span class="module-text-badge">⭐ Conteúdo Diurno</span>
+                </div>
+              </div>
+              <span class="module-arrow-icon" id="moduleArrow${mod.id}">${index === 0 ? '▲' : '▼'}</span>
+            </button>
+
+            <div class="module-accordion-content" id="moduleContent${mod.id}">
+              <div class="module-chapters-area">
+                ${mod.chapters.map(chap => `
+                  <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
+                    ${chap.title ? `<h6 class="chapter-title">${chap.title}</h6>` : ''}
+                    <p class="chapter-text">${chap.content}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
 }
 
 function handleEditModuleVideo(moduleId, moduleTitle) {
@@ -727,12 +800,9 @@ function handleConfirmBumpUpgrade() {
   renderCurrentModules();
 
   setTimeout(() => {
-    const item7 = document.getElementById('moduleItem7');
-    if (item7) {
-      item7.classList.add('active');
-      const arrow = document.getElementById('moduleArrow7');
-      if (arrow) arrow.textContent = '▲';
-      item7.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const bonusBox = document.getElementById('bonusAccessBox');
+    if (bonusBox) {
+      bonusBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, 250);
 

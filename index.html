@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=7.6">
+  <link rel="stylesheet" href="assets/css/style.css?v=7.7">
 </head>
 
 <body>
@@ -580,8 +580,26 @@
         </div>
       </div>
 
-      <!-- Lista Dinâmica de Módulos Carregada do content.json -->
+      <!-- Lista Dinâmica dos Módulos Noturnos (1 a 5) -->
       <div class="modules-accordion-list" id="modulesContainer">
+        <!-- Renderizado dinamicamente pelo app.js -->
+      </div>
+    </div>
+
+    <!-- SEÇÃO SEPARADA: BÔNUS ESPECIAL DESMAME DURANTE O DIA -->
+    <div class="ebook-access-box bonus-access-box" id="bonusAccessBox">
+      <div class="ebook-access-top">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <h3>☀️ BÔNUS ESPECIAL: DESMAME DURANTE O DIA 👶</h3>
+            <span id="bonusHeaderBadge" class="locked-badge-pill">🔒 Adicional Bloqueado</span>
+          </div>
+          <p style="font-size: 13.5px; color: #64748b; font-weight: 600;">Como fiz meu filho desmamar na parte do dia! 🤍</p>
+        </div>
+      </div>
+
+      <!-- Container do Bônus: Módulos Diurnos Separados (se liberado) ou Card de Oferta (se bloqueado) -->
+      <div id="bonusContainer">
         <!-- Renderizado dinamicamente pelo app.js -->
       </div>
     </div>
@@ -612,8 +630,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=7.6"></script>
-  <script src="assets/js/app.js?v=7.6"></script>
+  <script src="assets/js/pix-engine.js?v=7.7"></script>
+  <script src="assets/js/app.js?v=7.7"></script>
 </body>
 
 </html>
