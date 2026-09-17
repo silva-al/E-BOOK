@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css?v=34.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=35.0">
 </head>
 
 <body>
@@ -150,15 +150,15 @@
           </div>
         </div>
 
-        <!-- Order Bump / Bônus Especial Opcional -->
-        <label class="order-bump-box" for="orderBumpCheck" style="margin-top: 10px;">
-          <input type="checkbox" id="orderBumpCheck" class="bump-checkbox" onchange="handleToggleBump(this)">
+        <!-- Destaque: Desmame Durante o Dia 100% Incluso e Liberado -->
+        <div class="order-bump-box" style="margin-top: 10px; cursor: default;">
+          <input type="checkbox" id="orderBumpCheck" class="bump-checkbox" checked style="display: none;">
+          <div style="font-size: 22px; line-height: 1; flex-shrink: 0;">☀️</div>
           <div class="bump-content">
-            <h4>☀️ Adicionar Dicas Especiais: Como Desmamar Durante o Dia?</h4>
-            <p>Aprenda o passo a passo prático para retirar as mamadas diurnas com carinho, sem crises e sem estresse
-              por apenas <span class="bump-price">+ R$ 9,90</span>.</p>
+            <h4 style="color: #c2410c;">MÓDULO ESPECIAL INCLUSO: Desmame Durante o Dia</h4>
+            <p style="color: #78350f;">Você recebe o passo a passo completo das mamadas diurnas + noturnas 100% liberado nesta oferta por apenas <span class="bump-price" style="color: #be185d;">R$ 29,90</span> (sem cobrança adicional).</p>
           </div>
-        </label>
+        </div>
 
         <!-- SEÇÃO OBJETIVA: PIX MERCADO PAGO DIRETO NA TELA -->
         <div class="direct-checkout-box" id="pixCheckoutContainer">
@@ -558,11 +558,40 @@
       </div>
     </div>
 
-    <!-- MÓDULOS DO MÉTODO NOTURNO (DESIGN ULTRA MODERNO & FEMININO) -->
+    <!-- 1. MÓDULO ESPECIAL: PASSO A PASSO DO DESMAME DURANTE O DIA (LIBERADO & EM CIMA) -->
+    <div class="ebook-access-box bonus-access-box bonus-unlocked" id="bonusAccessBox">
+      <div class="ebook-access-top">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span class="bonus-highlight-tag">☀️ DICAS PRÁTICAS DE DIA</span>
+            <span id="bonusHeaderBadge" class="unlocked-badge-pill">✨ Módulo Especial Liberado</span>
+          </div>
+          <h3 style="margin-top: 6px;">Passo a Passo do Desmame Durante o Dia ☀️👶</h3>
+          <p class="modules-box-desc">
+            Orientações carinhosas para reduzir e substituir as mamadas diurnas com leveza e sem estresse
+          </p>
+        </div>
+        <div class="ebook-actions-group">
+          <button type="button" class="btn-action-ebook secondary" onclick="handleCopyAccessMagicLink()">
+            📋 Copiar Link
+          </button>
+          <button type="button" class="btn-action-ebook secondary" onclick="window.print()">
+            📄 Salvar em PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Container dos Módulos Diurnos (Passos 01 a 06 100% Liberados) -->
+      <div id="bonusContainer">
+        <!-- Renderizado dinamicamente pelo app.js -->
+      </div>
+    </div>
+
+    <!-- 2. MÓDULOS DO MÉTODO NOTURNO (EM SEGUIDA) -->
     <div class="ebook-access-box" id="modulesMainBox">
       <div class="ebook-access-top">
         <div>
-          <span class="section-tag-sub">MÉTODO PRINCIPAL</span>
+          <span class="section-tag-sub">🌙 DICAS PRÁTICAS DA NOITE</span>
           <h3>Passo a Passo do Desmame Noturno 🌙</h3>
           <p class="modules-box-desc">Orientações amorosas para você e seu bebê conquistarem noites inteiras de sono profundo</p>
         </div>
@@ -582,7 +611,7 @@
       </div>
     </div>
 
-    <!-- Seção Quem Criou Este Conteúdo (Humanizada e Feminina) -->
+    <!-- 3. Seção Quem Criou Este Conteúdo (Humanizada e Feminina) -->
     <div class="author-story-card">
       <div class="author-avatar-wrap">
         <img src="assets/images/author_mother.jpg" alt="Quem criou o método" class="author-avatar-img">
@@ -599,27 +628,6 @@
         <div class="author-signature-tag">
           <span>🤍 Passo a passo prático feito com muito carinho</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Seção Bônus Opcional: Desmame Durante o Dia (Transparente e Claro) -->
-    <div class="ebook-access-box bonus-access-box" id="bonusAccessBox">
-      <div class="ebook-access-top">
-        <div>
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span class="bonus-highlight-tag">☀️ CONTEÚDO ADICIONAL</span>
-            <span id="bonusHeaderBadge" class="locked-badge-pill">🔒 Bônus Opcional</span>
-          </div>
-          <h3 style="margin-top: 6px;">Quer aprender o Desmame Durante o Dia?</h3>
-          <p style="font-size: 13.5px; color: #64748b; font-weight: 600; margin-top: 2px;">
-            Bônus opcional — não faz parte do método noturno principal
-          </p>
-        </div>
-      </div>
-
-      <!-- Container do Bônus: Card Transparente (se bloqueado) ou Aulas Diurnas (se liberado) -->
-      <div id="bonusContainer">
-        <!-- Renderizado dinamicamente pelo app.js -->
       </div>
     </div>
 
@@ -771,8 +779,8 @@
   </a>
 
   <!-- Scripts -->
-  <script src="assets/js/pix-engine.js?v=34.0"></script>
-  <script src="assets/js/app.js?v=34.0"></script>
+  <script src="assets/js/pix-engine.js?v=35.0"></script>
+  <script src="assets/js/app.js?v=35.0"></script>
 </body>
 
 </html>

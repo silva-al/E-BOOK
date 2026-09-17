@@ -12,7 +12,7 @@ const appState = {
   bumpPrice: 9.90,
   paymentMethod: 'pix',
   orderBumpSelected: false,
-  hasBump: localStorage.getItem('desmame_bump_paid') === 'true',
+  hasBump: true,
   isPaid: localStorage.getItem('desmame_is_paid') === 'true',
   masterPassword: localStorage.getItem('desmame_master_password') || 'desmame2026',
   ebookData: null
@@ -24,21 +24,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (urlParams.get('reset') === '1' || urlParams.get('checkout') === '1' || urlParams.get('logout') === '1') {
     localStorage.removeItem('desmame_is_paid');
-    localStorage.removeItem('desmame_has_bump');
-    localStorage.removeItem('desmame_bump_paid');
     localStorage.removeItem('desmame_buyer_name');
     localStorage.removeItem('desmame_buyer_email');
     localStorage.removeItem('desmame_buyer_phone');
     appState.isPaid = false;
-    appState.hasBump = false;
+    appState.hasBump = true;
+    localStorage.setItem('desmame_has_bump', 'true');
+    localStorage.setItem('desmame_bump_paid', 'true');
     appState.orderBumpSelected = false;
   } else if (urlParams.get('access') === 'approved' || urlParams.get('acesso') === '1' || urlParams.get('liberado') === '1') {
-    // Acesso liberado via link de e-mail / magic link
+    // Acesso liberado via link de e-mail / magic link (Dia + Noite 100% Liberados)
     appState.isPaid = true;
+    appState.hasBump = true;
     localStorage.setItem('desmame_is_paid', 'true');
+    localStorage.setItem('desmame_has_bump', 'true');
+    localStorage.setItem('desmame_bump_paid', 'true');
     const paramName = urlParams.get('name');
     const paramEmail = urlParams.get('email');
-    const paramBump = urlParams.get('bump');
     if (paramName) {
       const decodedName = decodeURIComponent(paramName);
       appState.buyerName = decodedName;
@@ -48,33 +50,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const decodedEmail = decodeURIComponent(paramEmail);
       appState.buyerEmail = decodedEmail;
       localStorage.setItem('desmame_buyer_email', decodedEmail);
-    }
-    // TRAVA RIGOROSA VIA API:
-    // O Bônus Diurno só é liberado se o link trouxer bump=1 E for validado na API do Mercado Pago!
-    if (paramBump === '1' && paramEmail && paramEmail.includes('@')) {
-      fetch(`/api/check-payment?email=${encodeURIComponent(paramEmail)}`)
-        .then(r => r.json())
-        .then(check => {
-          if (check && check.is_approved && check.has_bump === true) {
-            appState.hasBump = true;
-            localStorage.setItem('desmame_bump_paid', 'true');
-            localStorage.setItem('desmame_has_bump', 'true');
-          } else {
-            // Se o Mercado Pago registrar apenas o pagamento principal (R$ 29,90), bloqueia o especial!
-            appState.hasBump = false;
-            localStorage.removeItem('desmame_bump_paid');
-            localStorage.removeItem('desmame_has_bump');
-          }
-          renderCurrentModules();
-        }).catch(() => {
-          appState.hasBump = false;
-          localStorage.removeItem('desmame_bump_paid');
-          localStorage.removeItem('desmame_has_bump');
-        });
-    } else {
-      appState.hasBump = false;
-      localStorage.removeItem('desmame_bump_paid');
-      localStorage.removeItem('desmame_has_bump');
     }
   }
 
@@ -364,8 +339,8 @@ async function loadEbookContent() {
             content: "Depois de escolher retirar uma determinada mamada, procure manter a decisão e a nova rotina.\nNos primeiros dias, o bebê pode reclamar ou estranhar porque está acostumado com aquela forma de dormir. Isso faz parte da adaptação à mudança.\n\nQuando ele se acostumar, ele vai dormir anoite inteiro e vai mudar muito a sua vida, seu humor, sua rotina.\n\nTenha paciência, ofereça muito carinho e tente manter a mesma abordagem. Consistência não significa deixar o bebê sozinho ou ignorar o choro; significa continuar oferecendo acolhimento enquanto ele aprende uma nova forma de adormecer. 🌙🤍\n\n✨ Esses foram os métodos que funcionaram comigo durante o desmame do meu filho. Cada bebê é único, então adapte o processo à realidade e às necessidades do seu pequeno."
           },
           {
-            title: "☀️ Desmame Durante o Dia (Guia Completo)",
-            content: "Se querer saber mais sobre como que eu fiz pra ele desmamar na parte do dia é só liberar o acesso que vai ter o guia completo de dia e noite."
+            title: "☀️ Desmame Durante o Dia (Guia Prático)",
+            content: "Você já tem o guia prático do desmame diurno disponível logo no topo desta página! Siga o passo a passo com muito amor e carinho tanto de dia quanto de noite. 🤍"
           }
         ]
       }
@@ -707,10 +682,10 @@ function renderEbookModules(modules) {
                 <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''} ${isDayHook ? 'chapter-day-hook' : ''}">
                   ${chap.title ? `<h5 class="chapter-title">${chap.title}</h5>` : ''}
                   <p class="chapter-text">${chap.content}</p>
-                  ${isDayHook && !hasBump ? `
+                  ${isDayHook ? `
                     <div style="margin-top: 14px;">
-                      <button type="button" class="btn-unlock-bump-now" style="font-size: 13.5px; padding: 11px 20px;" onclick="handleOpenBumpUpgradeModal()">
-                        ☀️ Conhecer Bônus Opcional: Desmame Durante o Dia (R$ 9,90)
+                      <button type="button" class="btn-module-open" style="font-size: 13px; padding: 10px 18px; background: linear-gradient(135deg, #f59e0b, #ea580c); color: #ffffff; border: none; border-radius: 999px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" onclick="document.getElementById('bonusAccessBox').scrollIntoView({ behavior: 'smooth' })">
+                        ☀️ Ver Passo a Passo do Dia (No Topo) ↑
                       </button>
                     </div>
                   ` : ''}
@@ -733,143 +708,109 @@ function renderEbookModules(modules) {
     `;
   }).join('');
 
-  // 2. Renderiza Seção Separada do Bônus Especial Diurno
-  renderBonusSection(dayModules, hasBump);
+  // 2. Renderiza Seção dos Módulos Diurnos (100% Liberados)
+  renderBonusSection(dayModules);
 
   // 3. Atualiza Indicador Circular de Progresso
   updateProgressUI();
 }
 
-function renderBonusSection(dayModules, hasBump) {
+function renderBonusSection(dayModules) {
   const bonusBox = document.getElementById('bonusAccessBox');
   const bonusBadge = document.getElementById('bonusHeaderBadge');
   const bonusContainer = document.getElementById('bonusContainer');
   if (!bonusContainer) return;
   const completed = getCompletedModules();
 
-  if (!hasBump) {
-    if (bonusBox) bonusBox.classList.remove('bonus-unlocked');
-    if (bonusBadge) {
-      bonusBadge.className = 'locked-badge-pill';
-      bonusBadge.innerHTML = '🔒 Bônus Opcional';
-    }
-    bonusContainer.innerHTML = `
-      <div class="bump-locked-box" style="margin-top: 0;">
-        <div class="bump-locked-header-tag">
-          ☀️ BÔNUS OPCIONAL — NÃO FAZ PARTE DO MÉTODO NOTURNO PRINCIPAL
-        </div>
-        <h4 class="bump-locked-heading">Quer aprender o Desmame Durante o Dia?</h4>
-        <p class="bump-locked-text">
-          Você já tem acesso garantido ao método de <strong>Desmame Noturno</strong>. Este conteúdo adicional ensina estratégias práticas e acolhedoras para reduzir as mamadas durante o dia de forma gradual e amorosa.
-        </p>
-        <div class="bump-locked-perks">
-          <div class="bump-perk-item">✓ <strong>Passo 01:</strong> Observação e desvio de atenção</div>
-          <div class="bump-perk-item">✓ <strong>Passo 02:</strong> Estratégia do sabor seguro</div>
-          <div class="bump-perk-item">✓ <strong>Passo 03:</strong> Rotina alimentar alternativa</div>
-          <div class="bump-perk-item">✓ <strong>Passo 04:</strong> Redução gradual diurna</div>
-          <div class="bump-perk-item">✓ <strong>Passo 05:</strong> Acolhimento e carinho</div>
-        </div>
-        <div class="bump-locked-cta-box">
-          <div class="bump-cta-price-info">
-            <span class="bump-cta-sub">Apenas:</span>
-            <span class="bump-cta-val">R$ 9,90 no PIX</span>
-          </div>
-          <button type="button" class="btn-unlock-bump-now" onclick="handleOpenBumpUpgradeModal()">
-            QUERO ADICIONAR O BÔNUS
-          </button>
-        </div>
+  if (bonusBox) bonusBox.classList.add('bonus-unlocked');
+  if (bonusBadge) {
+    bonusBadge.className = 'unlocked-badge-pill';
+    bonusBadge.innerHTML = '✨ Dicas de Dia Liberadas';
+  }
+
+  bonusContainer.innerHTML = `
+    <div class="bump-unlocked-banner" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: 16px; padding: 16px 20px; margin-bottom: 22px; display: flex; align-items: center; gap: 14px;">
+      <div class="bump-banner-icon" style="font-size: 28px; line-height: 1; flex-shrink: 0;">☀️</div>
+      <div>
+        <strong style="color: #92400e; font-size: 15px; display: block;">1ª Etapa: Como Desmamar Durante o Dia</strong>
+        <p style="color: #78350f; font-size: 13.5px; margin: 4px 0 0; line-height: 1.45;">Comece por aqui! Siga o passo a passo com amor e carinho para reduzir e conduzir as mamadas do dia com calma, paciência e sem crises.</p>
       </div>
-    `;
-  } else {
-    if (bonusBox) bonusBox.classList.add('bonus-unlocked');
-    if (bonusBadge) {
-      bonusBadge.className = 'unlocked-badge-pill';
-      bonusBadge.innerHTML = '✨ Bônus VIP Liberado';
-    }
-    bonusContainer.innerHTML = `
-      <div class="bump-unlocked-banner">
-        <div class="bump-banner-icon">☀️</div>
-        <div>
-          <strong>Bônus Especial: Desmame Durante o Dia Desbloqueado!</strong>
-          <p>Aqui está o seu método prático com todas as dicas especiais para o desmame com carinho durante o dia, separado passo a passo.</p>
-        </div>
-      </div>
-      
-      <div class="modules-accordion-list">
-        ${dayModules.map((mod, index) => {
-          const isCompleted = completed.includes(mod.id);
-          const modNumber = mod.number || `PASSO 0${index + 1}`;
-          let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Passo\s+[0-9]+:\s*/i, '');
-          const duration = mod.duration || '3 min';
-          const summary = mod.summary || 'Orientações práticas para o desmame durante o dia.';
+    </div>
+    
+    <div class="modules-accordion-list">
+      ${dayModules.map((mod, index) => {
+        const isCompleted = completed.includes(mod.id);
+        const modNumber = mod.number || `PASSO 0${index + 1}`;
+        let cleanTitle = mod.title.replace(/^[0-9]+️⃣\s*/, '').replace(/^Passo\s+[0-9]+:\s*/i, '');
+        const duration = mod.duration || '3 min';
+        const summary = mod.summary || 'Orientações práticas para o desmame durante o dia.';
 
-          return `
-            <div class="module-card-item module-card-bump mod-theme-peach ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
-              <div class="module-card-header" onclick="toggleModule(${mod.id})">
-                <div class="module-card-header-left">
-                  <div class="module-badge-row">
-                    <span class="module-theme-badge vip">${modNumber}</span>
-                    <span class="unlocked-badge-pill" style="font-size: 11px;">✨ Bônus VIP</span>
-                    ${isCompleted ? '<span class="module-status-tag completed">✓ Concluído</span>' : ''}
-                  </div>
-                  <h4 class="module-title-main">☀️ ${cleanTitle}</h4>
-                  <div class="module-meta-info-row">
-                    <span>⏱️ ${duration} de leitura</span>
-                    <span class="meta-dot">•</span>
-                    <span>Conteúdo Diurno</span>
-                  </div>
+        return `
+          <div class="module-card-item module-card-bump mod-theme-peach ${isCompleted ? 'module-is-completed' : ''} ${index === 0 ? 'active' : ''}" id="moduleItem${mod.id}">
+            <div class="module-card-header" onclick="toggleModule(${mod.id})">
+              <div class="module-card-header-left">
+                <div class="module-badge-row">
+                  <span class="module-theme-badge vip">${modNumber}</span>
+                  <span class="unlocked-badge-pill" style="font-size: 11px;">☀️ Dica Diurna</span>
+                  ${isCompleted ? '<span class="module-status-tag completed">✓ Concluído</span>' : '<span class="module-status-tag pending">Pendente</span>'}
                 </div>
-                <div class="module-card-chevron" id="moduleArrow${mod.id}">
-                  ${index === 0 ? '▲' : '▼'}
+                <h4 class="module-title-main">☀️ ${cleanTitle}</h4>
+                <div class="module-meta-info-row">
+                  <span>⏱️ ${duration} de leitura</span>
+                  <span class="meta-dot">•</span>
+                  <span>Guia do Dia</span>
                 </div>
               </div>
-
-              <div class="module-learn-summary-box">
-                <div class="learn-summary-title">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                  <span>O que você vai aplicar:</span>
-                </div>
-                <p class="learn-summary-desc">${summary}</p>
-              </div>
-
-              <!-- Ações do Módulo: Botão de Abrir e Recolher -->
-              <div class="module-actions-bar">
-                <button type="button" class="btn-module-open ${index === 0 ? 'is-open' : ''}" id="btnModuleOpen${mod.id}" onclick="toggleModule(${mod.id})">
-                  <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
-                </button>
-                <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
-                  ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
-                </button>
-              </div>
-
-              <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
-                <div class="module-chapters-area">
-                  ${mod.chapters.map(chap => `
-                    <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
-                      ${chap.title ? `<h5 class="chapter-title">${chap.title}</h5>` : ''}
-                      <p class="chapter-text">${chap.content}</p>
-                    </div>
-                  `).join('')}
-                </div>
-
-                <div class="module-bottom-status-bar">
-                  <div class="module-bottom-text">
-                    <span>${isCompleted ? '🌸 Passo diurno concluído com sucesso!' : 'Leu o passo? Marque para avançar:'}</span>
-                  </div>
-                  <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
-                    ${isCompleted ? '✓ Passo Concluído' : '✓ Concluir Este Passo'}
-                  </button>
-                </div>
+              <div class="module-card-chevron" id="moduleArrow${mod.id}">
+                ${index === 0 ? '▲' : '▼'}
               </div>
             </div>
-          `;
-        }).join('')}
-      </div>
-    `;
-  }
+
+            <div class="module-learn-summary-box">
+              <div class="learn-summary-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>O que você vai aplicar:</span>
+              </div>
+              <p class="learn-summary-desc">${summary}</p>
+            </div>
+
+            <!-- Ações do Módulo: Botão de Abrir e Recolher -->
+            <div class="module-actions-bar">
+              <button type="button" class="btn-module-open ${index === 0 ? 'is-open' : ''}" id="btnModuleOpen${mod.id}" onclick="toggleModule(${mod.id})">
+                <span id="btnAccessText${mod.id}">${index === 0 ? 'Recolher Conteúdo ▲' : 'Acessar Módulo →'}</span>
+              </button>
+              <button type="button" class="btn-module-check ${isCompleted ? 'is-done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+                ${isCompleted ? '✓ Concluído' : 'Marcar como Concluído'}
+              </button>
+            </div>
+
+            <div class="module-accordion-content" id="moduleContent${mod.id}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+              <div class="module-chapters-area">
+                ${mod.chapters.map(chap => `
+                  <div class="chapter-block ${chap.title && chap.title.includes('⚠️') ? 'chapter-warning' : ''}">
+                    ${chap.title ? `<h5 class="chapter-title">${chap.title}</h5>` : ''}
+                    <p class="chapter-text">${chap.content}</p>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="module-bottom-status-bar">
+                <div class="module-bottom-text">
+                  <span>${isCompleted ? '🌸 Passo diurno concluído com sucesso!' : 'Leu o passo? Marque para avançar:'}</span>
+                </div>
+                <button type="button" class="btn-bottom-complete ${isCompleted ? 'done' : ''}" onclick="handleToggleModuleComplete(${mod.id})">
+                  ${isCompleted ? '✓ Passo Concluído' : '✓ Concluir Este Passo'}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 }
 
 /* ==========================================================================
@@ -1569,25 +1510,18 @@ function showPaymentSuccessAndUnlock(hasBumpParam) {
   appState.isPaid = true;
   localStorage.setItem('desmame_is_paid', 'true');
 
-  // RIGOROSO: Somente libera o bônus diurno se o pagamento confirmado teve has_bump === true!
-  const isBumpPaid = (hasBumpParam === true);
-  appState.hasBump = isBumpPaid;
-
-  if (isBumpPaid) {
-    localStorage.setItem('desmame_bump_paid', 'true');
-    localStorage.setItem('desmame_has_bump', 'true');
-  } else {
-    localStorage.removeItem('desmame_bump_paid');
-    localStorage.removeItem('desmame_has_bump');
-  }
+  // Desmame diurno + noturno 100% liberados para todas as alunas
+  appState.hasBump = true;
+  localStorage.setItem('desmame_bump_paid', 'true');
+  localStorage.setItem('desmame_has_bump', 'true');
 
   localStorage.removeItem('desmame_pending_pix_id');
   localStorage.removeItem('desmame_pending_pix_code');
 
   playSuccessSound();
 
-  // Dispara e-mail de aprovação com link contendo bump=1 se pago, ou bump=0 se não pago
-  triggerSendAccessEmail(isBumpPaid);
+  // Dispara e-mail de aprovação com acesso total aos módulos diurnos e noturnos
+  triggerSendAccessEmail(true);
 
   // Esconde área de espera e exibe o bloco verde comemorativo diretamente na página
   const inlinePaymentArea = document.getElementById('inlinePaymentArea');
@@ -1628,13 +1562,9 @@ function showPaymentSuccessAndUnlock(hasBumpParam) {
 function getMagicAccessLink(hasBumpParam) {
   const name = appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
   const email = appState.buyerEmail || localStorage.getItem('desmame_buyer_email') || '';
-  // TRAVA RIGOROSA: o parâmetro bump=1 SÓ É GERADO se hasBumpParam for explicitamente true E confirmado pago!
-  const isBump = (typeof hasBumpParam === 'boolean')
-    ? hasBumpParam
-    : (appState.hasBump === true && localStorage.getItem('desmame_bump_paid') === 'true');
   const origin = window.location.origin;
   const path = window.location.pathname;
-  return `${origin}${path}?access=approved&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&bump=${isBump ? '1' : '0'}`;
+  return `${origin}${path}?access=approved&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&bump=1`;
 }
 
 /**

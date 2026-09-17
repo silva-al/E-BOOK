@@ -1783,9 +1783,9 @@ body {
 }
 
 .bonus-access-box.bonus-unlocked {
-  border: 2px solid #10b981;
+  border: 2px solid #fed7aa;
   background: #ffffff;
-  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.12);
+  box-shadow: 0 6px 22px rgba(251, 146, 60, 0.08);
 }
 
 .ebook-access-top {
