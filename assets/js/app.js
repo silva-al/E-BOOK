@@ -301,11 +301,11 @@ async function loadEbookContent() {
         title: "Escolha por onde começar",
         icon: "🌙",
         duration: "5 minutos",
-        summary: "Como escolher a primeira mamada a ser retirada sem fazer mudanças bruscas ou gerar ansiedade no bebê.",
+        summary: "Não tente retirar todas as mamadas de uma vez. O segredo é fazer uma mudança de cada vez, sem pressa.",
         chapters: [
           {
-            title: "Uma Mudança de Cada Vez",
-            content: "Não tente retirar todas as mamadas de uma vez. Comece escolhendo uma mamada que você considera mais fácil de retirar, seja durante o dia ou à noite.\n\nObserve a rotina do seu bebê e escolha um momento em que ele costuma mamar mais por hábito do que por fome. Depois, mantenha essa mudança por alguns dias para que ele tenha tempo de se adaptar antes de retirar outra mamada.\n\nO segredo para mim foi fazer uma mudança de cada vez, com paciência e sem pressa. 🤍"
+            title: "Escolha por onde começar",
+            content: "Não tente retirar todas as mamadas de uma vez. Comece escolhendo uma mamada que você considera mais fácil de retirar, seja durante o dia ou à noite.\n\nObserve a rotina do seu bebê e escolha um momento em que ele costuma mamar mais por hábito do que por fome. Depois, mantenha essa mudança por alguns dias para que ele tenha tempo de se adaptar antes de retirar outra mamada.\n\nO segredo para mim foi fazer uma mudança de cada vez, sem pressa. 🤍"
           }
         ]
       },
@@ -315,25 +315,25 @@ async function loadEbookContent() {
         title: "Quando o bebê acordar, tente outras formas de acalmar",
         icon: "🤍",
         duration: "5 minutos",
-        summary: "Como acolher o bebê na madrugada com colo, cafuné e presença, sem depender exclusivamente do peito para ele voltar a dormir.",
+        summary: "Quando o bebê acordar, tente outras maneiras de acalmá-lo, como colo, carinho, balançando no peito e cafuné.",
         chapters: [
           {
-            title: "Outras Formas de Aconchego",
-            content: "Quando meu filho acordava, eu não queria que o peito fosse a única forma de fazê-lo voltar a dormir.\n\nEntão eu tentava outras maneiras de acalmá-lo, como colo, carinho, balançando no meu peito, cafuné ou simplesmente ficando bem pertinho dele. 🥹🤍\n\nNem sempre ele se acalmava de imediato. Eu precisava ter calma e repetir o processo até ele entender que também conseguia voltar a dormir seguro de outras formas.\n\nE quando ele acordava, eu levantava com carinho e ajudava ele a relaxar novamente."
+            title: "Quando o bebê acordar, tente outras formas de acalmar",
+            content: "Quando meu filho acordava, eu não queria que o peito fosse a única forma de fazê-lo voltar a dormir.\n\nEntão eu tentava outras maneiras de acalmá-lo, como colo, carinho, balançando no meu peito, Cafuné ou simplesmente ficar pertinho dele. 🥹🤍\n\nNem sempre ele se acalmava imediatamente. Eu precisava ter paciência e repetir o processo até ele entender que também conseguia voltar a dormir de outras formas.\n\nE quando ele acordava eu já levantava e colocava ele pra dormir."
           }
         ]
       },
       {
         id: 3,
         number: "MÓDULO 03",
-        title: "Crie uma rotina antes de dormir",
+        title: "Crie uma rotina antes de dormir 🛁🌙",
         icon: "🛁",
         duration: "6 minutos",
-        summary: "A sequência previsível de relaxamento (banho quentinho, pijama e ambiente calmo) para sinalizar a hora do sono profundo.",
+        summary: "Uma rotina previsível: banho + pijama + ambiente mais tranquilo + carinho e som de chuva.",
         chapters: [
           {
-            title: "Preparação e Sinais de Sono",
-            content: "Uma rotina previsível ajuda o bebê a entender e antecipar que está chegando a hora de descansar.\n\nNo meu caso, eu fazia uma sequência simples e prazerosa: banho morno + pijama confortável + ambiente com luz bem baixa + muito carinho.\n\nO mais importante é manter a repetição diária dessa sequência. Com o passar dos dias, esses pequenos estímulos viram gatilhos naturais de relaxamento.\n\n(Eu peguei o costume de reduzir as luzes da casa e colocar um ruído suave de chuva para amenizar ruídos externos e manter o sono contínuo)."
+            title: "Crie uma rotina antes de dormir 🛁🌙",
+            content: "Uma rotina previsível pode ajudar o bebê a entender que está chegando a hora de dormir.\n\nNo meu caso, eu fazia algo simples: banho + pijama + ambiente mais tranquilo + carinho.\nO mais importante é tentar repetir a sequência todos os dias. Com o tempo, esses pequenos sinais passam a fazer parte da preparação para o sono.\n\n(Eu peguei o costume de desligar todas as luzes, colocar uma música de chuva para nenhum barulho acordar ele.)"
           }
         ]
       },
@@ -343,29 +343,29 @@ async function loadEbookContent() {
         title: "Não ofereça o peito automaticamente ao primeiro despertar",
         icon: "✨",
         duration: "6 minutos",
-        summary: "Como romper a associação imediata de despertar com mamada, observando as reais necessidades da criança com sensibilidade.",
+        summary: "Espere um pouquinho e observe antes de oferecer o peito, quebrando a associação do despertar com a mamada.",
         chapters: [
           {
-            title: "Observar Antes de Agir",
-            content: "Quando o bebê despertar à noite, antes de oferecer o peito imediatamente, respire fundo, espere alguns segundos e observe com carinho.\n\nTente primeiro acalmá-lo com toque, voz suave, colo e aconchego.\n\nA intenção principal é quebrar gradualmente a associação automática de que todo e qualquer despertar noturno precisa terminar em mamada.\n\nSe o bebê demonstrar fome real ou houver qualquer desconforto, atenda prontamente. O desmame respeita sempre a idade, alimentação complementar e necessidades de cada criança.\n\nSe ele chorar e precisar, ofereça água ou um complemento orientado pelo seu pediatra."
+            title: "Não ofereça o peito automaticamente ao primeiro despertar",
+            content: "Quando o bebê acordar, antes de oferecer o peito imediatamente, espere um pouquinho e observe.\nTente primeiro acalmá-lo de outra maneira: pegue no colo,\n\nA intenção é começar a quebrar a associação de que todo despertar precisa terminar em uma mamada.\nSe o bebê demonstrar fome ou houver alguma necessidade específica, respeite isso. O desmame precisa considerar a idade, alimentação e necessidades individuais da criança.\n\nSe ele chorar ofereça água ou uma mamadeira com leite ( o meu filho aceitou a mamadeira com 5 dias depois do desmame)"
           }
         ]
       },
       {
         id: 5,
         number: "MÓDULO 05",
-        title: "Seja consistente e acolhedora",
-        icon: "🌙",
+        title: "Seja consistente 🤍",
+        icon: "🌸",
         duration: "7 minutos",
-        summary: "A consistência amorosa e a paciência necessárias para consolidar noites inteiras de sono tranquilo para toda a família.",
+        summary: "Consistência e carinho para o bebê dormir a noite inteira, transformando sua vida, humor e rotina.",
         chapters: [
           {
-            title: "Consistência com Amor",
-            content: "Depois de escolher retirar uma determinada mamada noturna, procure manter a decisão com segurança e tranquilidade.\n\nNos primeiros dias, o bebê pode estranhar ou protestar um pouco, pois está adaptado ao padrão anterior. Isso é natural na mudança de qualquer hábito.\n\nQuando o bebê assimilar o novo ritmo, ele passará a dormir com mais tranquilidade e noites inteiras se tornarão realidade — transformando sua energia, seu humor e sua rotina.\n\nTenha paciência e ofereça muito afeto. Consistência nunca significa deixar o bebê desamparado ou chorando sozinho; significa dar apoio contínuo enquanto ele descobre uma nova forma de adormecer seguro. 🌙🤍\n\n✨ Esses foram os passos essenciais que funcionaram com sucesso na nossa jornada. Cada bebê é único, por isso respeite sempre o tempo e as respostas do seu filho."
+            title: "Seja consistente 🤍",
+            content: "Depois de escolher retirar uma determinada mamada, procure manter a decisão e a nova rotina.\nNos primeiros dias, o bebê pode reclamar ou estranhar porque está acostumado com aquela forma de dormir. Isso faz parte da adaptação à mudança.\n\nQuando ele se acostumar, ele vai dormir anoite inteiro e vai mudar muito a sua vida, seu humor, sua rotina.\n\nTenha paciência, ofereça muito carinho e tente manter a mesma abordagem. Consistência não significa deixar o bebê sozinho ou ignorar o choro; significa continuar oferecendo acolhimento enquanto ele aprende uma nova forma de adormecer. 🌙🤍\n\n✨ Esses foram os métodos que funcionaram comigo durante o desmame do meu filho. Cada bebê é único, então adapte o processo à realidade e às necessidades do seu pequeno."
           },
           {
-            title: "☀️ Desmame Durante o Dia (Guia Prático Adicional)",
-            content: "Se você também deseja estender o método para a rotina diurna, conheça o bônus especial com o passo a passo completo para o dia logo abaixo."
+            title: "☀️ Desmame Durante o Dia (Guia Completo)",
+            content: "Se querer saber mais sobre como que eu fiz pra ele desmamar na parte do dia é só liberar o acesso que vai ter o guia completo de dia e noite."
           }
         ]
       }

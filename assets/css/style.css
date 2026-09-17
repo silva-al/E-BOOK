@@ -2986,7 +2986,83 @@ body {
 
 /* Área de Capítulos Escritos */
 .module-chapters-area {
-  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.chapter-block {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.chapter-block:hover {
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.chapter-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chapter-text {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #334155;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.chapter-warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.chapter-warning .chapter-title {
+  color: #b45309;
+}
+
+.chapter-day-hook {
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border: 1.5px dashed #f59e0b;
+}
+
+.chapter-day-hook .chapter-title {
+  color: #b45309;
+}
+
+.bedtime-dark-mode .chapter-block {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.bedtime-dark-mode .chapter-title {
+  color: #f1f5f9;
+}
+
+.bedtime-dark-mode .chapter-text {
+  color: #cbd5e1;
+}
+
+.bedtime-dark-mode .chapter-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.bedtime-dark-mode .chapter-day-hook {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .chapters-area-title {
