@@ -1,4 +1,4 @@
-/**
+﻿/**
  * APP CONTROLLER - E-BOOK DESMAME NOTURNO & CHECKOUT PIX KIWIFY
  */
 
@@ -814,230 +814,98 @@ function renderBonusSection(dayModules) {
 }
 
 /* ==========================================================================
-   WIDGETS INTERATIVOS: ÁUDIO CALMANTE (CHUVA SUAVE) & MODO QUARTO ESCURO
+   ÁUDIO CALMANTE — Chuva Real (rain.mp3)
    ========================================================================== */
-let ambientAudioCtx = null;
-let ambientNoiseNode = null;
-let ambientGainNode = null;
+let rainAudio = null;
 let isAmbientPlaying = false;
+let rainFadeInterval = null;
 
 function handleToggleAmbientAudio() {
-  const btn = document.getElementById('btnToggleAmbientAudio');
+  const btn   = document.getElementById('btnToggleAmbientAudio');
   const label = document.getElementById('labelAmbientAudio');
-  
+
   if (isAmbientPlaying) {
     stopAmbientNoise();
     isAmbientPlaying = false;
-    if (btn) btn.classList.remove('playing');
+    if (btn)   btn.classList.remove('playing');
     if (label) label.textContent = 'Som Calmante (Tocar)';
   } else {
     startAmbientNoise();
     isAmbientPlaying = true;
-    if (btn) btn.classList.add('playing');
+    if (btn)   btn.classList.add('playing');
     if (label) label.textContent = '🌧️ Parar Som (Tocando)';
   }
 }
 
 function startAmbientNoise() {
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    if (!ambientAudioCtx) {
-      ambientAudioCtx = new AudioContext();
+    if (!rainAudio) {
+      rainAudio = new Audio('assets/audio/rain.mp3');
+      rainAudio.loop   = true;
+      rainAudio.volume = 0;
+      // Pré-carrega o áudio
+      rainAudio.load();
     }
-    if (ambientAudioCtx.state === 'suspended') {
-      ambientAudioCtx.resume();
+
+    // Cancela fade-out se ainda estava rodando
+    if (rainFadeInterval) {
+      clearInterval(rainFadeInterval);
+      rainFadeInterval = null;
     }
 
-    const ctx = ambientAudioCtx;
-    const sr  = ctx.sampleRate;
-    const now = ctx.currentTime;
+    rainAudio.volume = 0;
+    rainAudio.play().catch(e => console.warn('Audio play error:', e));
 
-    // ── Gain master com fade-in suave ────────────────────────────────────────
-    const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0.001, now);
-    masterGain.gain.linearRampToValueAtTime(0.55, now + 2.5);
-    masterGain.connect(ctx.destination);
+    // Fade-in suave: sobe o volume de 0 → 0.85 em 2 segundos
+    const target   = 0.85;
+    const steps    = 40;
+    const stepTime = 2000 / steps;
+    const stepVol  = target / steps;
+    let currentStep = 0;
 
-    // ════════════════════════════════════════════════════════════════════════
-    // Chuva real = ruído branco filtrado.
-    // Gotas individuais NÃO soam como sinos — soam como "tssh" de ruído curto.
-    // A textura de chuva vem de variações na amplitude do ruído, não de tons.
-    // ════════════════════════════════════════════════════════════════════════
-
-    // Buffer de ruído branco puro (6 segundos em loop)
-    const bufLen = sr * 6;
-    const noiseBuf = ctx.createBuffer(2, bufLen, sr);
-    for (let ch = 0; ch < 2; ch++) {
-      const d = noiseBuf.getChannelData(ch);
-      for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
-    }
-    const noiseSrc = ctx.createBufferSource();
-    noiseSrc.buffer = noiseBuf;
-    noiseSrc.loop = true;
-
-    // Filtro 1 — Highpass 400 Hz: remove grave pesado/efeito de ventilador
-    const hp = ctx.createBiquadFilter();
-    hp.type = 'highpass';
-    hp.frequency.value = 400;
-    hp.Q.value = 0.6;
-
-    // Filtro 2 — Peaking boost suave em 3 kHz: traz a presença das gotas
-    // Sem este boost os agudos das gotas somem e fica abafado
-    const peak = ctx.createBiquadFilter();
-    peak.type = 'peaking';
-    peak.frequency.value = 3000;
-    peak.Q.value = 0.8;
-    peak.gain.value = 6; // +6 dB em 3kHz — abre o "tss" das gotas
-
-    // Filtro 3 — Lowshelf -4 dB em 800 Hz: reduz "corpo" do ruído sem cortar
-    // Deixa o som leve, não pesado
-    const shelf = ctx.createBiquadFilter();
-    shelf.type = 'lowshelf';
-    shelf.frequency.value = 800;
-    shelf.gain.value = -4;
-
-    // Ganho do ruído (levemente abaixo do master)
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.value = 0.85;
-
-    noiseSrc.connect(hp);
-    hp.connect(shelf);
-    shelf.connect(peak);
-    peak.connect(noiseGain);
-    noiseGain.connect(masterGain);
-
-    // ── Modulação de amplitude: simula o "patter" das gotas caindo ──────────
-    // Um LFO lento e irregular que faz o volume variar naturalmente
-    // Frequência muito baixa (~0.8 Hz) — não é tremolo, é variação natural
-    const lfo = ctx.createOscillator();
-    lfo.type = 'sine';
-    lfo.frequency.value = 0.8;
-
-    const lfo2 = ctx.createOscillator();
-    lfo2.type = 'sine';
-    lfo2.frequency.value = 1.3; // segundo LFO em fase diferente
-
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.06; // modulação de ±6% — sutil, não óbvio
-
-    const lfoGain2 = ctx.createGain();
-    lfoGain2.gain.value = 0.04;
-
-    lfo.connect(lfoGain);
-    lfo2.connect(lfoGain2);
-    lfoGain.connect(noiseGain.gain);
-    lfoGain2.connect(noiseGain.gain);
-
-    lfo.start();
-    lfo2.start();
-    noiseSrc.start();
-
-    ambientNoiseNode = noiseSrc;
-    ambientGainNode  = masterGain;
-    ctx._lfo1 = lfo;
-    ctx._lfo2 = lfo2;
-
-  } catch (err) {
-    console.warn('Web Audio indisponível:', err);
-  }
-}
-
-
-    // ── Mixer final — sem filtros no master (som aberto, não abafado) ────────
-    const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0.001, now);
-    masterGain.gain.linearRampToValueAtTime(0.65, now + 2.0);
-    masterGain.connect(ctx.destination); // direto — sem passar por filtro
-
-    // ════════════════════════════════════════════════════════════════════════
-    // CAMADA ÚNICA — Gotas individuais realistas em estéreo
-    //
-    // Cada gota = senoide com decaimento + ruído leve (como gota em superfície)
-    // SEM filtro lowpass nas gotas — som fica limpo e cristalino
-    // ════════════════════════════════════════════════════════════════════════
-    const bufSecs  = 12;
-    const bufLen   = sr * bufSecs;
-    const rainBuf  = ctx.createBuffer(2, bufLen, sr);
-    const chL = rainBuf.getChannelData(0);
-    const chR = rainBuf.getChannelData(1);
-
-    // ~35 gotas por segundo = chuva moderada contínua
-    const numDrops = Math.floor(35 * bufSecs);
-
-    for (let d = 0; d < numDrops; d++) {
-      const pos    = Math.floor(Math.random() * (bufLen - sr * 0.06));
-      const amp    = 0.06 + Math.pow(Math.random(), 1.5) * 0.55; // mistura gotas leves e fortes
-      const freq   = 600 + Math.random() * 3200;   // 600Hz–3800Hz — gotas grossas a finas
-      const tau    = sr  * (0.004 + Math.random() * 0.014); // decaimento 4ms–18ms
-      const len    = Math.floor(tau * 5);           // duração = 5x o decaimento
-      const pan    = Math.random();                 // posição estéreo aleatória
-      const pL     = Math.cos(pan * Math.PI * 0.5);
-      const pR     = Math.sin(pan * Math.PI * 0.5);
-
-      for (let s = 0; s < len && (pos + s) < bufLen; s++) {
-        const env    = Math.exp(-s / tau);
-        // Senoide na frequência da gota + ruído leve (10%) para naturalidade
-        const val    = (Math.sin(2 * Math.PI * freq * s / sr) * 0.9
-                       + (Math.random() * 2 - 1) * 0.1) * env * amp;
-        chL[pos + s] += val * pL;
-        chR[pos + s] += val * pR;
+    rainFadeInterval = setInterval(() => {
+      currentStep++;
+      rainAudio.volume = Math.min(target, stepVol * currentStep);
+      if (currentStep >= steps) {
+        clearInterval(rainFadeInterval);
+        rainFadeInterval = null;
       }
-    }
-
-    // Normalização — evita clipping sem comprimir o som
-    let peak = 0.001;
-    for (let i = 0; i < bufLen; i++) {
-      if (Math.abs(chL[i]) > peak) peak = Math.abs(chL[i]);
-      if (Math.abs(chR[i]) > peak) peak = Math.abs(chR[i]);
-    }
-    const norm = 0.88 / peak;
-    for (let i = 0; i < bufLen; i++) { chL[i] *= norm; chR[i] *= norm; }
-
-    const rainSrc = ctx.createBufferSource();
-    rainSrc.buffer = rainBuf;
-    rainSrc.loop   = true;
-    rainSrc.playbackRate.value = 0.96 + Math.random() * 0.08; // variação sutil
-
-    // Único filtro: highpass em 200Hz — remove apenas subgrave pesado
-    // NÃO há lowpass — agudos passam livres (sem abafamento)
-    const hp = ctx.createBiquadFilter();
-    hp.type = 'highpass';
-    hp.frequency.value = 200;
-    hp.Q.value = 0.5;
-
-    rainSrc.connect(hp);
-    hp.connect(masterGain);
-
-    rainSrc.start();
-    ambientNoiseNode = rainSrc;
-    ambientGainNode  = masterGain;
+    }, stepTime);
 
   } catch (err) {
-    console.warn('Web Audio indisponível:', err);
+    console.warn('Erro ao iniciar chuva:', err);
   }
 }
 
 function stopAmbientNoise() {
-  if (ambientGainNode && ambientAudioCtx) {
-    ambientGainNode.gain.linearRampToValueAtTime(0.001, ambientAudioCtx.currentTime + 0.8);
-    setTimeout(() => {
-      if (ambientNoiseNode) {
-        try { ambientNoiseNode.stop(); } catch (e) {}
-        ambientNoiseNode = null;
-      }
-      ['_lfo1', '_lfo2'].forEach(k => {
-        if (ambientAudioCtx && ambientAudioCtx[k]) {
-          try { ambientAudioCtx[k].stop(); } catch (e) {}
-          ambientAudioCtx[k] = null;
-        }
-      });
-    }, 900);
-  } else if (ambientNoiseNode) {
-    try { ambientNoiseNode.stop(); } catch (e) {}
-    ambientNoiseNode = null;
+  if (!rainAudio) return;
+
+  // Cancela fade-in se ainda estava rodando
+  if (rainFadeInterval) {
+    clearInterval(rainFadeInterval);
+    rainFadeInterval = null;
   }
+
+  // Fade-out suave: desce o volume em 1 segundo e pausa
+  const startVol = rainAudio.volume;
+  const steps    = 30;
+  const stepTime = 1000 / steps;
+  const stepVol  = startVol / steps;
+  let currentStep = 0;
+
+  rainFadeInterval = setInterval(() => {
+    currentStep++;
+    rainAudio.volume = Math.max(0, startVol - stepVol * currentStep);
+    if (currentStep >= steps) {
+      clearInterval(rainFadeInterval);
+      rainFadeInterval = null;
+      rainAudio.pause();
+      rainAudio.currentTime = 0;
+    }
+  }, stepTime);
 }
+
+
 
 
 function initNightModeState() {
