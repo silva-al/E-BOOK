@@ -20,7 +20,10 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Método não permitido. Use POST.' });
   }
 
-  const accessToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-7126802170179896-091702-1da1c976ed6f743042127cd7cf856164-1084454515').trim();
+  const accessToken = (process.env.MP_ACCESS_TOKEN || '').trim();
+  if (!accessToken) {
+    return res.status(500).json({ error: 'Configuração do servidor incompleta. Contate o suporte.' });
+  }
 
   try {
     const { buyerName, buyerEmail, buyerPhone, amount, orderBump, originUrl } = req.body || {};

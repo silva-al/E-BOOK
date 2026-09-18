@@ -33,7 +33,10 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Parâmetro id, query, email ou check_latest é obrigatório.' });
   }
 
-  const accessToken = (process.env.MP_ACCESS_TOKEN || 'APP_USR-7126802170179896-091702-1da1c976ed6f743042127cd7cf856164-1084454515').trim();
+  const accessToken = (process.env.MP_ACCESS_TOKEN || '').trim();
+  if (!accessToken) {
+    return res.status(500).json({ error: 'Configuração do servidor incompleta. Contate o suporte.' });
+  }
 
   try {
     const cleanId = rawId.trim();
