@@ -241,7 +241,7 @@ body {
   width: 100%;
   max-width: 220px;
   height: auto;
-  aspect-ratio: 10 / 15;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 16px;
   box-shadow: 0 10px 24px rgba(157, 23, 77, 0.12), 0 2px 8px rgba(0,0,0,0.06);
@@ -1633,7 +1633,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('../images/ebook_cover.jpg');
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('../images/ebook_cover.jpg?v=7.0');
   background-size: cover;
   background-position: center;
   display: flex;
