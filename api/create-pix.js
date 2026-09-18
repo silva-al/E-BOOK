@@ -26,10 +26,11 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { buyerName, buyerEmail, amount, orderBump } = req.body || {};
+    const { buyerName, buyerEmail, buyerPhone, amount, orderBump } = req.body || {};
 
     const transactionAmount = Number(amount || 29.90).toFixed(2);
     const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.aluna@desmamenoturno.com';
+    const clientIp = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || '').split(',')[0].trim();
     
     let firstName = 'Aluna';
     let lastName = 'Desmame';
@@ -45,6 +46,15 @@ module.exports = async (req, res) => {
 
     const idempotencyKey = `order-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     const externalRef = `ref-${Date.now()}`;
+
+    const cleanPhone = String(buyerPhone || '').replace(/\D/g, '');
+    let phoneObj = undefined;
+    if (cleanPhone.length >= 10) {
+      phoneObj = {
+        area_code: cleanPhone.slice(0, 2),
+        number: cleanPhone.slice(2)
+      };
+    }
 
     const orderPayload = {
       type: 'online',
@@ -65,17 +75,23 @@ module.exports = async (req, res) => {
       payer: {
         email: cleanEmail,
         first_name: firstName,
-        last_name: lastName
+        last_name: lastName,
+        ...(phoneObj ? { phone: phoneObj } : {})
       }
     };
 
+    const mpHeaders = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'X-Idempotency-Key': idempotencyKey
+    };
+    if (clientIp) {
+      mpHeaders['X-Forwarded-For'] = clientIp;
+    }
+
     const mpResponse = await fetch('https://api.mercadopago.com/v1/orders', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'X-Idempotency-Key': idempotencyKey
-      },
+      headers: mpHeaders,
       body: JSON.stringify(orderPayload)
     });
 

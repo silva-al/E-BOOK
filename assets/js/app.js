@@ -1,4 +1,4 @@
-﻿/**
+/**
  * APP CONTROLLER - E-BOOK DESMAME NOTURNO & CHECKOUT PIX KIWIFY
  */
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   checkUnlockStatus();
 
   if (!appState.isPaid) {
-    initInlineMercadoPagoPix();
+    initInlineMercadoPagoPix(true); // true = carregamento inicial seguro (não cria pedidos fantasmas no Mercado Pago)
   }
 
   const bumpCheck = document.getElementById('orderBumpCheck');
@@ -1179,7 +1179,7 @@ let unlockCountdownInterval = null;
  * Inicializa o PIX do Mercado Pago diretamente na tela de checkout principal
  * com persistência de pedidos e recuperação inteligente
  */
-async function initInlineMercadoPagoPix() {
+async function initInlineMercadoPagoPix(isInitialLoad = false) {
   if (appState.isPaid) return;
 
   const qrImg = document.getElementById('mainPixQrImage');
@@ -1187,6 +1187,8 @@ async function initInlineMercadoPagoPix() {
   const qrLoading = document.getElementById('mainPixLoading');
   const statusEl = document.getElementById('mainPaymentStatusText');
   const tagEl = document.getElementById('directBoxAmountTag');
+  const initialCard = document.getElementById('pixInitialCard');
+  const activeArea = document.getElementById('pixActiveArea');
 
   const totalAmount = getCurrentTotal();
   const formatted = totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1198,10 +1200,13 @@ async function initInlineMercadoPagoPix() {
   const savedPendingTime = Number(localStorage.getItem('desmame_pending_pix_time') || 0);
   const savedPendingAmount = Number(localStorage.getItem('desmame_pending_pix_amount') || 0);
 
-  const isRecent = savedPendingTime && (Date.now() - savedPendingTime < 45 * 60 * 1000); // 45 minutos
+  const isRecent = savedPendingTime && (Date.now() - savedPendingTime < 40 * 60 * 1000); // 40 minutos
   const sameAmount = Math.abs(savedPendingAmount - totalAmount) < 0.05;
 
   if (savedPendingId && isRecent) {
+    if (initialCard) initialCard.style.display = 'none';
+    if (activeArea) activeArea.style.display = 'block';
+
     if (statusEl) {
       statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Verificando status do seu pagamento...</span>`;
     }
@@ -1237,19 +1242,30 @@ async function initInlineMercadoPagoPix() {
     }
   }
 
-  // 2. Se não tem Pix recente válido ou mudou o valor, gera um novo:
+  // 2. Se for carregamento inicial e não há PIX pendente salvo, mostra o botão para gerar e NÃO cria pedido fantasma no MP
+  if (isInitialLoad) {
+    if (initialCard) initialCard.style.display = 'block';
+    if (activeArea) activeArea.style.display = 'none';
+    return;
+  }
+
+  // 3. O usuário solicitou gerar o PIX:
+  if (initialCard) initialCard.style.display = 'none';
+  if (activeArea) activeArea.style.display = 'block';
   if (qrLoading) qrLoading.style.display = 'flex';
   if (qrImg) qrImg.style.display = 'none';
   if (qrCanvas) qrCanvas.style.display = 'none';
 
   if (statusEl) {
-    statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Conectando ao Mercado Pago...</span>`;
+    statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Conectando com o Mercado Pago...</span>`;
   }
 
   const buyerNameInput = document.getElementById('buyerName');
   const buyerEmailInput = document.getElementById('buyerEmail');
-  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || appState.buyerName || 'Aluna Desmame Noturno';
-  const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || appState.buyerEmail || 'contato@desmamenoturno.com';
+  const buyerPhoneInput = document.getElementById('buyerPhone');
+  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna Desmame Noturno';
+  const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || appState.buyerEmail || localStorage.getItem('desmame_buyer_email') || 'contato@desmamenoturno.com';
+  const buyerPhone = (buyerPhoneInput ? buyerPhoneInput.value.trim() : '') || localStorage.getItem('desmame_buyer_phone') || '';
 
   try {
     const res = await fetch('/api/create-pix', {
@@ -1258,6 +1274,7 @@ async function initInlineMercadoPagoPix() {
       body: JSON.stringify({
         buyerName,
         buyerEmail,
+        buyerPhone,
         amount: totalAmount,
         orderBump: appState.orderBumpSelected
       })
@@ -1321,31 +1338,40 @@ async function initInlineMercadoPagoPix() {
 }
 
 /**
- * Checagem proativa chamada ao voltar para a aba do navegador
+ * Disparado ao clicar em "GERAR MEU QR CODE PIX"
  */
-async function checkActivePaymentStatus() {
-  if (appState.isPaid) return;
-  const pendingId = currentMpPaymentId || localStorage.getItem('desmame_pending_pix_id');
-  if (!pendingId) return;
-
-  try {
-    const res = await fetch(`/api/check-payment?id=${pendingId}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data.status === 'approved' || data.is_approved) {
-      showPaymentSuccessAndUnlock(data.has_bump);
-    }
-  } catch (e) {
-    console.warn('Erro ao consultar status em segundo plano:', e);
+function handleGeneratePixClicked() {
+  const nameInput = document.getElementById('buyerName');
+  const emailInput = document.getElementById('buyerEmail');
+  
+  if (nameInput && (!nameInput.value.trim() || nameInput.value.trim().length < 2)) {
+    nameInput.focus();
+    nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    nameInput.style.borderColor = '#e11d48';
+    setTimeout(() => { nameInput.style.borderColor = ''; }, 3000);
+    return;
   }
+
+  if (emailInput && (!emailInput.value.trim() || !emailInput.value.includes('@'))) {
+    emailInput.focus();
+    emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    emailInput.style.borderColor = '#e11d48';
+    setTimeout(() => { emailInput.style.borderColor = ''; }, 3000);
+    return;
+  }
+
+  const btn = document.getElementById('labelGeneratePixBtn');
+  if (btn) btn.textContent = 'GERANDO PIX OFICIAL MERCADO PAGO...';
+
+  initInlineMercadoPagoPix(false);
 }
 
 /**
  * Copia o código PIX Oficial do Mercado Pago com feedback visual instantâneo
  */
-function handleCopyMainPixCode() {
+async function handleCopyMainPixCode() {
   if (!currentMainPixCode) {
-    initInlineMercadoPagoPix();
+    await initInlineMercadoPagoPix(false);
   }
   const code = currentMainPixCode;
   const label = document.getElementById('labelCopyMainPix');
@@ -2509,12 +2535,15 @@ async function handleProcessCardPayment() {
       showCardSuccessAndUnlock();
       return;
     } else {
-      const errorMsg = data.error || data.message || 'Cartão recusado pela operadora. Tente outro cartão ou utilize o PIX.';
+      const errorMsg = data.error || data.message || 'Cartão não autorizado pela operadora.';
       const fallbackHtml = `
         ${errorMsg}
-        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn-mp-primary-card" onclick="handleOpenMpCheckoutPro()" style="width: 100%; padding: 13px 14px; background: linear-gradient(135deg, #009ee3 0%, #007ebb 100%); color: #ffffff; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0,158,227,0.3);">
+            🔒 Concluir com Cartão no Mercado Pago Oficial (Aprovação Garantida)
+          </button>
           <button type="button" class="btn-copy-main-pix" style="margin: 0; padding: 11px 14px; font-size: 13px; background: linear-gradient(135deg, #059669 0%, #047857 100%);" onclick="switchPaymentMethod('pix')">
-            ⚡ Pagar com PIX (Aprovação Imediata Sem Risco de Recusa)
+            ⚡ Pagar com PIX (Aprovação Instantânea Sem Risco de Recusa)
           </button>
         </div>
       `;
@@ -2527,7 +2556,18 @@ async function handleProcessCardPayment() {
     }
   } catch (err) {
     console.error('Erro na chamada do cartão:', err);
-    showCardFeedback('Erro ao conectar com a operadora do cartão. Verifique sua conexão ou tente via PIX.', 'error');
+    const fallbackHtml = `
+      Erro ao conectar com a operadora do cartão.
+      <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <button type="button" class="btn-mp-primary-card" onclick="handleOpenMpCheckoutPro()" style="width: 100%; padding: 13px 14px; background: linear-gradient(135deg, #009ee3 0%, #007ebb 100%); color: #ffffff; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          🔒 Pagar com Cartão no Mercado Pago Seguro (Aprovação Garantida)
+        </button>
+        <button type="button" class="btn-copy-main-pix" style="margin: 0; padding: 11px 14px; font-size: 13px; background: linear-gradient(135deg, #059669 0%, #047857 100%);" onclick="switchPaymentMethod('pix')">
+          ⚡ Pagar com PIX (Aprovação Instantânea)
+        </button>
+      </div>
+    `;
+    showCardFeedback(fallbackHtml, 'error');
     if (btn) btn.disabled = false;
     if (label) {
       const formatted = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -2573,15 +2613,24 @@ async function handleOpenMpCheckoutPro() {
   const emailInput = document.getElementById('buyerEmail');
   const phoneInput = document.getElementById('buyerPhone');
 
-  const buyerName = (nameInput ? nameInput.value.trim() : '') || appState.buyerName || 'Aluna';
-  const buyerEmail = (emailInput ? emailInput.value.trim() : '') || appState.buyerEmail || 'contato@desmamenoturno.com';
-  const buyerPhone = phoneInput ? phoneInput.value.trim() : '';
+  const buyerName = (nameInput ? nameInput.value.trim() : '') || appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna';
+  const buyerEmail = (emailInput ? emailInput.value.trim() : '') || appState.buyerEmail || localStorage.getItem('desmame_buyer_email') || 'contato@desmamenoturno.com';
+  const buyerPhone = (phoneInput ? phoneInput.value.trim() : '') || localStorage.getItem('desmame_buyer_phone') || '';
 
   const total = getCurrentTotal();
-  const btn = document.getElementById('btnMpCheckoutPro');
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `Gerando link seguro Mercado Pago...`;
+  const btnPrimary = document.getElementById('btnMpCheckoutProPrimary');
+  const btnSec = document.getElementById('btnMpCheckoutPro');
+
+  const originalPrimaryText = btnPrimary ? btnPrimary.innerHTML : '';
+  const originalSecText = btnSec ? btnSec.innerHTML : '';
+
+  if (btnPrimary) {
+    btnPrimary.disabled = true;
+    btnPrimary.innerHTML = `<div class="pulse-spinner" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;"></div> Conectando ao Mercado Pago...`;
+  }
+  if (btnSec) {
+    btnSec.disabled = true;
+    btnSec.innerHTML = `Conectando...`;
   }
 
   try {
@@ -2602,17 +2651,25 @@ async function handleOpenMpCheckoutPro() {
     if (res.ok && data.init_point) {
       window.location.href = data.init_point;
     } else {
-      showCardFeedback('Não foi possível gerar o link de pagamento. Preencha seus dados acima ou pague via PIX.', 'error');
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = `🔒 Ou pagar pelo Checkout Oficial Mercado Pago`;
+      showCardFeedback('Não foi possível gerar o link de pagamento. Preencha seus dados acima ou utilize o PIX.', 'error');
+      if (btnPrimary) {
+        btnPrimary.disabled = false;
+        btnPrimary.innerHTML = originalPrimaryText;
+      }
+      if (btnSec) {
+        btnSec.disabled = false;
+        btnSec.innerHTML = originalSecText;
       }
     }
   } catch (e) {
     showCardFeedback('Erro ao conectar com o Mercado Pago. Tente via PIX.', 'error');
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `🔒 Ou pagar pelo Checkout Oficial Mercado Pago`;
+    if (btnPrimary) {
+      btnPrimary.disabled = false;
+      btnPrimary.innerHTML = originalPrimaryText;
+    }
+    if (btnSec) {
+      btnSec.disabled = false;
+      btnSec.innerHTML = originalSecText;
     }
   }
 }

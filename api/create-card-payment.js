@@ -106,6 +106,8 @@ module.exports = async (req, res) => {
       phoneNum = cleanPhone.slice(2);
     }
 
+    const clientIp = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || '').split(',')[0].trim();
+
     // 1. Gerar Card Token na API do Mercado Pago
     const tokenPayload = {
       card_number: cleanCard,
@@ -121,12 +123,17 @@ module.exports = async (req, res) => {
       }
     };
 
+    const tokenHeaders = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    };
+    if (clientIp) {
+      tokenHeaders['X-Forwarded-For'] = clientIp;
+    }
+
     const tokenRes = await fetch('https://api.mercadopago.com/v1/card_tokens', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
+      headers: tokenHeaders,
       body: JSON.stringify(tokenPayload)
     });
 
@@ -166,6 +173,7 @@ module.exports = async (req, res) => {
         }
       },
       additional_info: {
+        ip_address: clientIp || undefined,
         items: [
           {
             id: 'desmame-diurno-noturno',
@@ -192,13 +200,18 @@ module.exports = async (req, res) => {
       }
     };
 
+    const paymentHeaders = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'X-Idempotency-Key': idempotencyKey
+    };
+    if (clientIp) {
+      paymentHeaders['X-Forwarded-For'] = clientIp;
+    }
+
     const paymentRes = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'X-Idempotency-Key': idempotencyKey
-      },
+      headers: paymentHeaders,
       body: JSON.stringify(paymentPayload)
     });
 

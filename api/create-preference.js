@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
 
     const totalAmount = Number(amount || 29.90);
     const cleanEmail = (buyerEmail && buyerEmail.includes('@')) ? buyerEmail.trim() : 'contato.aluna@desmamenoturno.com';
-    const baseUrl = (originUrl && originUrl.startsWith('https://')) ? originUrl.replace(/\/$/, '') : 'https://ebook-desmame.vercel.app';
+    const baseUrl = (originUrl && originUrl.startsWith('http')) ? originUrl.replace(/\/$/, '') : 'https://desmame-noturno.vercel.app';
 
     let firstName = 'Aluna';
     let lastName = 'Desmame';

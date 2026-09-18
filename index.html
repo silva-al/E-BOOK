@@ -178,41 +178,63 @@
 
           <!-- Estado enquanto aguarda o pagamento -->
           <div id="inlinePaymentArea">
-            <div class="pix-qr-wrapper">
-              <img id="mainPixQrImage" src="" style="display: none; width: 190px; height: 190px; margin: 0 auto;" alt="QR Code PIX">
-              <canvas id="mainPixQrCanvas" style="display: none; width: 190px; height: 190px; margin: 0 auto;"></canvas>
-              <div id="mainPixLoading" style="font-size: 13px; color: #9d174d; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                <div class="pulse-spinner" style="width: 24px; height: 24px; border-width: 3px;"></div>
-                <span>Gerando QR Code oficial...</span>
+            <div id="pixInitialCard" style="display: none; padding: 14px 6px; text-align: center;">
+              <div style="width: 54px; height: 54px; background: #fdf2f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; border: 2px solid #fbcfe8;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
               </div>
+              <p style="font-size: 14.5px; font-weight: 800; color: #831843; margin-bottom: 4px;">
+                ⚡ Pagamento Instantâneo via PIX
+              </p>
+              <p style="font-size: 13px; color: #64748b; margin-bottom: 14px; line-height: 1.4;">
+                Preencha seus dados de aluna acima e clique abaixo para gerar seu QR Code e código oficial do Mercado Pago:
+              </p>
+              <button type="button" class="btn-copy-main-pix" onclick="handleGeneratePixClicked()" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); box-shadow: 0 4px 16px rgba(5, 150, 105, 0.35);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                <span id="labelGeneratePixBtn">GERAR MEU QR CODE PIX (R$ 29,90)</span>
+              </button>
             </div>
 
-            <p style="font-size: 13px; color: #475569; margin-bottom: 12px; font-weight: 500;">
-              Escaneie o QR Code acima ou use o Copia e Cola:
-            </p>
+            <div id="pixActiveArea">
+              <div class="pix-qr-wrapper">
+                <img id="mainPixQrImage" src="" style="display: none; width: 190px; height: 190px; margin: 0 auto;" alt="QR Code PIX">
+                <canvas id="mainPixQrCanvas" style="display: none; width: 190px; height: 190px; margin: 0 auto;"></canvas>
+                <div id="mainPixLoading" style="font-size: 13px; color: #9d174d; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                  <div class="pulse-spinner" style="width: 24px; height: 24px; border-width: 3px;"></div>
+                  <span>Gerando QR Code oficial...</span>
+                </div>
+              </div>
 
-            <button type="button" class="btn-copy-main-pix" id="btnCopyMainPix" onclick="handleCopyMainPixCode()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              <span id="labelCopyMainPix">COPIAR CÓDIGO PIX (COPIA E COLA)</span>
-            </button>
+              <p style="font-size: 13px; color: #475569; margin-bottom: 12px; font-weight: 500;">
+                Escaneie o QR Code acima ou use o Copia e Cola:
+              </p>
 
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; font-size: 13px; font-weight: 700; color: #be185d;" id="mainPaymentStatusText">
-              <div class="pulse-spinner"></div>
-              <span>Aguardando pagamento no Mercado Pago...</span>
-            </div>
+              <button type="button" class="btn-copy-main-pix" id="btnCopyMainPix" onclick="handleCopyMainPixCode()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="labelCopyMainPix">COPIAR CÓDIGO PIX (COPIA E COLA)</span>
+              </button>
 
-            <button type="button" class="btn-manual-verify" id="btnManualVerify" onclick="handleManualVerifyPayment()">
-              <span>⚡ Já realizei o pagamento (Verificar e Liberar)</span>
-            </button>
-            <div id="manualVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 8px; text-align: left; line-height: 1.4;"></div>
-            <div style="margin-top: 12px; font-size: 12.5px; color: #64748b; text-align: center;">
-              Já realizou o pagamento pelo app do banco? 
-              <a href="javascript:void(0)" onclick="handleOpenAccessRecoveryModal()" style="color: #be185d; font-weight: 700; text-decoration: underline;">
-                Liberar acesso pelo comprovante
-              </a>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; font-size: 13px; font-weight: 700; color: #be185d;" id="mainPaymentStatusText">
+                <div class="pulse-spinner"></div>
+                <span>Aguardando pagamento no Mercado Pago...</span>
+              </div>
+
+              <button type="button" class="btn-manual-verify" id="btnManualVerify" onclick="handleManualVerifyPayment()">
+                <span>⚡ Já realizei o pagamento (Verificar e Liberar)</span>
+              </button>
+              <div id="manualVerifyFeedback" style="display: none; margin-top: 10px; font-size: 12.5px; padding: 10px; border-radius: 8px; text-align: left; line-height: 1.4;"></div>
+              <div style="margin-top: 12px; font-size: 12.5px; color: #64748b; text-align: center;">
+                Já realizou o pagamento pelo app do banco? 
+                <a href="javascript:void(0)" onclick="handleOpenAccessRecoveryModal()" style="color: #be185d; font-weight: 700; text-decoration: underline;">
+                  Liberar acesso pelo comprovante
+                </a>
+              </div>
             </div>
           </div>
 
@@ -246,6 +268,18 @@
 
           <!-- Campos do Cartão -->
           <div id="cardInputsArea">
+            <button type="button" class="btn-mp-primary-card" id="btnMpCheckoutProPrimary" onclick="handleOpenMpCheckoutPro()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #009ee3 0%, #007ebb 100%); color: #ffffff; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0,158,227,0.3); margin-bottom: 14px; letter-spacing: 0.2px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              <span>PAGAR COM CARTÃO EM ATÉ 12X (MERCADO PAGO SEGURO)</span>
+            </button>
+            <div style="display: flex; align-items: center; margin: 10px 0 16px 0; color: #94a3b8; font-size: 11.5px; font-weight: 700; text-align: center;">
+              <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+              <span style="padding: 0 10px; letter-spacing: 0.5px;">OU PREENCHA OS DADOS DO CARTÃO</span>
+              <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+            </div>
             <div class="kiwi-input-group">
               <label for="cardNumber">Número do Cartão</label>
               <div class="card-input-relative">
