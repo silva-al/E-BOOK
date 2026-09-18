@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   checkUnlockStatus();
 
   if (!appState.isPaid) {
-    initInlineMercadoPagoPix(true); // true = carregamento inicial seguro (não cria pedidos fantasmas no Mercado Pago)
+    initInlineMercadoPagoPix(false); // false = seguro, não cria pedidos fantasmas no Mercado Pago ao abrir a página
   }
 
   const bumpCheck = document.getElementById('orderBumpCheck');
@@ -1033,8 +1033,16 @@ function initCountdownTimer() {
 function handleToggleBump(checkbox) {
   appState.orderBumpSelected = checkbox.checked;
   updatePriceDisplay();
-  if (!appState.isPaid) {
-    initInlineMercadoPagoPix();
+  // Se já havia um PIX na tela gerado para o valor anterior, volta para o card inicial com o novo valor
+  const activeArea = document.getElementById('pixActiveArea');
+  const initialCard = document.getElementById('pixInitialCard');
+  if (activeArea && activeArea.style.display !== 'none') {
+    currentMainPixCode = '';
+    currentMpPaymentId = null;
+    localStorage.removeItem('desmame_pending_pix_id');
+    localStorage.removeItem('desmame_pending_pix_code');
+    activeArea.style.display = 'none';
+    if (initialCard) initialCard.style.display = 'block';
   }
 }
 
@@ -1154,6 +1162,11 @@ function updatePriceDisplay() {
     labelSubmitCard.textContent = `PAGAR COM CARTÃO (${formatted}) E LIBERAR AGORA`;
   }
 
+  const labelGeneratePixBtn = document.getElementById('labelGeneratePixBtn');
+  if (labelGeneratePixBtn) {
+    labelGeneratePixBtn.textContent = `GERAR MEU QR CODE PIX (${formatted})`;
+  }
+
   const cardSuccessAmountTag = document.getElementById('cardSuccessAmountTag');
   if (cardSuccessAmountTag) cardSuccessAmountTag.textContent = `✅ STATUS: PAGO NO CARTÃO (${formatted})`;
 
@@ -1176,10 +1189,12 @@ let currentMainPixCode = '';
 let unlockCountdownInterval = null;
 
 /**
- * Inicializa o PIX do Mercado Pago diretamente na tela de checkout principal
- * com persistência de pedidos e recuperação inteligente
+ * Inicializa o PIX do Mercado Pago diretamente na tela de checkout principal.
+ * REGRA RIGOROSA:
+ *  - shouldGenerate === false: APENAS exibe o botão limpo ou recupera PIX pendente do mesmo valor. NUNCA CRIA NADA NO MERCADO PAGO!
+ *  - shouldGenerate === true: Disparado EXCLUSIVAMENTE quando o usuário clica em "GERAR MEU QR CODE PIX" ou clica para copiar o código PIX.
  */
-async function initInlineMercadoPagoPix(isInitialLoad = false) {
+async function initInlineMercadoPagoPix(shouldGenerate = false) {
   if (appState.isPaid) return;
 
   const qrImg = document.getElementById('mainPixQrImage');
@@ -1194,7 +1209,7 @@ async function initInlineMercadoPagoPix(isInitialLoad = false) {
   const formatted = totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   if (tagEl) tagEl.textContent = formatted;
 
-  // 1. Verifica se já existe um Pix pendente salvo recentemente no localStorage deste aparelho
+  // 1. Verifica se já existe um Pix pendente salvo recentemente no localStorage deste aparelho para o mesmo valor
   const savedPendingId = localStorage.getItem('desmame_pending_pix_id');
   const savedPendingCode = localStorage.getItem('desmame_pending_pix_code');
   const savedPendingTime = Number(localStorage.getItem('desmame_pending_pix_time') || 0);
@@ -1203,13 +1218,23 @@ async function initInlineMercadoPagoPix(isInitialLoad = false) {
   const isRecent = savedPendingTime && (Date.now() - savedPendingTime < 40 * 60 * 1000); // 40 minutos
   const sameAmount = Math.abs(savedPendingAmount - totalAmount) < 0.05;
 
-  if (savedPendingId && isRecent) {
+  if (savedPendingId && isRecent && sameAmount && savedPendingCode) {
     if (initialCard) initialCard.style.display = 'none';
     if (activeArea) activeArea.style.display = 'block';
 
-    if (statusEl) {
-      statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Verificando status do seu pagamento...</span>`;
+    currentMainPixCode = savedPendingCode;
+    currentMpPaymentId = savedPendingId;
+
+    if (qrCanvas && typeof window.generateQRCodeCanvas === 'function') {
+      window.generateQRCodeCanvas(savedPendingCode, qrCanvas, 190);
+      qrCanvas.style.display = 'block';
+      if (qrImg) qrImg.style.display = 'none';
+      if (qrLoading) qrLoading.style.display = 'none';
     }
+    if (statusEl) {
+      statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Aguardando pagamento no Mercado Pago...</span>`;
+    }
+
     try {
       const checkRes = await fetch(`/api/check-payment?id=${savedPendingId}`);
       if (checkRes.ok) {
@@ -1223,33 +1248,19 @@ async function initInlineMercadoPagoPix(isInitialLoad = false) {
       console.warn('Erro ao consultar Pix pendente:', err);
     }
 
-    // Se ainda está pendente e o valor é o mesmo, reaproveita o código do PIX evitando gerar pedidos duplicados
-    if (sameAmount && savedPendingCode) {
-      currentMainPixCode = savedPendingCode;
-      currentMpPaymentId = savedPendingId;
-
-      if (qrCanvas && typeof window.generateQRCodeCanvas === 'function') {
-        window.generateQRCodeCanvas(savedPendingCode, qrCanvas, 190);
-        qrCanvas.style.display = 'block';
-        if (qrImg) qrImg.style.display = 'none';
-        if (qrLoading) qrLoading.style.display = 'none';
-      }
-      if (statusEl) {
-        statusEl.innerHTML = `<div class="pulse-spinner"></div><span>Aguardando pagamento no Mercado Pago...</span>`;
-      }
-      startMercadoPagoPolling(currentMpPaymentId);
-      return;
-    }
+    startMercadoPagoPolling(currentMpPaymentId);
+    return;
   }
 
-  // 2. Se for carregamento inicial e não há PIX pendente salvo, mostra o botão para gerar e NÃO cria pedido fantasma no MP
-  if (isInitialLoad) {
+  // 2. Se NÃO foi uma ação explícita para gerar o PIX (ex: carregamento da página, troca de abas, etc.),
+  // mantém o card inicial limpo e JAMAIS cria pedidos pendentes no Mercado Pago!
+  if (!shouldGenerate) {
     if (initialCard) initialCard.style.display = 'block';
     if (activeArea) activeArea.style.display = 'none';
     return;
   }
 
-  // 3. O usuário solicitou gerar o PIX:
+  // 3. O usuário solicitou gerar o PIX clicando no botão:
   if (initialCard) initialCard.style.display = 'none';
   if (activeArea) activeArea.style.display = 'block';
   if (qrLoading) qrLoading.style.display = 'flex';
@@ -1266,6 +1277,11 @@ async function initInlineMercadoPagoPix(isInitialLoad = false) {
   const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || appState.buyerName || localStorage.getItem('desmame_buyer_name') || 'Aluna Desmame Noturno';
   const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || appState.buyerEmail || localStorage.getItem('desmame_buyer_email') || 'contato@desmamenoturno.com';
   const buyerPhone = (buyerPhoneInput ? buyerPhoneInput.value.trim() : '') || localStorage.getItem('desmame_buyer_phone') || '';
+
+  // Persiste dados preenchidos da compradora
+  if (buyerNameInput && buyerNameInput.value.trim()) localStorage.setItem('desmame_buyer_name', buyerName);
+  if (buyerEmailInput && buyerEmailInput.value.trim()) localStorage.setItem('desmame_buyer_email', buyerEmail);
+  if (buyerPhoneInput && buyerPhoneInput.value.trim()) localStorage.setItem('desmame_buyer_phone', buyerPhone);
 
   try {
     const res = await fetch('/api/create-pix', {
@@ -1286,7 +1302,7 @@ async function initInlineMercadoPagoPix(isInitialLoad = false) {
       currentMainPixCode = data.qr_code;
       currentMpPaymentId = data.order_id || data.payment_id;
 
-      // Salva no localStorage para sobreviver a trocas de aplicativo e recarregamentos no celular
+      // Salva no localStorage para sobreviver a trocas de aplicativo no celular
       localStorage.setItem('desmame_pending_pix_id', String(currentMpPaymentId));
       localStorage.setItem('desmame_pending_pix_code', String(data.qr_code));
       localStorage.setItem('desmame_pending_pix_time', String(Date.now()));
@@ -1343,6 +1359,7 @@ async function initInlineMercadoPagoPix(isInitialLoad = false) {
 function handleGeneratePixClicked() {
   const nameInput = document.getElementById('buyerName');
   const emailInput = document.getElementById('buyerEmail');
+  const phoneInput = document.getElementById('buyerPhone');
   
   if (nameInput && (!nameInput.value.trim() || nameInput.value.trim().length < 2)) {
     nameInput.focus();
@@ -1360,10 +1377,55 @@ function handleGeneratePixClicked() {
     return;
   }
 
+  if (nameInput && nameInput.value.trim()) {
+    localStorage.setItem('desmame_buyer_name', nameInput.value.trim());
+    appState.buyerName = nameInput.value.trim();
+  }
+  if (emailInput && emailInput.value.trim()) {
+    localStorage.setItem('desmame_buyer_email', emailInput.value.trim());
+    appState.buyerEmail = emailInput.value.trim();
+  }
+  if (phoneInput && phoneInput.value.trim()) {
+    localStorage.setItem('desmame_buyer_phone', phoneInput.value.trim());
+  }
+
   const btn = document.getElementById('labelGeneratePixBtn');
   if (btn) btn.textContent = 'GERANDO PIX OFICIAL MERCADO PAGO...';
 
-  initInlineMercadoPagoPix(false);
+  initInlineMercadoPagoPix(true);
+}
+
+/**
+ * Utilitário universal para copiar textos para área de transferência
+ */
+function copyTextToClipboard(text, onSuccess) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (typeof onSuccess === 'function') onSuccess();
+    }).catch(() => {
+      fallbackCopyText(text, onSuccess);
+    });
+  } else {
+    fallbackCopyText(text, onSuccess);
+  }
+}
+
+function fallbackCopyText(text, onSuccess) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.left = '-9999px';
+  textArea.style.top = '-9999px';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    if (typeof onSuccess === 'function') onSuccess();
+  } catch (err) {
+    console.error('Falha no fallback de cópia:', err);
+  }
+  document.body.removeChild(textArea);
 }
 
 /**
@@ -1371,21 +1433,39 @@ function handleGeneratePixClicked() {
  */
 async function handleCopyMainPixCode() {
   if (!currentMainPixCode) {
-    await initInlineMercadoPagoPix(false);
+    await initInlineMercadoPagoPix(true);
   }
   const code = currentMainPixCode;
   const label = document.getElementById('labelCopyMainPix');
 
-  if (navigator.clipboard && code) {
-    navigator.clipboard.writeText(code).then(() => {
+  if (code) {
+    copyTextToClipboard(code, () => {
       if (label) {
         const orig = label.textContent;
         label.textContent = "✅ CÓDIGO PIX COPIADO COM SUCESSO!";
         setTimeout(() => { label.textContent = orig; }, 3000);
       }
-    }).catch(() => {
-      // Fallback gracioso
     });
+  }
+}
+
+/**
+ * Checagem proativa chamada ao voltar para a aba do navegador (ex: após pagar no app do banco)
+ */
+async function checkActivePaymentStatus() {
+  if (appState.isPaid) return;
+  const pendingId = currentMpPaymentId || localStorage.getItem('desmame_pending_pix_id');
+  if (!pendingId) return;
+
+  try {
+    const res = await fetch(`/api/check-payment?id=${pendingId}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.status === 'approved' || data.is_approved) {
+      showPaymentSuccessAndUnlock(data.has_bump);
+    }
+  } catch (e) {
+    console.warn('Erro ao consultar status em segundo plano:', e);
   }
 }
 
@@ -2040,7 +2120,7 @@ async function handleManualSearchAccess() {
 }
 
 function handleOpenPixModal() {
-  initInlineMercadoPagoPix();
+  initInlineMercadoPagoPix(true);
 }
 
 function handleCopyPixCode() {
@@ -2380,7 +2460,7 @@ function switchPaymentMethod(method) {
     if (pixBox) pixBox.style.display = 'block';
     if (cardBox) cardBox.style.display = 'none';
     if (!appState.isPaid) {
-      initInlineMercadoPagoPix();
+      initInlineMercadoPagoPix(false);
     }
   } else {
     if (tabPix) tabPix.classList.remove('active');

@@ -98,6 +98,50 @@ module.exports = async (req, res) => {
     const data = await mpResponse.json();
 
     if (!mpResponse.ok) {
+      console.warn('Orders API retornou erro, acionando fallback para Payments API do Mercado Pago:', data);
+      const fallbackHeaders = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'X-Idempotency-Key': `pix-fb-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
+      };
+      if (clientIp) {
+        fallbackHeaders['X-Forwarded-For'] = clientIp;
+      }
+      const paymentPayload = {
+        transaction_amount: Number(transactionAmount),
+        description: description,
+        payment_method_id: 'pix',
+        payer: {
+          email: cleanEmail,
+          first_name: firstName,
+          last_name: lastName
+        }
+      };
+      try {
+        const fallbackRes = await fetch('https://api.mercadopago.com/v1/payments', {
+          method: 'POST',
+          headers: fallbackHeaders,
+          body: JSON.stringify(paymentPayload)
+        });
+        const fallbackData = await fallbackRes.json();
+        if (fallbackRes.ok && fallbackData.point_of_interaction?.transaction_data) {
+          const txData = fallbackData.point_of_interaction.transaction_data;
+          return res.status(200).json({
+            success: true,
+            order_id: fallbackData.id,
+            payment_id: fallbackData.id,
+            status: fallbackData.status,
+            status_detail: fallbackData.status_detail,
+            qr_code: txData.qr_code,
+            qr_code_base64: txData.qr_code_base64,
+            ticket_url: txData.ticket_url,
+            amount: fallbackData.transaction_amount
+          });
+        }
+      } catch (fbErr) {
+        console.error('Erro no fallback da Payments API:', fbErr);
+      }
+
       console.error('Erro na API de Orders do Mercado Pago:', data);
       return res.status(mpResponse.status).json({
         error: data.message || 'Erro ao gerar PIX no Mercado Pago',
